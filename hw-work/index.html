@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<title>HW 작업실</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+:root{--bg:#000;--navy:#0c1330;--gold:#F2BE48;--gold2:#FFDE8C;--text:#f3efe6;--muted:#8f93a0;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:"Pretendard","Malgun Gothic",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;word-break:keep-all;
+  background-image:radial-gradient(520px 420px at 50% 38%,rgba(242,190,72,.16),transparent 70%)}
+main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.logo{width:132px;height:132px;border-radius:32px;box-shadow:0 0 0 2px rgba(242,190,72,.55),0 18px 50px rgba(242,190,72,.28);animation:pop .5s cubic-bezier(.2,.9,.3,1.2) both}
+h1{font-size:26px;font-weight:900;letter-spacing:-.03em;animation:up .5s .08s both}
+h1 em{font-style:normal;color:var(--gold)}
+.sub{color:var(--muted);font-size:14px;margin-top:-14px;animation:up .5s .12s both}
+.bar{width:150px;height:4px;border-radius:2px;background:rgba(242,190,72,.18);overflow:hidden}
+.bar i{display:block;height:100%;width:40%;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));animation:load 1s ease-in-out infinite}
+.open{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:320px;min-height:60px;border-radius:18px;text-decoration:none;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1204;font-weight:900;font-size:19px;box-shadow:0 10px 30px rgba(242,190,72,.3);animation:up .35s both}
+.open:active{transform:scale(.98)}
+.msg{color:var(--muted);font-size:13.5px;text-align:center;line-height:1.6;max-width:320px}
+@keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="icons/icon-512.png" alt="" width="132" height="132">
+  <h1>HW <em>작업실</em></h1>
+  <p class="sub">💎 HW 머니랩</p>
+  <div class="bar" id="bar"><i></i></div>
+  <a class="open" id="open" href="#" rel="noopener" hidden>🛠 작업실 열기</a>
+  <p class="msg" id="msg" hidden></p>
+</main>
+<script>
+(function () {
+  // 사장님 계정만 열리는 구글 Apps Script 주소 (iframe ✗ — 구글 로그인 쿠키 문제 · 같은 창에서 넘어감)
+  var URL_ = "https://script.google.com/macros/s/AKfycbxFslbHz1l4COvjGuhgTFN7nDD9_64jwYzGZZKjnRkMrpGy9DRtbPY80h1WhdWqGCVI/exec";
+  var open = document.getElementById("open"), msg = document.getElementById("msg"), bar = document.getElementById("bar");
+  open.href = URL_;
+  function 단추(말) { bar.hidden = true; open.hidden = false; if (말) { msg.textContent = 말; msg.hidden = false; } }
+  var 끊김 = navigator.onLine === false;
+  if (/[?&]stay\b/.test(location.search)) setTimeout(단추, 500);                     // ?stay = 넘어가지 않고 단추만 (꼬였을 때 · 검수용)
+  else if (끊김) 단추("인터넷이 끊겨 있어요. 연결되면 아래 단추를 눌러 주세요.");
+  else {
+    setTimeout(function () { location.replace(URL_); }, 500);                        // 금색 로고 0.5초 → 작업실로
+    setTimeout(function () { 단추("자동으로 안 넘어가면 아래 단추를 눌러 주세요."); }, 3500);   // 못 넘어가면 큰 단추
+  }
+  addEventListener("pageshow", function (e) { if (e.persisted) 단추(); });               // 뒤로 가기로 돌아오면 다시 안 튕기고 단추만
+  addEventListener("online", function () { msg.hidden = true; });
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function () {});
+})();
+</script>
+</body>
+</html>

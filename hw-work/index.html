@@ -69,9 +69,12 @@ h1 em{font-style:normal;color:var(--gold)}
     }
     return 모두.filter(function (u) { return 좋은주소.test(u); })[0] || 모두[0] || "";
   }
+  function 주소빼기(s) {
+    return String(s || "").replace(/https?:\/\/\S+/g, " ").replace(/(?:vt\.tiktok\.com|vm\.tiktok\.com|naver\.me|clip\.naver\.com)\/\S*/gi, " ").replace(/\s+/g, " ").trim();
+  }
   function 제목뽑기(제목, 글) {
-    var 남은 = String(글 || "").replace(/https?:\/\/\S+/g, " ").replace(/\s+/g, " ").trim();
-    제목 = String(제목 || "").replace(/https?:\/\/\S+/g, " ").replace(/\s+/g, " ").trim();
+    var 남은 = 주소빼기(글);
+    제목 = 주소빼기(제목);
     var t = 제목 && 남은.indexOf(제목) < 0 ? 제목 + " " + 남은 : (남은 || 제목);
     return t.trim().slice(0, 300);
   }

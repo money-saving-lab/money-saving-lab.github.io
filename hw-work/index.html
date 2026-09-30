@@ -32,6 +32,10 @@ h1 em{font-style:normal;color:var(--gold)}
 @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+#work{position:fixed;inset:0;width:100%;height:100%;border:0;background:#000;opacity:0;transition:opacity .35s}
+#work.on{opacity:1}
+.float{position:fixed;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:5;padding:7px 11px;border-radius:12px;font-size:12px;font-weight:800;
+  color:#1a1204;background:rgba(242,190,72,.85);text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.4)}
 </style>
 </head>
 <body>
@@ -43,6 +47,8 @@ h1 em{font-style:normal;color:var(--gold)}
   <a class="open" id="open" href="#" rel="noopener" hidden>🛠 작업실 열기</a>
   <p class="msg" id="msg" hidden></p>
 </main>
+<iframe id="work" title="HW 작업실" hidden allow="clipboard-write"></iframe>
+<a class="float" id="float" href="#" target="_blank" rel="noopener" hidden>↗ 새 창</a>
 <script>
 (function () {
   // 사장님 계정만 열리는 구글 Apps Script 주소 (iframe ✗ — 구글 로그인 쿠키 문제 · 같은 창에서 넘어감)
@@ -53,9 +59,16 @@ h1 em{font-style:normal;color:var(--gold)}
   var 끊김 = navigator.onLine === false;
   if (/[?&]stay\b/.test(location.search)) setTimeout(단추, 500);                     // ?stay = 넘어가지 않고 단추만 (꼬였을 때 · 검수용)
   else if (끊김) 단추("인터넷이 끊겨 있어요. 연결되면 아래 단추를 눌러 주세요.");
-  else {
-    setTimeout(function () { location.replace(URL_); }, 500);                        // 금색 로고 0.5초 → 작업실로
-    setTimeout(function () { 단추("자동으로 안 넘어가면 아래 단추를 눌러 주세요."); }, 3500);   // 못 넘어가면 큰 단추
+  else if (/[?&]go\b/.test(location.search)) {                                         // ?go = 예전처럼 구글 주소로 넘어가기
+    setTimeout(function () { location.replace(URL_); }, 500);
+    setTimeout(function () { 단추("자동으로 안 넘어가면 아래 단추를 눌러 주세요."); }, 3500);
+  } else {
+    // 10/1 사장님 「딱 앱까지 뜨게 · URL 도 뜨고 그러네」 → 앱 창 안에 끼워 보인다 (주소 줄·구글 「악용사례 신고」 띠 없음)
+    var work = document.getElementById("work"), fl = document.getElementById("float");
+    fl.href = URL_;
+    work.onload = function () { work.classList.add("on"); setTimeout(function () { document.querySelector("main").hidden = true; }, 350); };
+    setTimeout(function () { work.hidden = false; work.src = URL_; }, 500);            // 금색 로고 0.5초 → 작업실
+    setTimeout(function () { fl.hidden = false; }, 8000);                              // 안 뜨면 ↗ 새 창 (구글 로그인이 풀렸을 때 등)
   }
   addEventListener("pageshow", function (e) { if (e.persisted) 단추(); });               // 뒤로 가기로 돌아오면 다시 안 튕기고 단추만
   addEventListener("online", function () { msg.hidden = true; });

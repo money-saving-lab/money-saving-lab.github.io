@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0d12">
+<meta name="color-scheme" content="dark">
+<title>돈 아끼는 연구소</title>
+<meta name="description" content="우리 영상에 나온 여행 최저가 링크와 절약 꿀템을 한곳에 모았어요.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body data-tab="travel">
+<header class="bar">
+  <div class="brand"><img src="icons/icon-192.png" alt="" width="34" height="34"><span><b>돈 아끼는 <em>연구소</em></b><small id="sub">여행 최저가 · 절약 꿀템</small></span></div>
+  <button class="install" id="install" type="button" hidden>📲 앱 설치</button>
+</header>
+
+<main id="main">
+  <div class="offline" id="offline" hidden>📴 인터넷이 끊겼어요 · 저장된 화면을 보여 드려요</div>
+  <div class="notice" id="notice"></div>
+
+  <section class="panel" id="p-travel" aria-label="여행 최저가">
+    <label class="find"><span class="sr">여행지·영상 찾기</span><input id="findTravel" type="search" placeholder="여행지·영상 찾기 (예: 대만, 일본)" autocomplete="off" enterkeyhint="search"></label>
+    <h2>최근 영상 속 여행지 <small id="cntTravel"></small></h2>
+    <div class="cards" id="travelCards"></div>
+    <h2>여행지별 투어·입장권</h2>
+    <div id="dests"></div>
+    <h2>바로가기</h2>
+    <div class="quick" id="quick"></div>
+    <div id="prep"></div>
+  </section>
+
+  <section class="panel" id="p-kkul" aria-label="절약 꿀템">
+    <label class="find"><span class="sr">꿀템 찾기</span><input id="findKkul" type="search" placeholder="꿀템 찾기 (예: 전기장판, 전기요금)" autocomplete="off" enterkeyhint="search"></label>
+    <h2>영상으로 본 절약 꿀템 <small id="cntKkul"></small></h2>
+    <div class="cards" id="kkulCards"></div>
+  </section>
+
+  <section class="panel" id="p-saved" aria-label="저장함">
+    <h2>🔖 저장함 <small>이 폰에만 저장돼요</small></h2>
+    <div class="cards" id="savedCards"></div>
+    <div class="soon-card"><span class="big">🔔</span><div><b>새 영상 알림</b><small>새 영상·새 링크가 올라오면 알려 드리는 기능, 곧 열려요</small></div><span class="pill">곧</span></div>
+  </section>
+
+  <h2 class="ch-h">채널 구경하기</h2>
+  <div class="chs" id="chs"></div>
+  <footer id="foot">💰 돈 아끼는 연구소</footer>
+</main>
+
+<nav class="tabs" role="tablist" aria-label="메뉴">
+  <button role="tab" data-t="travel" type="button"><span class="ti">✈️</span>여행 최저가</button>
+  <button role="tab" data-t="kkul" type="button"><span class="ti">🧺</span>절약 꿀템</button>
+  <button role="tab" data-t="saved" type="button"><span class="ti">🔖</span>저장함<i id="savedN" hidden></i></button>
+</nav>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-in" role="dialog" aria-modal="true" aria-labelledby="sheetT">
+    <b id="sheetT">홈 화면에 앱 설치</b>
+    <ol>
+      <li>크롬 오른쪽 위 <b>⋮</b> 메뉴를 누르세요</li>
+      <li><b>「앱 설치」</b> 또는 <b>「홈 화면에 추가」</b>를 누르세요</li>
+      <li>홈 화면에 생긴 <b>돈 아끼는 연구소</b> 아이콘으로 여세요</li>
+    </ol>
+    <button type="button" id="sheetClose">알겠어요</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<noscript><p class="noscript">이 앱은 자바스크립트가 켜져 있어야 보여요.</p></noscript>
+<script src="app.js" defer></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 /* HW 작업실 껍데기 — 이 화면만 저장해 두어 인터넷이 없어도 앱이 열리고 「작업실 열기」 단추가 보이게.
    작업실(Apps Script) 쪽 요청은 건드리지 않는다. 화면을 고치면 V 숫자를 올린다. */
-var V = "hwwork-v1";
+var V = "hwwork-v2";
 var SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
 
 self.addEventListener("install", function (e) {

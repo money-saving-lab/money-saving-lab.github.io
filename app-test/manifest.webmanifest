@@ -1,0 +1,25 @@
+{
+  "name": "돈 아끼는 연구소",
+  "short_name": "돈아끼는연구소",
+  "description": "우리 영상에 나온 여행 최저가 링크와 절약 꿀템을 한곳에 모았어요.",
+  "lang": "ko",
+  "dir": "ltr",
+  "id": "./?from=app",
+  "start_url": "./?from=app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0d12",
+  "theme_color": "#0b0d12",
+  "categories": ["travel", "shopping", "lifestyle"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "여행 최저가", "short_name": "여행", "url": "./?from=app#travel", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "절약 꿀템", "short_name": "꿀템", "url": "./?from=app#kkul", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "저장함", "short_name": "저장함", "url": "./?from=app#saved", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

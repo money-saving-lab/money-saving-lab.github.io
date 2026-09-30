@@ -1,6 +1,6 @@
 /* HW 작업실 껍데기 — 이 화면만 저장해 두어 인터넷이 없어도 앱이 열리고 「작업실 열기」 단추가 보이게.
    작업실(Apps Script) 쪽 요청은 건드리지 않는다. 화면을 고치면 V 숫자를 올린다. */
-var V = "hwwork-v3";   // 10/1 앱 이름표(id) 새로 — 지운 옛 앱이 「이미 설치됨」 으로 남아 설치가 막혀서
+var V = "hwwork-v4";   // 10/1 공유 받기(share_target) — 틱톡·클립 「공유 → HW 작업실」 (v3: 앱 이름표 id 새로)
 var SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
 
 self.addEventListener("install", function (e) {

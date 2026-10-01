@@ -1,0 +1,258 @@
+/* ══════════════════════════════════════════════════════════════
+   HW 숏츠 메이커 📱 폰 — 검정 + 금빛 · Pretendard · 한 손 조작(주 단추는 아래) · 아이폰 노치·홈 막대 안전 자리
+   ══════════════════════════════════════════════════════════════ */
+@font-face{font-family:"Pretendard";font-weight:400 600;src:url(fonts/Pretendard-SemiBold.otf) format("opentype");font-display:swap}
+@font-face{font-family:"Pretendard";font-weight:700 800;src:url(fonts/Pretendard-ExtraBold.otf) format("opentype");font-display:swap}
+@font-face{font-family:"Pretendard";font-weight:900;src:url(fonts/Pretendard-Black.otf) format("opentype");font-display:swap}
+
+:root{
+  --bg:#0b0d12; --panel:#14161d; --panel2:#1b1e27; --panel3:#232733; --line:#2a2f3b;
+  --text:#f3efe6; --text2:#d6d1c4; --muted:#9a9eab;
+  --gold:#FFD069; --gold2:#D4A017; --goldDim:rgba(247,215,116,.14);
+  --grad:linear-gradient(135deg,#F7D774 0%,#E9B93A 48%,#D4A017 100%);
+  --ink:#1a1204; --ok:#3ddc97; --warn:#fbbf24; --bad:#f87171;
+  --sa-t:env(safe-area-inset-top,0px); --sa-b:env(safe-area-inset-bottom,0px);
+  --sa-l:env(safe-area-inset-left,0px); --sa-r:env(safe-area-inset-right,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+html,body{margin:0;color:var(--text);font-family:"Pretendard",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  font-size:16px;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
+body{min-height:100dvh;background:radial-gradient(ellipse 80% 40% at 90% -10%,rgba(247,215,116,.09),transparent 70%),var(--bg);
+  overscroll-behavior-y:none}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+[hidden]{display:none!important}
+.흐림{color:var(--muted)}
+.작게{font-size:13px}
+.가운데{text-align:center}
+.숨김칸{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+#앱{max-width:560px;margin:0 auto;padding:calc(var(--sa-t) + 6px) calc(16px + var(--sa-r)) 0 calc(16px + var(--sa-l))}
+
+/* 머리 */
+.머리{display:flex;align-items:center;gap:12px;padding:8px 0 14px;position:sticky;top:0;z-index:20;
+  background:linear-gradient(var(--bg) 70%,transparent)}
+.로고,.큰로고{flex:none;width:42px;height:42px;border:0;border-radius:12px;background:var(--grad);display:grid;place-items:center;
+  box-shadow:0 6px 20px rgba(212,160,23,.35),inset 0 1px 0 rgba(255,255,255,.5)}
+.로고 b,.큰로고 b{font-weight:900;color:var(--ink);font-size:17px;letter-spacing:-.02em}
+.머리글{flex:1;min-width:0}
+.머리글 b{display:block;font-size:19px;font-weight:900;letter-spacing:-.03em}
+.머리글 small{display:block;color:var(--muted);font-size:12.5px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.알약{flex:none;height:28px;padding:0 11px;border-radius:999px;display:inline-flex;align-items:center;font-size:12.5px;font-weight:800;
+  border:1px solid rgba(247,215,116,.35);background:var(--goldDim);color:var(--gold)}
+
+.화면{padding-bottom:calc(24px + var(--sa-b))}
+.소제목{font-size:15px;font-weight:800;color:var(--text2);margin:22px 2px 10px}
+
+/* 단추 */
+.주단추{width:100%;min-height:52px;border:0;border-radius:15px;background:var(--grad);color:var(--ink);font-weight:900;font-size:17px;
+  box-shadow:0 8px 24px rgba(212,160,23,.28),inset 0 1px 0 rgba(255,255,255,.5);padding:0 16px}
+.주단추.큰{min-height:58px;font-size:18px}
+.주단추:disabled{filter:grayscale(.85) brightness(.6);box-shadow:none}
+.주단추:active:not(:disabled){transform:translateY(1px)}
+.둘째단추{width:100%;min-height:48px;border-radius:14px;border:1px solid var(--line);background:var(--panel2);font-weight:800;font-size:15px;padding:0 10px}
+.둘째단추:active{background:var(--panel3)}
+.둘째단추.빨강{color:#ffb4b4;border-color:rgba(248,113,113,.35)}
+.작은단추{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 13px;border-radius:10px;border:1px solid var(--line);
+  background:var(--panel2);font-weight:700;font-size:13.5px;color:var(--text2)}
+.숨은단추{display:block;margin:18px auto 0;border:0;background:none;color:var(--muted);font-size:14px;text-decoration:underline;
+  text-underline-offset:3px;min-height:44px;padding:0 8px}
+.두단추{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+
+/* 바닥 고정 줄 (한 손 · 엄지 자리) */
+.바닥줄{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:12px calc(16px + var(--sa-r)) calc(12px + var(--sa-b)) calc(16px + var(--sa-l));
+  background:linear-gradient(transparent,rgba(11,13,18,.92) 28%,var(--bg));}
+.바닥줄>*{max-width:528px;margin:0 auto;display:block}
+.바닥줄.두칸{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+.바닥줄.두칸>*{margin:0;max-width:none}
+.바닥여백{height:96px}
+
+/* 입장 */
+.입장카드{margin-top:8vh;padding:26px 20px;border-radius:22px;background:var(--panel);border:1px solid var(--line);text-align:center}
+.입장카드 .큰로고{width:64px;height:64px;margin:0 auto 14px;border-radius:18px}
+.입장카드 .큰로고 b{font-size:24px}
+.입장카드 h1{font-size:22px;margin:0 0 8px;font-weight:900}
+.입장카드 p{font-size:14px;line-height:1.55;margin:0 0 16px}
+.칸{width:100%;border-radius:13px;border:1px solid var(--line);background:var(--panel2);padding:13px 14px;font-size:16px;outline:none;resize:vertical}
+.칸:focus{border-color:rgba(247,215,116,.6);box-shadow:0 0 0 3px rgba(247,215,116,.12)}
+.칸.코드{text-align:center;font-weight:800;letter-spacing:.06em;margin-bottom:12px}
+.작은칸{margin-top:8px;padding:11px 14px;font-size:15px}
+.오류글{color:var(--bad);font-weight:700;font-size:14px;line-height:1.5;margin:12px 2px}
+
+/* 홈 */
+.새로만들기{width:100%;display:flex;gap:14px;align-items:center;text-align:left;padding:20px 18px;border-radius:20px;border:0;
+  background:var(--grad);color:var(--ink);box-shadow:0 12px 30px rgba(212,160,23,.3),inset 0 1px 0 rgba(255,255,255,.5)}
+.새로만들기 .더하기{flex:none;width:48px;height:48px;border-radius:14px;background:rgba(26,18,4,.14);display:grid;place-items:center;font-size:30px;font-weight:900}
+.새로만들기 b{display:block;font-size:19px;font-weight:900}
+.새로만들기 small{display:block;font-size:13px;font-weight:600;margin-top:3px;opacity:.82;line-height:1.4}
+.공유받음{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--goldDim);border:1px solid rgba(247,215,116,.3);font-size:14px;font-weight:700;color:var(--gold)}
+.작업목록{display:flex;flex-direction:column;gap:10px}
+.작업{display:flex;gap:12px;align-items:center;padding:10px;border-radius:16px;background:var(--panel);border:1px solid var(--line);width:100%;text-align:left}
+.작업 .썸{flex:none;width:54px;height:96px;border-radius:9px;background:var(--panel3) center/cover no-repeat;display:grid;place-items:center;font-size:22px}
+.작업 .글{flex:1;min-width:0}
+.작업 .글 b{display:block;font-size:15px;font-weight:800;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.작업 .글 small{display:block;color:var(--muted);font-size:12.5px;margin-top:5px}
+.상태표{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:800;margin-right:6px;background:var(--panel3);color:var(--text2)}
+.상태표.완료{background:rgba(61,220,151,.14);color:var(--ok)}
+.상태표.실패{background:rgba(248,113,113,.14);color:var(--bad)}
+.상태표.진행{background:var(--goldDim);color:var(--gold)}
+
+/* 만들기 단계 카드 */
+.단계{margin-top:14px;padding:16px;border-radius:18px;background:var(--panel);border:1px solid var(--line)}
+.단계머리{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px;list-style:none}
+.단계머리::-webkit-details-marker{display:none}
+.단계머리 .번호{width:24px;height:24px;border-radius:8px;background:var(--goldDim);color:var(--gold);display:grid;place-items:center;font-size:13px;font-weight:900}
+.단계머리 b{font-size:16.5px;font-weight:900}
+.단계머리 small{color:var(--muted);font-size:12.5px;flex-basis:100%;padding-left:33px;margin-top:-4px}
+.옵션 .단계머리{margin-bottom:0;cursor:pointer}
+.옵션[open] .단계머리{margin-bottom:12px}
+.옵션 .펼침{margin-left:auto;color:var(--muted);transition:transform .2s}
+.옵션[open] .펼침{transform:rotate(180deg)}
+.고르기{display:flex;flex-direction:column;align-items:center;gap:5px;padding:22px 14px;border-radius:16px;border:1.5px dashed rgba(247,215,116,.45);
+  background:rgba(247,215,116,.05);text-align:center;cursor:pointer}
+.고르기 .큰아이콘{font-size:34px}
+.고르기 b{font-size:17px;font-weight:900;color:var(--gold)}
+.고르기 small{color:var(--muted);font-size:12.5px;line-height:1.45}
+.고른칸들{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}
+.고른칸들:empty{display:none}
+.고른칸{position:relative;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:var(--panel3)}
+.고른칸 img,.고른칸 video{width:100%;height:100%;object-fit:cover;display:block}
+.고른칸 .표{position:absolute;left:4px;bottom:4px;padding:1px 6px;border-radius:6px;background:rgba(0,0,0,.6);font-size:11px;font-weight:800}
+.고른칸 .진행{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(0,0,0,.5)}
+.고른칸 .진행 i{display:block;height:100%;width:0;background:var(--grad);transition:width .3s}
+.고른칸.끝 .진행 i{background:var(--ok)}
+.고른칸 .빼기{position:absolute;right:3px;top:3px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.65);font-size:13px;color:#fff}
+.고른칸.오류{outline:2px solid var(--bad)}
+.올림띠{margin-top:12px}
+.올림띠 p{margin:7px 0 0;font-size:14px;font-weight:700}
+.막대{height:8px;border-radius:99px;background:var(--panel3);overflow:hidden}
+.막대 i{display:block;height:100%;width:0;background:var(--grad);transition:width .3s}
+
+.칩들{display:flex;flex-wrap:wrap;gap:7px}
+.칩들 button{min-height:40px;padding:0 13px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);font-weight:700;font-size:14.5px}
+.칩들 button.켬{background:var(--goldDim);border-color:rgba(247,215,116,.6);color:var(--gold)}
+.칩들.작게 button{min-height:36px;font-size:13.5px;padding:0 11px}
+.옵션줄{padding:12px 0;border-top:1px solid var(--line)}
+.옵션줄:first-of-type{border-top:0}
+.옵션줄>b{display:block;font-size:14.5px;font-weight:800;margin-bottom:8px}
+.옵션줄 small.흐림{display:block;margin-top:7px;font-size:12.5px;line-height:1.45}
+.고름{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:5px;padding:4px;border-radius:13px;background:var(--panel2);border:1px solid var(--line)}
+.고름 button{min-height:40px;border:0;border-radius:10px;background:none;font-weight:700;font-size:14px;color:var(--text2)}
+.고름 button.켬{background:var(--grad);color:var(--ink);font-weight:900}
+.토글들{display:flex;flex-wrap:wrap;gap:7px}
+.토글들 label{position:relative}
+.토글들 input{position:absolute;opacity:0;width:1px;height:1px}
+.토글들 span{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 12px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel2);font-weight:700;font-size:13.5px;color:var(--muted);text-decoration:line-through}
+.토글들 input:checked+span{color:var(--gold);border-color:rgba(247,215,116,.55);background:var(--goldDim);text-decoration:none}
+.토글들 input:checked+span::before{content:"✓"}
+.토글들 input:focus-visible+span{outline:2px solid var(--gold)}
+
+/* 진행 */
+.진행카드{margin-top:8px;padding:24px 18px;border-radius:22px;background:var(--panel);border:1px solid var(--line)}
+.원{position:relative;width:150px;height:150px;margin:4px auto 10px}
+.원 svg{width:100%;height:100%;transform:rotate(-90deg)}
+.원바탕{fill:none;stroke:var(--panel3);stroke-width:10}
+.원값{fill:none;stroke:var(--gold);stroke-width:10;stroke-linecap:round;stroke-dasharray:326.7;stroke-dashoffset:326.7;transition:stroke-dashoffset .6s}
+.원 b{position:absolute;inset:0;display:grid;place-items:center;font-size:32px;font-weight:900}
+.진행글{text-align:center;font-weight:800;font-size:16px;line-height:1.5;margin:4px 0 16px;min-height:48px}
+.단계목록{list-style:none;padding:0;margin:0 0 14px;display:flex;flex-direction:column;gap:6px}
+.단계목록 li{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;background:var(--panel2);font-weight:700;font-size:14.5px;color:var(--muted)}
+.단계목록 li i{font-style:normal;width:22px;text-align:center}
+.단계목록 li.지금{color:var(--gold);background:var(--goldDim)}
+.단계목록 li.지금 i{animation:깜빡 1.2s infinite}
+.단계목록 li.끝{color:var(--text2)}
+@keyframes 깜빡{50%{opacity:.35}}
+
+/* 결과 */
+.영상틀{border-radius:18px;overflow:hidden;background:#000;aspect-ratio:9/16;max-height:62dvh;margin:0 auto;border:1px solid var(--line)}
+.영상틀 video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
+.결과글{margin-top:12px}
+.복사줄{display:flex;gap:10px;align-items:flex-start}
+.복사줄 b{flex:1;font-size:16.5px;font-weight:900;line-height:1.4}
+.설명접기{margin-top:8px;padding:10px 12px;border-radius:13px;background:var(--panel);border:1px solid var(--line)}
+.설명접기 summary{font-weight:700;font-size:14px;color:var(--text2)}
+.설명접기 pre{white-space:pre-wrap;font-family:inherit;font-size:14px;line-height:1.55;color:var(--text2)}
+.확인목록{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column;gap:6px}
+.확인목록 li{padding:9px 12px;border-radius:12px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);font-size:13.5px;line-height:1.5;color:#ffe3a3}
+.결과단추들{margin-top:16px}
+.결과단추들 .흐림{margin:8px 2px 0;line-height:1.5}
+
+/* 고치기 */
+.고치기머리{padding:4px 2px 8px}
+.고치기머리 b{display:block;font-size:18px;font-weight:900}
+.고치기머리 small{display:block;margin-top:4px;line-height:1.5;font-size:13px}
+.장면{margin-top:12px;padding:12px;border-radius:16px;background:var(--panel);border:1px solid var(--line)}
+.장면머리{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.장면머리 b{font-size:14.5px;font-weight:900;color:var(--gold)}
+.장면머리 small{color:var(--muted);font-size:12.5px}
+.장면 textarea{min-height:58px;font-size:15px;padding:10px 12px}
+.장면 .화면글칸{margin-top:6px;font-size:14px;padding:9px 12px}
+.컷줄{display:flex;gap:7px;overflow-x:auto;padding:10px 2px 4px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.컷{position:relative;flex:none;width:64px;scroll-snap-align:start;touch-action:pan-x}
+.컷 .그림{width:64px;height:114px;border-radius:9px;background:var(--panel3) center/cover no-repeat;border:2px solid transparent}
+.컷.고름 .그림{border-color:var(--gold)}
+.컷 .길이{position:absolute;left:3px;bottom:3px;padding:0 5px;border-radius:5px;background:rgba(0,0,0,.7);font-size:11px;font-weight:800}
+.컷 .효과표{position:absolute;right:3px;bottom:3px;padding:0 4px;border-radius:5px;background:var(--gold);color:var(--ink);font-size:10px;font-weight:900}
+.컷 .끌기{position:absolute;left:0;right:0;top:-2px;height:26px;display:grid;place-items:center;color:#fff;font-size:15px;
+  text-shadow:0 1px 3px #000;touch-action:none;cursor:grab}
+.컷.끄는중{opacity:.85;transform:scale(1.06);z-index:5;transition:none}
+.컷더하기{flex:none;width:64px;height:114px;border-radius:9px;border:1.5px dashed var(--line);background:none;color:var(--muted);font-size:26px}
+
+.판가림{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:40}
+.아래판{position:fixed;left:0;right:0;bottom:0;z-index:41;max-height:92dvh;overflow:auto;padding:8px calc(16px + var(--sa-r)) calc(16px + var(--sa-b)) calc(16px + var(--sa-l));
+  border-radius:22px 22px 0 0;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -12px 40px rgba(0,0,0,.5)}
+.아래판>*{max-width:528px;margin-left:auto;margin-right:auto}
+.판손잡이{width:44px;height:5px;border-radius:9px;background:var(--line);margin:4px auto 10px}
+.컷미리{width:46%;max-width:200px;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:#000;margin:0 auto}
+.컷미리 video,.컷미리 img{width:100%;height:100%;object-fit:cover;display:block}
+.파일칩{display:flex;gap:6px;overflow-x:auto;padding:10px 0 4px}
+.파일칩 button{flex:none;width:44px;height:60px;border-radius:8px;border:2px solid transparent;background:var(--panel3) center/cover no-repeat}
+.파일칩 button.켬{border-color:var(--gold)}
+.구간{position:relative;height:56px;margin:10px 0 4px;touch-action:none;user-select:none;-webkit-user-select:none}
+.구간바탕{position:absolute;inset:8px 0;border-radius:10px;background:var(--panel3) center/auto 100% repeat-x;overflow:hidden}
+.구간창{position:absolute;top:0;bottom:0;border:3px solid var(--gold);border-radius:10px;background:rgba(247,215,116,.12);touch-action:none}
+.손잡이{position:absolute;top:-3px;bottom:-3px;width:26px;background:var(--gold);touch-action:none}
+.손잡이::after{content:"";position:absolute;left:11px;top:16px;bottom:16px;width:4px;border-radius:3px;background:var(--ink)}
+.손잡이.왼{left:-14px;border-radius:10px 0 0 10px}
+.손잡이.오른{right:-14px;border-radius:0 10px 10px 0}
+.구간글{text-align:center;font-size:13.5px;font-weight:700;color:var(--text2);margin:4px 0 10px}
+
+.대략{position:fixed;inset:0;z-index:60;background:#000;display:grid;place-items:center}
+.대략 video,.대략 img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain}
+.대략자막{position:absolute;left:16px;right:16px;bottom:calc(26% + var(--sa-b));text-align:center;font-size:24px;font-weight:900;line-height:1.3;
+  text-shadow:0 0 6px #000,0 2px 2px #000;margin:0}
+.대략닫기{position:absolute;top:calc(12px + var(--sa-t));right:14px;min-height:40px;padding:0 14px;border-radius:999px;border:0;background:rgba(255,255,255,.18);font-weight:800;color:#fff}
+.대략도움{position:absolute;left:0;right:0;bottom:calc(12px + var(--sa-b));text-align:center;color:#bbb;font-size:12.5px;margin:0}
+
+.알림{position:fixed;left:50%;bottom:calc(96px + var(--sa-b));transform:translateX(-50%);z-index:70;max-width:calc(100% - 32px);padding:11px 16px;
+  border-radius:13px;background:#2b2f3a;border:1px solid var(--line);font-weight:700;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.5);text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ── 폰 단독판 더함 (도움말 · 설정 · 썸네일 · 머리 단추) ── */
+.머리단추{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);font-size:18px;font-weight:900;color:var(--text2)}
+.도움카드{margin-top:12px;padding:18px;border-radius:18px;background:var(--panel);border:1px solid var(--line)}
+.도움카드 .큰번호{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--grad);color:var(--ink);font-weight:900;margin-bottom:8px}
+.도움카드 b{display:block;font-size:17px;font-weight:900;margin-bottom:6px}
+.도움카드 p{margin:0;color:var(--text2);font-size:14.5px;line-height:1.6}
+.설정줄{margin-top:12px}
+.설정줄>b{display:block;font-size:14.5px;font-weight:800;margin-bottom:7px}
+.설정줄 small{display:block;margin-top:6px;color:var(--muted);font-size:12.5px;line-height:1.5}
+.썸틀{margin-top:12px;display:flex;gap:12px;align-items:center;padding:10px;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
+.썸틀 img{width:72px;aspect-ratio:9/16;border-radius:8px;object-fit:cover;background:#000}
+.썸틀 div{flex:1;min-width:0}
+.썸틀 b{display:block;font-size:14.5px;font-weight:800}
+.썸틀 small{display:block;color:var(--muted);font-size:12.5px;margin-top:3px}
+/* 🎙 녹음 프롬프터 */
+.녹음머리{padding:4px 2px 10px}.녹음머리 b{display:block;font-size:17px;font-weight:900;color:var(--gold)}.녹음머리 small{display:block;margin-top:3px;font-size:13px}
+.프롬프터{min-height:34dvh;display:grid;place-items:center;padding:22px 18px;border-radius:20px;background:var(--panel);border:1px solid var(--line);
+  font-size:34px;font-weight:900;line-height:1.45;text-align:center;letter-spacing:-.02em}
+.녹음판{margin-top:16px;text-align:center}
+.녹음단추{width:92px;height:92px;border-radius:50%;border:5px solid rgba(255,255,255,.85);background:#2a0e0e;display:grid;place-items:center;margin:0 auto}
+.녹음단추 i{width:58px;height:58px;border-radius:50%;background:#ff3b3b;transition:all .2s}
+.녹음단추.켜짐 i{width:36px;height:36px;border-radius:8px;animation:깜빡 1s infinite}
+.녹음글{margin:10px 0 4px;font-weight:800;font-size:15px;color:var(--text2)}
+.녹음점들{display:flex;gap:6px;justify-content:center;margin-top:12px}.녹음점들 i{width:10px;height:10px;border-radius:50%;background:var(--panel3)}
+.녹음점들 i.됨{background:var(--ok)}.녹음점들 i.지금{outline:2px solid var(--gold)}
+.고름 button:disabled{opacity:.35}
+.경고띠{margin-top:12px;padding:12px 14px;border-radius:14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);color:#ffe3a3;font-size:13.5px;line-height:1.55}

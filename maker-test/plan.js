@@ -358,5 +358,18 @@ JSON 만: {"칸":[{"n":1,"설명":"…","매력":7,"x":0.5,"y":0.4,"클로즈업
   /* ── 소재 모자랄 때 — 쓸 수 있는 초를 재서 목표 길이를 줄인다 (스톡으로 안 채움) ── */
   function 소재초(소재들) { return 소재들.reduce((a, s) => a + (s.종류 === "영상" ? Math.max(0, s.길이 - 0.3) : 2.5), 0); }
 
-  전역.HW계획 = { 길이초, 세기값, 살펴보기, 대본, 장면길이, 컷계획, 규칙대본, 수값들, 나레이션, 소재초 };
+  /* ── 🎙 내 목소리 녹음 — 녹음 파일(사파리 mp4·aac / 크롬 webm·opus) → 한 채널 → 앞뒤·긴 쉼 자르기 → 크기 고르게(RMS −20 dBFS) ── */
+  async function 녹음다듬기(blob) {
+    const ac = new OfflineAudioContext(1, 1, 48000);
+    const 원 = await ac.decodeAudioData(await blob.arrayBuffer());
+    const 한 = ac.createBuffer(1, 원.length, 원.sampleRate), d = 한.getChannelData(0);
+    for (let c = 0; c < 원.numberOfChannels; c++) { const s = 원.getChannelData(c); for (let i = 0; i < s.length; i++) d[i] += s[i] / 원.numberOfChannels; }
+    const 자른 = 빈소리자르기(ac, 한), x = 자른.getChannelData(0);
+    let 합 = 0, 최고 = 0; for (let i = 0; i < x.length; i++) { 합 += x[i] * x[i]; 최고 = Math.max(최고, Math.abs(x[i])); }
+    const rms = Math.sqrt(합 / Math.max(1, x.length)), 이득 = Math.min(Math.pow(10, -20 / 20) / Math.max(1e-5, rms), 0.9 / Math.max(1e-5, 최고));
+    for (let i = 0; i < x.length; i++) x[i] *= 이득;
+    return 자른;
+  }
+
+  전역.HW계획 = { 길이초, 세기값, 살펴보기, 대본, 장면길이, 컷계획, 규칙대본, 수값들, 나레이션, 소재초, 녹음다듬기 };
 })(window);

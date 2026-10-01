@@ -84,6 +84,7 @@ async function 홈열기() {
 
 /* ── 만들기 ── */
 function 새로만들기(유지 = false) {
+  상.녹음 = null; 상.녹음말 = null;
   if (!유지) { 상.파일들 = []; 상.음악 = null; 상.작업 = null; 상.계획 = null; 상.소재들 = null; $("#고른칸들").textContent = ""; $("#음악이름").textContent = ""; }
   $("#요청칸").value = 기억("hw요청") || ""; $("#가게칸").value = 기억("hw가게") || 기억("hw채널이름") || "";
   상.분야 = 기억("hw분야") || ""; try { Object.assign(상.옵션, JSON.parse(기억("hw옵션") || "{}")); } catch (e) {}
@@ -117,7 +118,56 @@ function 단추살피기() {
   b.textContent = !있음 ? "✨ 영상·사진을 먼저 골라 주세요" : !상.분야 ? "✨ 분야를 골라 주세요" : "✨ 숏츠 만들기";
 }
 const 소리설명 = { 원본: "찍은 현장 소리를 살리고 음악을 작게 깔아요", 음악: "현장 소리는 빼고 음악 + 큰 자막으로",
-  나레이션: "AI 목소리가 자막을 읽어 줘요 — ⚙ 설정의 제미나이 열쇠가 필요해요 (영상 설명에 AI 목소리 표시)" };
+  나레이션: "AI 목소리가 자막을 읽어 줘요 — ⚙ 설정의 제미나이 열쇠가 필요해요 (영상 설명에 AI 목소리 표시)",
+  녹음: "자막 문장을 큰 글씨로 보여 드리면 장면마다 내 목소리로 읽어 녹음해요 (열쇠 없어도 돼요) · 장면 길이·자막이 녹음에 맞춰져요" };
+
+/* ── 🎙 내 목소리 녹음 — 프롬프터 · 장면마다 녹음/다시/듣기 → [AudioBuffer] (엔진이 장면 길이·자막을 녹음에 맞춤) ──
+   아이폰 사파리 = audio/mp4(AAC) · 안드로이드 = audio/webm(Opus) — MediaRecorder 가 고른 형식 그대로, decodeAudioData 로 풂 */
+function 녹음받기(장면들) {
+  return new Promise((끝냄, 그만) => {
+    // 고친 뒤 다시 그릴 때: 문장이 그대로인 장면만 지난 녹음을 다시 씀 (문장을 고친 장면은 새로 녹음)
+    const n = 장면들.length, 녹음들 = 장면들.map((s, k) => (상.녹음 && 상.녹음말 && 상.녹음[k] && 상.녹음말[k] === s.말 ? 상.녹음[k] : null));
+    let i = 0, 레코더 = null, 흐름 = null, 조각 = [], 듣기 = null;
+    보이기("v녹음");
+    const 그리기 = () => {
+      $("#녹음번호").textContent = "장면 " + (i + 1) + " / " + n + (i === 0 ? " · 훅 (힘 있게!)" : "");
+      $("#프롬프터").textContent = 장면들[i].말;
+      $("#녹음듣기").disabled = !녹음들[i]; $("#녹음다시").disabled = !녹음들[i];
+      $("#녹음글").textContent = 녹음들[i] ? "✅ 녹음됐어요 — 들어 보고 괜찮으면 다음으로" : "● 를 누르고 읽은 뒤 한 번 더 누르세요";
+      $("#녹음이전").disabled = i === 0;
+      $("#녹음다음").textContent = i === n - 1 ? (녹음들.every(Boolean) ? "✨ 이 목소리로 만들기" : "녹음을 다 해 주세요") : "다음 ▶";
+      $("#녹음점들").innerHTML = ""; 녹음들.forEach((x, k) => { const d = document.createElement("i"); d.className = (x ? "됨" : "") + (k === i ? " 지금" : ""); $("#녹음점들").appendChild(d); });
+    };
+    const 멈추기 = () => { if (레코더 && 레코더.state !== "inactive") 레코더.stop(); };
+    const 시작 = async () => {
+      try {
+        if (!흐름) 흐름 = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+      } catch (e) { 알림("마이크를 쓸 수 없어요 — 폰 설정에서 이 앱의 마이크를 허용해 주세요", 5); return; }
+      const 형식 = ["audio/mp4", "audio/webm;codecs=opus", "audio/webm", ""].find((t) => !t || (window.MediaRecorder && MediaRecorder.isTypeSupported(t)));
+      조각 = []; 레코더 = new MediaRecorder(흐름, 형식 ? { mimeType: 형식 } : undefined);
+      레코더.ondataavailable = (e) => { if (e.data && e.data.size) 조각.push(e.data); };
+      레코더.onstop = () => { $("#녹음단추").classList.remove("켜짐"); 녹음들[i] = new Blob(조각, { type: 레코더.mimeType || 형식 || "audio/mp4" }); 그리기(); };
+      레코더.start(); $("#녹음단추").classList.add("켜짐"); $("#녹음글").textContent = "🔴 녹음 중… 다 읽으면 ■ 를 누르세요";
+    };
+    const 정리 = () => { 멈추기(); if (흐름) 흐름.getTracks().forEach((t) => t.stop()); 흐름 = null; ["녹음단추", "녹음듣기", "녹음다시", "녹음이전", "녹음다음", "문장고치기"].forEach((id) => { const e = $("#" + id); e.replaceWith(e.cloneNode(true)); }); };
+    $("#녹음단추").addEventListener("click", () => (레코더 && 레코더.state === "recording" ? 멈추기() : 시작()));
+    $("#녹음다시").addEventListener("click", () => { 녹음들[i] = null; 그리기(); 시작(); });
+    $("#녹음듣기").addEventListener("click", () => { if (!녹음들[i]) return; if (듣기) 듣기.pause(); 듣기 = new Audio(URL.createObjectURL(녹음들[i])); 듣기.play().catch(() => {}); });
+    $("#문장고치기").addEventListener("click", () => { const 새 = prompt("이 장면 문장을 고쳐 주세요 (자막에도 그대로 나와요)", 장면들[i].말); if (새 && 새.trim()) { 장면들[i].말 = 새.trim().slice(0, 80); 녹음들[i] = null; 그리기(); } });
+    $("#녹음이전").addEventListener("click", () => { 멈추기(); if (i > 0) { i--; 그리기(); } });
+    $("#녹음다음").addEventListener("click", async () => {
+      멈추기();
+      if (i < n - 1) { i++; 그리기(); return; }
+      if (!녹음들.every(Boolean)) { const k = 녹음들.findIndex((x) => !x); 알림("장면 " + (k + 1) + " 을 아직 안 녹음했어요"); i = k; 그리기(); return; }
+      try {
+        $("#녹음글").textContent = "🎚 목소리 다듬는 중…";
+        const 버퍼들 = []; for (const b of 녹음들) 버퍼들.push(await HW계획.녹음다듬기(b));
+        상.녹음 = 녹음들; 상.녹음말 = 장면들.map((s) => s.말); 정리(); 보이기("v진행"); 끝냄(버퍼들);
+      } catch (e) { 알림("녹음을 읽지 못했어요 — 다시 녹음해 주세요", 4); }
+    });
+    그리기();
+  });
+}
 function 옵션그리기() {
   $$(".고름[data-옵션]").forEach((g) => $$("button", g).forEach((b) => b.classList.toggle("켬", String(b.dataset.값) === String(상.옵션[g.dataset.옵션]))));
   $$("#토글들 input").forEach((c) => (c.checked = !(상.옵션.끄기 || []).includes(c.dataset.끄기)));
@@ -161,10 +211,11 @@ async function 만들기(계획 = null) {
     const 채 = 채널(); if ($("#가게칸").value.trim() && !채.이름) 채.이름 = $("#가게칸").value.trim().slice(0, 16);
     if (옵션.소리 === "나레이션" && !AI켜짐()) 옵션.소리 = "원본";        // 나레이션은 AI 분석을 켜고 열쇠가 있을 때만
     const r = await HW폰엔진.만들기(상.파일들, { 분야: 분, 요청: $("#요청칸").value, 가게: $("#가게칸").value.trim(), 옵션, 열쇠: AI열쇠(), 채널: 채,
-      음악파일: 상.음악, 음악결: Number(옵션.음악결 || 0), 계획, 소재들: 상.소재들 && 계획 ? 상.소재들 : null, 진행: 진행그리기 });
+      음악파일: 상.음악, 음악결: Number(옵션.음악결 || 0), 계획, 소재들: 상.소재들 && 계획 ? 상.소재들 : null, 진행: 진행그리기, 녹음받기 });
     상.계획 = r.계획; 상.소재들 = r.소재들; if (r.후보) 상.후보 = r.후보;
     const 작업 = { id: 상.작업 || "w" + Date.now(), 만든때: Date.now(), 제목: r.계획.제목, 설명: (r.계획.설명 || "") + (r.계획.태그 && r.계획.태그.length ? "\n\n" + r.계획.태그.map((t) => "#" + String(t).replace(/\s/g, "")).join(" ") : ""),
-      영상: r.blob, 썸: r.썸네일, 계획: r.계획, 분야: 분.id, 요청: $("#요청칸").value, 가게: $("#가게칸").value, 옵션, 확인: r.확인, 걸린초: r.걸린초, 길이: r.길이 };
+      영상: r.blob, 썸: r.썸네일, 계획: r.계획, 분야: 분.id, 요청: $("#요청칸").value, 가게: $("#가게칸").value, 옵션, 확인: r.확인, 걸린초: r.걸린초, 길이: r.길이,
+      녹음: r.계획.녹음 ? 상.녹음 : null, 녹음말: r.계획.녹음 ? 상.녹음말 : null };
     상.작업 = 작업.id;
     try { await DB.넣기("작업", 작업); await DB.비우기("원본"); await DB.넣기("원본", { id: 작업.id, 파일들: 상.파일들, 음악: 상.음악 }); } catch (e) { 알림("폰 저장 공간이 부족해서 목록엔 못 남겼어요", 4); }
     결과보기(작업);
@@ -175,7 +226,7 @@ async function 만들기(계획 = null) {
 
 /* ── 결과 ── */
 function 결과보기(w) {
-  상.결과 = w; 상.작업 = w.id; 상.계획 = w.계획; 보이기("v결과");
+  상.결과 = w; 상.작업 = w.id; 상.계획 = w.계획; 상.녹음 = w.녹음 || null; 상.녹음말 = w.녹음말 || null; 보이기("v결과");
   const v = $("#결과영상"); v.src = URL.createObjectURL(w.영상); if (w.썸) v.poster = URL.createObjectURL(w.썸);
   $("#결과제목").textContent = w.제목 || ""; $("#결과설명").textContent = w.설명 || "";
   $("#썸틀").hidden = !w.썸; if (w.썸) $("#썸그림").src = URL.createObjectURL(w.썸);
@@ -211,6 +262,7 @@ async function 다시만들기(옵션바꿈) {
   상.계획 = null; 상.소재들 = null;
   if (옵션바꿈) { 새로만들기(true); $("#고른칸들").textContent = ""; $("#고른수").textContent = "이미 고른 " + 상.파일들.length + "개 그대로 써요"; $("#옵션접기").open = true; return; }
   if (!confirm("같은 영상·사진으로 새로 만들까요? (컷·효과가 새로 골라져요)")) return;
+  상.녹음 = null; 상.녹음말 = null;                                // 새 대본이라 녹음도 새로
   만들기(null);
 }
 

@@ -243,4 +243,16 @@ button{cursor:pointer;touch-action:manipulation}
 .썸틀 div{flex:1;min-width:0}
 .썸틀 b{display:block;font-size:14.5px;font-weight:800}
 .썸틀 small{display:block;color:var(--muted);font-size:12.5px;margin-top:3px}
+/* 🎙 녹음 프롬프터 */
+.녹음머리{padding:4px 2px 10px}.녹음머리 b{display:block;font-size:17px;font-weight:900;color:var(--gold)}.녹음머리 small{display:block;margin-top:3px;font-size:13px}
+.프롬프터{min-height:34dvh;display:grid;place-items:center;padding:22px 18px;border-radius:20px;background:var(--panel);border:1px solid var(--line);
+  font-size:34px;font-weight:900;line-height:1.45;text-align:center;letter-spacing:-.02em}
+.녹음판{margin-top:16px;text-align:center}
+.녹음단추{width:92px;height:92px;border-radius:50%;border:5px solid rgba(255,255,255,.85);background:#2a0e0e;display:grid;place-items:center;margin:0 auto}
+.녹음단추 i{width:58px;height:58px;border-radius:50%;background:#ff3b3b;transition:all .2s}
+.녹음단추.켜짐 i{width:36px;height:36px;border-radius:8px;animation:깜빡 1s infinite}
+.녹음글{margin:10px 0 4px;font-weight:800;font-size:15px;color:var(--text2)}
+.녹음점들{display:flex;gap:6px;justify-content:center;margin-top:12px}.녹음점들 i{width:10px;height:10px;border-radius:50%;background:var(--panel3)}
+.녹음점들 i.됨{background:var(--ok)}.녹음점들 i.지금{outline:2px solid var(--gold)}
+.고름 button:disabled{opacity:.35}
 .경고띠{margin-top:12px;padding:12px 14px;border-radius:14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);color:#ffe3a3;font-size:13.5px;line-height:1.55}

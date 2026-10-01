@@ -61,7 +61,7 @@
     <details class="단계 옵션" id="옵션접기">
       <summary class="단계머리"><span class="번호">4</span><b>옵션</b><small id="옵션요약">기본값 그대로 좋아요</small><span class="펼침">▾</span></summary>
       <div class="옵션줄"><b>소리</b>
-        <div class="고름" data-옵션="소리"><button data-값="원본" class="켬">원본 소리</button><button data-값="음악">음악만</button><button data-값="나레이션">나레이션</button></div>
+        <div class="고름" data-옵션="소리"><button data-값="원본" class="켬">원본 소리</button><button data-값="음악">음악만</button><button data-값="녹음">🎙 내 목소리</button><button data-값="나레이션">AI 목소리</button></div>
         <small class="흐림" id="소리설명">찍은 현장 소리를 살리고 음악을 작게 깔아요</small>
       </div>
       <div class="옵션줄"><b>길이</b>
@@ -105,6 +105,21 @@
     </div>
     <p class="오류글" id="진행오류" hidden></p>
     <div class="바닥줄" id="진행바닥" hidden><button class="주단추" id="실패다시">🔁 다시 시도</button></div>
+  </section>
+
+  <!-- 🎙 내 목소리 녹음 (프롬프터) -->
+  <section class="화면" id="v녹음" hidden>
+    <div class="녹음머리"><b id="녹음번호">장면 1 / 5</b><small class="흐림">조용한 곳에서 폰을 입에서 한 뼘 떨어뜨리고 읽어 주세요</small></div>
+    <div class="프롬프터" id="프롬프터"></div>
+    <button class="작은단추" id="문장고치기" style="margin:8px auto 0;display:flex">✏ 문장 고치기</button>
+    <div class="녹음판">
+      <button class="녹음단추" id="녹음단추" aria-label="녹음"><i></i></button>
+      <p class="녹음글" id="녹음글">● 를 누르고 읽은 뒤 한 번 더 누르세요</p>
+      <div class="두단추"><button class="둘째단추" id="녹음듣기" disabled>▶ 들어 보기</button><button class="둘째단추" id="녹음다시" disabled>↺ 다시 녹음</button></div>
+      <div class="녹음점들" id="녹음점들"></div>
+    </div>
+    <div class="바닥여백"></div>
+    <div class="바닥줄 두칸"><button class="둘째단추" id="녹음이전">◀ 이전</button><button class="주단추" id="녹음다음">다음 ▶</button></div>
   </section>
 
   <!-- 결과 -->

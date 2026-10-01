@@ -47,7 +47,7 @@ h1 em{font-style:normal;color:var(--gold)}
   <a class="open" id="open" href="#" rel="noopener" hidden>🛠 작업실 열기</a>
   <p class="msg" id="msg" hidden></p>
 </main>
-<iframe id="work" title="HW 작업실" hidden allow="clipboard-write"></iframe>
+<iframe id="work" title="HW 작업실" hidden allow="clipboard-write; clipboard-read; web-share"></iframe>
 <a class="float" id="float" href="#" target="_blank" rel="noopener" hidden>↗ 새 창</a>
 <script>
 (function () {
@@ -105,6 +105,64 @@ h1 em{font-style:normal;color:var(--gold)}
     setTimeout(function () { work.hidden = false; work.src = 가는곳; }, 공유 ? 150 : 500);   // 금색 로고 0.5초 → 작업실 (공유면 바로)
     setTimeout(function () { fl.hidden = false; }, 8000);                              // 안 뜨면 ↗ 새 창 (구글 로그인이 풀렸을 때 등)
   }
+  // ── 📸 사진 도우미 (10/1 사장님 「블로그 사진 한 장씩 복사해서 붙여 넣기」) ──
+  // 작업실은 구글 칸(iframe) 두 겹 안이라 사진 복사·공유·저장이 막힐 수 있다 → 앱(이 맨 위 창)이 대신 해 준다.
+  // 작업실이 {hw:"copy"|"share"|"save", n, files:[사진]} 를 보내면 하고 나서 {hw:"done", n, ok, err} 로 답한다.
+  // ★우리 iframe 안쪽 창이 보낸 것만★ · 사진(png·jpg)만 · 한 번에 30장까지 · 누른 손길은 안쪽 칸에서 이 창까지 같이 살아 있다
+  function 우리칸(w) {
+    var 칸 = document.getElementById("work").contentWindow;
+    for (var x = w, i = 0; x && i < 8; i++) { if (x === 칸) return true; if (x === x.parent) break; x = x.parent; }
+    return false;
+  }
+  function png로(blob) {
+    if (blob.type === "image/png") return Promise.resolve(blob);
+    return new Promise(function (ok, no) {
+      var img = new Image(), u = URL.createObjectURL(blob);
+      img.onload = function () {
+        var c = document.createElement("canvas");
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        c.getContext("2d").drawImage(img, 0, 0);
+        URL.revokeObjectURL(u);
+        c.toBlob(function (b) { if (b) ok(b); else no(new Error("png")); }, "image/png");
+      };
+      img.onerror = function () { URL.revokeObjectURL(u); no(new Error("img")); };
+      img.src = u;
+    });
+  }
+  var 복사되나 = !!(navigator.clipboard && navigator.clipboard.write && window.ClipboardItem);
+  addEventListener("message", function (e) {
+    var d = e.data;
+    if (!d || typeof d !== "object" || typeof d.hw !== "string" || !e.source || !우리칸(e.source)) return;
+    var 답곳 = e.origin && e.origin !== "null" ? e.origin : "*";
+    function 답(ok, err) { try { e.source.postMessage({ hw: "done", n: d.n, ok: ok, err: err || "" }, 답곳); } catch (x) {} }
+    if (d.hw === "hello") { e.source.postMessage({ hw: "shell", v: 1, share: !!navigator.share, copy: 복사되나 }, 답곳); return; }
+    var 사진들 = (Array.isArray(d.files) ? d.files : []).filter(function (f) {
+      return f instanceof Blob && /^image\/(png|jpeg)$/.test(f.type) && f.size < 8 * 1024 * 1024;
+    }).slice(0, 30);
+    if (!사진들.length) return 답(false, "no-file");
+    if (d.hw === "copy") {
+      if (!복사되나) return 답(false, "no-copy");
+      var 일;
+      try { 일 = navigator.clipboard.write([new ClipboardItem({ "image/png": png로(사진들[0]) })]); }   // 약속째 넘겨야 손길이 안 식는다
+      catch (x) { 일 = png로(사진들[0]).then(function (b) { return navigator.clipboard.write([new ClipboardItem({ "image/png": b })]); }); }
+      일.then(function () { 답(true); }, function (x) { 답(false, (x && x.name) || "err"); });
+    } else if (d.hw === "share") {
+      var 짐 = { files: 사진들 };
+      if (!navigator.share || (navigator.canShare && !navigator.canShare(짐))) return 답(false, "no-share");
+      navigator.share(짐).then(function () { 답(true); }, function (x) { 답(false, (x && x.name) || "err"); });
+    } else if (d.hw === "save") {
+      사진들.forEach(function (f, i) {                    // 번호 순서대로 → 폰 「Download」 (갤러리·블로그 사진 고르기에 보임)
+        setTimeout(function () {
+          var a = document.createElement("a"), u = URL.createObjectURL(f);
+          a.href = u; a.download = f.name || ("사진" + (i + 1) + (f.type === "image/png" ? ".png" : ".jpg"));
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
+        }, i * 400);
+      });
+      답(true);
+    }
+  });
+
   addEventListener("pageshow", function (e) { if (e.persisted) 단추(); });               // 뒤로 가기로 돌아오면 다시 안 튕기고 단추만
   addEventListener("online", function () { msg.hidden = true; });
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function () {});

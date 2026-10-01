@@ -88,6 +88,7 @@ h1 em{font-style:normal;color:var(--gold)}
     try { history.replaceState(null, "", "./?app=hwwork2"); } catch (e) {}              // 새로고침해도 다시 공유되지 않게
     window.HW공유 = { 주소: 공유주소, 제목: 공유제목, 가는곳: 가는곳 };                   // 검수용
   }
+  if (!공유 && 받은.has("src")) 가는곳 = URL_ + "?src=1";                               // 10/2 📹 ./?src=1 = 「소스 찍어 보내기」 화면부터 (대표판 숏츠 메이커 메뉴에서 옴)
   open.href = 가는곳;
   function 단추(말) { bar.hidden = true; open.hidden = false; if (말) { msg.textContent = 말; msg.hidden = false; } }
   var 끊김 = navigator.onLine === false;

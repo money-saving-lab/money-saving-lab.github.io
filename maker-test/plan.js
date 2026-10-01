@@ -355,6 +355,26 @@ JSON 만: {"칸":[{"n":1,"설명":"…","매력":7,"x":0.5,"y":0.4,"클로즈업
     return out;
   }
 
+  /* ── 🗣 엣지 읽기 목소리 (열쇠 없이 · edge.js) — 장면마다 mp3 + 낱말 시각 → 앞뒤 빈소리만 자르고(낱말 시각도 같이 당김) 자막을 낱말 시각에 맞춘다 ── */
+  async function 엣지나레이션(장면들, 목소리 = "ko-KR-SunHiNeural", 빠르기 = 1.2, 알림 = () => {}) {
+    const E = 전역.HW엣지, ac = new OfflineAudioContext(1, 1, 48000), out = [];
+    for (const [i, s] of 장면들.entries()) {
+      알림("🗣 AI 목소리 녹음 " + (i + 1) + "/" + 장면들.length, 0.17);
+      const 읽을 = String(s.말).replace(/(\d+)\s*:\s*(\d+)/g, "$1대$2");         // 「1:1」 → 「1대1」 (자막은 원래 글 그대로)
+      let r = null;
+      for (let 번 = 0; 번 < 3 && !r; 번++) { try { r = await E.읽기(읽을, 목소리, 빠르기); } catch (e) { if (번 === 2) throw e; await new Promise((ok) => setTimeout(ok, 600)); } }
+      const 원 = await ac.decodeAudioData(r.mp3.buffer.slice(r.mp3.byteOffset, r.mp3.byteOffset + r.mp3.byteLength));
+      const d = 원.getChannelData(0), sr = 원.sampleRate, 문 = Math.pow(10, -42 / 20);
+      let a = 0, z = d.length - 1; while (a < d.length && Math.abs(d[a]) < 문) a++; while (z > a && Math.abs(d[z]) < 문) z--;
+      a = Math.max(0, a - Math.round(0.03 * sr)); z = Math.min(d.length, z + Math.round(0.15 * sr));
+      const 새 = ac.createBuffer(1, Math.max(1, z - a), sr); 새.copyToChannel(d.subarray(a, z), 0);
+      const 앞 = a / sr;
+      새.hw낱말 = r.낱말.map(([w, t0, t1]) => [w, Math.max(0, t0 - 앞), Math.max(0, t1 - 앞)]);
+      새.hw배 = 1; out.push(새);
+    }
+    return out;
+  }
+
   /* ── 소재 모자랄 때 — 쓸 수 있는 초를 재서 목표 길이를 줄인다 (스톡으로 안 채움) ── */
   function 소재초(소재들) { return 소재들.reduce((a, s) => a + (s.종류 === "영상" ? Math.max(0, s.길이 - 0.3) : 2.5), 0); }
 
@@ -371,5 +391,5 @@ JSON 만: {"칸":[{"n":1,"설명":"…","매력":7,"x":0.5,"y":0.4,"클로즈업
     return 자른;
   }
 
-  전역.HW계획 = { 길이초, 세기값, 살펴보기, 대본, 장면길이, 컷계획, 규칙대본, 수값들, 나레이션, 소재초, 녹음다듬기 };
+  전역.HW계획 = { 길이초, 세기값, 살펴보기, 대본, 장면길이, 컷계획, 규칙대본, 수값들, 나레이션, 엣지나레이션, 소재초, 녹음다듬기 };
 })(window);

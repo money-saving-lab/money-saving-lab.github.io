@@ -118,7 +118,7 @@ function 단추살피기() {
   b.textContent = !있음 ? "✨ 영상·사진을 먼저 골라 주세요" : !상.분야 ? "✨ 분야를 골라 주세요" : "✨ 숏츠 만들기";
 }
 const 소리설명 = { 원본: "찍은 현장 소리를 살리고 음악을 작게 깔아요", 음악: "현장 소리는 빼고 음악 + 큰 자막으로",
-  나레이션: "AI 목소리가 자막을 읽어 줘요 — ⚙ 설정의 제미나이 열쇠가 필요해요 (영상 설명에 AI 목소리 표시)",
+  나레이션: "AI 목소리가 자막을 읽어 줘요 — 열쇠 없이 돼요 (영상에 「목소리: AI」 표시가 들어가요)",
   녹음: "자막 문장을 큰 글씨로 보여 드리면 장면마다 내 목소리로 읽어 녹음해요 (열쇠 없어도 돼요) · 장면 길이·자막이 녹음에 맞춰져요" };
 
 /* ── 🎙 내 목소리 녹음 — 프롬프터 · 장면마다 녹음/다시/듣기 → [AudioBuffer] (엔진이 장면 길이·자막을 녹음에 맞춤) ──
@@ -171,9 +171,21 @@ function 녹음받기(장면들) {
 function 옵션그리기() {
   $$(".고름[data-옵션]").forEach((g) => $$("button", g).forEach((b) => b.classList.toggle("켬", String(b.dataset.값) === String(상.옵션[g.dataset.옵션]))));
   $$("#토글들 input").forEach((c) => (c.checked = !(상.옵션.끄기 || []).includes(c.dataset.끄기)));
+  // 🗣 AI 목소리 = 엣지 읽기(열쇠 없이 · 붙을 수 있는 폰에서만) + 제미나이(내 열쇠를 켠 사람만)
+  const 목들 = AI목소리들(), 됨 = 목들.length > 0;
   const 나레단추 = $('.고름[data-옵션="소리"] button[data-값="나레이션"]');
-  if (나레단추) { 나레단추.disabled = !AI켜짐(); 나레단추.style.opacity = AI켜짐() ? "" : ".35"; 나레단추.title = AI켜짐() ? "" : "⚙ 설정에서 AI 분석을 켜고 열쇠를 넣으면 쓸 수 있어요"; }
-  if (상.옵션.소리 === "나레이션" && !AI켜짐()) { 상.옵션.소리 = "원본"; $$('.고름[data-옵션="소리"] button').forEach((b) => b.classList.toggle("켬", b.dataset.값 === "원본")); }
+  if (나레단추) { 나레단추.disabled = !됨; 나레단추.style.opacity = 됨 ? "" : ".35"; }
+  if (상.옵션.소리 === "나레이션" && !됨) { 상.옵션.소리 = "원본"; $$('.고름[data-옵션="소리"] button').forEach((b) => b.classList.toggle("켬", b.dataset.값 === "원본")); }
+  if (!됨) 소리설명.나레이션 = "이 폰 브라우저(아이폰 사파리 등)에서는 AI 목소리 서버에 붙을 수 없어요 — 「🎙 내 목소리」 로 녹음해 주세요";
+  $("#소리설명").textContent = 소리설명[상.옵션.소리] || "";
+  const 줄 = $("#목소리줄"); 줄.hidden = 상.옵션.소리 !== "나레이션";
+  if (!줄.hidden) {
+    if (!목들.some(([id]) => id === 상.옵션.목소리)) 상.옵션.목소리 = 목들[0][0];
+    const 칩 = $("#목소리칩"); 칩.textContent = "";
+    for (const [id, 이름] of 목들) { const b = document.createElement("button"); b.textContent = 이름; b.className = id === 상.옵션.목소리 ? "켬" : "";
+      b.addEventListener("click", () => { 상.옵션.목소리 = id; 옵션그리기(); }); 칩.appendChild(b); }
+    $("#목소리듣기").hidden = !String(상.옵션.목소리).startsWith("edge:");
+  }
   $("#소리설명").textContent = 소리설명[상.옵션.소리] || "";
   const 기본 = 상.옵션.소리 === "원본" && 상.옵션.길이 === "보통" && 상.옵션.자막 === "보통" && 상.옵션.세기 === "보통" && !(상.옵션.끄기 || []).length;
   $("#옵션요약").textContent = 기본 ? "기본값 그대로 좋아요" : [{ 원본: "원본 소리", 음악: "음악만", 나레이션: "나레이션" }[상.옵션.소리], 상.옵션.길이, "자막 " + 상.옵션.자막, "효과 " + 상.옵션.세기].join(" · ");
@@ -182,6 +194,19 @@ function 옵션그리기() {
 /* 🤖 AI 분석은 선택 (기본 = 사용 안 함 · 열쇠 없이 규칙 편집) — 켰고 열쇠가 있을 때만 제미나이·나레이션 */
 function AI켜짐() { return 기억("hwAI") === "켬" && !!기억("hw열쇠"); }
 function AI열쇠() { return AI켜짐() ? 기억("hw열쇠") : ""; }
+function AI목소리들() {                                         // [[id, 보이는 이름]] — 엣지(열쇠 없이) 먼저 · 제미나이는 내 열쇠를 켠 사람만
+  const out = [];
+  if (window.HW엣지 && HW엣지.쓸수있나()) for (const [v, 이름] of HW엣지.목소리들) out.push(["edge:" + v, 이름]);
+  if (AI켜짐()) out.push(["gemini:Kore", "제미나이 (내 열쇠)"]);
+  return out;
+}
+async function 목소리미리듣기() {
+  const id = String(상.옵션.목소리 || ""); if (!id.startsWith("edge:")) return;
+  const b = $("#목소리듣기"); b.disabled = true; b.textContent = "받는 중…";
+  try { const r = await HW엣지.읽기("안녕하세요, 이 목소리로 읽어 드릴게요.", id.slice(5), 1.2); const a = new Audio(URL.createObjectURL(new Blob([r.mp3], { type: "audio/mpeg" }))); await a.play(); }
+  catch (e) { 알림("목소리를 받지 못했어요 — " + (e.message || e), 4); }
+  b.disabled = false; b.textContent = "▶ 이 목소리 미리 듣기";
+}
 function AI고름그리기() {
   const 켬 = 기억("hwAI") === "켬";
   $$("#AI고름 button").forEach((b) => b.classList.toggle("켬", (b.dataset.ai === "켬") === 켬));
@@ -209,9 +234,9 @@ async function 만들기(계획 = null) {
   try {
     const 옵션 = Object.assign({}, 상.옵션);
     const 채 = 채널(); if ($("#가게칸").value.trim() && !채.이름) 채.이름 = $("#가게칸").value.trim().slice(0, 16);
-    if (옵션.소리 === "나레이션" && !AI켜짐()) 옵션.소리 = "원본";        // 나레이션은 AI 분석을 켜고 열쇠가 있을 때만
+    if (옵션.소리 === "나레이션" && !AI목소리들().length) 옵션.소리 = "원본";   // AI 목소리를 못 받는 폰이면 원본 소리로
     const r = await HW폰엔진.만들기(상.파일들, { 분야: 분, 요청: $("#요청칸").value, 가게: $("#가게칸").value.trim(), 옵션, 열쇠: AI열쇠(), 채널: 채,
-      음악파일: 상.음악, 음악결: Number(옵션.음악결 || 0), 계획, 소재들: 상.소재들 && 계획 ? 상.소재들 : null, 진행: 진행그리기, 녹음받기 });
+      목소리: 옵션.목소리 || "edge:ko-KR-SunHiNeural", 음악파일: 상.음악, 음악결: Number(옵션.음악결 || 0), 계획, 소재들: 상.소재들 && 계획 ? 상.소재들 : null, 진행: 진행그리기, 녹음받기 });
     상.계획 = r.계획; 상.소재들 = r.소재들; if (r.후보) 상.후보 = r.후보;
     const 작업 = { id: 상.작업 || "w" + Date.now(), 만든때: Date.now(), 제목: r.계획.제목, 설명: (r.계획.설명 || "") + (r.계획.태그 && r.계획.태그.length ? "\n\n" + r.계획.태그.map((t) => "#" + String(t).replace(/\s/g, "")).join(" ") : ""),
       영상: r.blob, 썸: r.썸네일, 계획: r.계획, 분야: 분.id, 요청: $("#요청칸").value, 가게: $("#가게칸").value, 옵션, 확인: r.확인, 걸린초: r.걸린초, 길이: r.길이,
@@ -407,6 +432,7 @@ function 묶기() {
   $("#음악칸").addEventListener("change", (e) => { const f = e.target.files && e.target.files[0]; e.target.value = ""; if (f) { 상.음악 = f; $("#음악이름").textContent = "🎵 " + f.name; } });
   $$(".고름[data-옵션]").forEach((g) => g.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; 상.옵션[g.dataset.옵션] = b.dataset.값; 옵션그리기(); }));
   $("#토글들").addEventListener("change", () => { 상.옵션.끄기 = $$("#토글들 input").filter((c) => !c.checked).map((c) => c.dataset.끄기); 옵션그리기(); });
+  $("#목소리듣기").addEventListener("click", 목소리미리듣기);
   $("#만들기단추").addEventListener("click", () => 만들기(null));
   $("#실패다시").addEventListener("click", () => 만들기(null));
   $("#저장단추").addEventListener("click", () => 상.결과 && 블롭저장(상.결과.영상, "숏츠_" + new Date(상.결과.만든때).toISOString().slice(0, 16).replace(/[-:T]/g, "") + ".mp4", "video/mp4"));

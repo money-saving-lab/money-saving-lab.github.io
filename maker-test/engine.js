@@ -195,6 +195,32 @@
     throw new Error("이 폰은 영상 굽기(H.264)를 못 해요 — 아이폰 iOS 26·안드로이드 크롬 최신으로 해 주세요");
   }
 
+  /* 🗣 AI 목소리 = 엣지 읽기(열쇠 없이 · 기본 선희 · 빠르기 1.2) · 「gemini:이름」 을 고르면 내 제미나이 열쇠 목소리 */
+  async function AI목소리받기(장면들, 설정, 알림) {
+    const 고름 = String(설정.목소리 || "edge:ko-KR-SunHiNeural");
+    if (고름.startsWith("gemini:")) {
+      if (!설정.열쇠) throw new Error("제미나이 목소리는 ⚙ 설정에 내 열쇠가 있어야 해요 — 엣지 목소리나 「🎙 내 목소리」 로 바꿔 주세요");
+      return P.나레이션(장면들, 설정.열쇠, 고름.slice(7) || "Kore", 알림);
+    }
+    if (!전역.HW엣지 || !전역.HW엣지.쓸수있나()) throw new Error("이 폰 브라우저에서는 AI 목소리 서버에 붙을 수 없어요 — 「🎙 내 목소리」 로 녹음하거나 소리를 바꿔 주세요");
+    try { return await P.엣지나레이션(장면들, 고름.replace(/^edge:/, ""), 1.2, 알림); }
+    catch (e) { throw new Error("AI 목소리를 받지 못했어요 (" + (e.message || e) + ") — 잠시 뒤 다시 하거나 「🎙 내 목소리」 로 해 주세요"); }
+  }
+
+  /* 낱말 시각(엣지 WordBoundary)으로 자막 구절 시각 맞추기 — 구절 글자 수만큼 낱말을 차례로 묶는다 */
+  function 낱말자막(조각, 낱말, 앞, 장면길이) {
+    const 맨 = (s) => String(s).replace(/[\s.,!?…~·"'“”‘’()\-:]/g, "");
+    let wi = 0; const out = [];
+    for (const g of 조각) {
+      const 필요 = 맨(g).length; let 든 = 0; const 시작 = 낱말[Math.min(wi, 낱말.length - 1)][1];
+      while (wi < 낱말.length && 든 < 필요) { 든 += Math.max(1, 맨(낱말[wi][0]).length); wi++; }
+      out.push([g, 앞 + 시작, 앞 + 낱말[Math.max(0, wi - 1)][2]]);
+    }
+    for (let k = 0; k < out.length - 1; k++) out[k][2] = out[k + 1][1];        // 다음 구절 시작까지 이어서 보여 줌
+    out[0][1] = 0; out[out.length - 1][2] = 장면길이;
+    return out;
+  }
+
   /* ── 계획 만들기 (자동) ── */
   async function 자동계획(소재들, 설정, 알림) {
     const 분 = 설정.분야, 확인 = [];
@@ -212,12 +238,9 @@
     if (설정.옵션.소리 === "녹음") {                           // 🎙 내 목소리 — 장면 문장을 프롬프터로 보여 주고 폰 마이크로 녹음 (열쇠 없어도 됨)
       if (!설정.녹음받기) throw new Error("녹음 화면을 열 수 없어요");
       목소리들 = await 설정.녹음받기(장면들); 녹음 = true;
-    } else if (설정.옵션.소리 === "나레이션") {
-      if (!설정.열쇠) throw new Error("나레이션은 ⚙ 설정에 제미나이 열쇠가 있어야 해요 — 열쇠를 넣거나 소리를 「원본 소리」 로 바꿔 주세요");
-      목소리들 = await P.나레이션(장면들, 설정.열쇠, 설정.목소리 || "Kore", 알림);
-    }
+    } else if (설정.옵션.소리 === "나레이션") 목소리들 = await AI목소리받기(장면들, 설정, 알림);
     P.장면길이(장면들, 목표초);
-    if (목소리들) 장면들.forEach((s, i) => (s.길이 = Math.max(i === 0 ? 1.4 : 2.0, 목소리들[i].duration / (목소리들[i].hw배 || 1) + (i === 0 ? 0.1 : 0.2))));
+    if (목소리들) 장면들.forEach((s, i) => (s.길이 = Math.max(i === 0 ? 1.4 : s.정보판 ? 3.6 : 2.0, 목소리들[i].duration / (목소리들[i].hw배 || 1) + (i === 0 ? 0.1 : 0.2))));
     const 총컷 = P.컷계획(장면들, 후보, 소재들, 분, 설정.옵션);
     const 모양들 = Object.keys(G.딱지모양들), 최근 = JSON.parse(localStorage.getItem("hw딱지") || "[]");
     const 모양 = (모양들.filter((m) => !최근.slice(-3).includes(m))[Math.floor(Math.random() * 4)]) || 모양들[0];
@@ -242,7 +265,7 @@
     const 계획 = 설정.계획 || await 자동계획(소재들, 설정, 알림);
     if (계획.나레이션 && !계획._목소리) {                    // 고친 뒤 다시 그릴 때 · 앱을 다시 켠 뒤 → 지금 자막으로 다시 녹음
       if (계획.녹음) { if (!설정.녹음받기) throw new Error("녹음 화면을 열 수 없어요"); 계획._목소리 = await 설정.녹음받기(계획.장면); }
-      else { if (!설정.열쇠) throw new Error("AI 목소리는 제미나이 열쇠가 있어야 해요"); 계획._목소리 = await P.나레이션(계획.장면, 설정.열쇠, 설정.목소리 || "Kore", 알림); }
+      else 계획._목소리 = await AI목소리받기(계획.장면, 설정, 알림);
     }
     const 목소리들 = 계획._목소리 || null, AI목소리 = !!목소리들 && !계획.녹음;
     // 타임라인
@@ -255,6 +278,7 @@
       if (목) 목소리계획.push([목, 장면.t0 + 앞]);
       const 조각 = 구절(s.말), 합 = 조각.reduce((a, b) => a + b.length, 0) || 1; let a = 목 ? 앞 : 0;
       장면.자막 = 조각.map((g) => { const d = 말길이 * g.length / 합, r = [g, a, a + d]; a += d; return r; });
+      if (목 && 목.hw낱말 && 목.hw낱말.length && 조각.length) 장면.자막 = 낱말자막(조각, 목.hw낱말, 앞, 장면.길이);
       if (장면.자막.length) { 장면.자막[0][1] = 0; 장면.자막[장면.자막.length - 1][2] = 장면.길이; }
       장면들.push(장면);
     });
@@ -366,7 +390,7 @@
     let 썸 = null;
     try { if ((계획.썸네일 || {}).글) { const c = G.썸네일(썸배경 || cv, 계획.썸네일.글, 계획.썸네일.부제 || "", 채널이름, Math.floor(Math.random() * 8)); 썸 = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.92)); } } catch (e) {}
     const 확인 = [].concat(계획._확인 || [], 소.경고);
-    if (AI목소리) 확인.push("AI 목소리(제미나이)를 썼어요 — 영상 설명에 「AI 목소리」 표시가 들어갔어요");
+    if (AI목소리) 확인.push("AI 목소리를 썼어요 — 영상에 「목소리: AI」 · 설명에 「AI 목소리」 표시가 들어갔어요");
     if (계획.녹음) 확인.push("내 목소리 녹음으로 만들었어요 — 장면 길이·자막 시각을 녹음 길이에 맞췄어요");
     if (!소리) 확인.push("이 기기는 소리 굽기가 안 돼서 소리 없이 만들었어요 (아이폰은 iOS 26 이상)");
     if (계획.얼굴) 확인.push("사람 얼굴이 나와요 — 나오는 분께 공개 동의를 받았는지 확인해 주세요");

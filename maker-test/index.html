@@ -63,6 +63,10 @@
       <div class="옵션줄"><b>소리</b>
         <div class="고름" data-옵션="소리"><button data-값="원본" class="켬">원본 소리</button><button data-값="음악">음악만</button><button data-값="녹음">🎙 내 목소리</button><button data-값="나레이션">AI 목소리</button></div>
         <small class="흐림" id="소리설명">찍은 현장 소리를 살리고 음악을 작게 깔아요</small>
+        <div id="목소리줄" hidden style="margin-top:10px">
+          <div class="칩들 작게" id="목소리칩"></div>
+          <button class="작은단추" id="목소리듣기" style="margin-top:8px">▶ 이 목소리 미리 듣기</button>
+        </div>
       </div>
       <div class="옵션줄"><b>길이</b>
         <div class="고름" data-옵션="길이"><button data-값="짧게">짧게 25초</button><button data-값="보통" class="켬">보통 40초</button><button data-값="길게">길게 55초</button></div>
@@ -199,6 +203,7 @@
 <script src="mux.js"></script>
 <script src="draw.js"></script>
 <script src="board.js"></script>
+<script src="edge.js"></script>
 <script src="plan.js"></script>
 <script src="engine.js"></script>
 <script src="app.js"></script>

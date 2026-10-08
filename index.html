@@ -168,15 +168,15 @@ footer{text-align:center;color:#5d6477;font-size:12px;margin-top:30px}
 </section>
 
 <h2>채널 구경하기</h2><div class="chs"><a class="ch" href="https://www.youtube.com/@여행최저가연구소" target="_blank" rel="noopener"><span>▶</span>유튜브 여행</a><a class="ch" href="https://www.youtube.com/@절약꿀템연구소" target="_blank" rel="noopener"><span>▶</span>유튜브 꿀템</a><a class="ch" href="https://www.youtube.com/@kr_otoku_lab" target="_blank" rel="noopener"><span>🔗</span>유튜브 일본</a><a class="ch" href="https://naver.me/5JqdZ6TH" target="_blank" rel="noopener"><span>🎬</span>네이버 클립</a><a class="ch" href="https://blog.naver.com/mltr00" target="_blank" rel="noopener"><span>📝</span>네이버 블로그</a></div>
-<footer><a href="read/?from=home" style="display:inline-block;margin-bottom:10px;color:#ffdf7a;font-weight:700;font-size:14px;text-decoration:none">📖 정리 글 모음 ›</a><br>💰 돈 아끼는 연구소 · 2026. 10. 08 21:15 갱신</footer>
+<footer>💰 돈 아끼는 연구소 · 2026. 10. 08 21:18 갱신</footer>
 </div>
 <script>
 (function(){
-  var AID={"블로그": "136819", "유튜브": "136822", "클립": "136823", "꿀템유튜브": "136824", "X일본": "137287"}, M={"yt": "유튜브", "clip": "클립", "blog": "블로그", "kkul": "꿀템유튜브", "insta": "인스타", "tiktok": "틱톡", "kkul_insta": "꿀템인스타", "kkul_tiktok": "꿀템틱톡", "threads": "스레드", "kkul_threads": "꿀템스레드", "facebook": "페이스북", "kkul_facebook": "꿀템페이스북", "insta_dm": "인스타DM", "kkul_insta_dm": "꿀템인스타DM", "ig_dm": "인스타DM", "kkul_ig_dm": "꿀템인스타DM"};
+  var AID={"블로그": "136819", "유튜브": "136822", "클립": "136823", "꿀템유튜브": "136824", "X일본": "137287"}, M={"yt": "유튜브", "clip": "클립", "blog": "블로그", "kkul": "꿀템유튜브", "insta": "인스타", "tiktok": "틱톡", "kkul_insta": "꿀템인스타", "kkul_tiktok": "꿀템틱톡", "threads": "스레드", "kkul_threads": "꿀템스레드", "facebook": "페이스북", "kkul_facebook": "꿀템페이스북", "insta_dm": "인스타DM", "kkul_insta_dm": "꿀템인스타DM"};
   var q=new URLSearchParams(location.search), from=(q.get("from")||"yt").toLowerCase(), aid=AID[M[from]];
   if(aid) document.querySelectorAll('a[href*="klook.com"]').forEach(function(a){a.href=a.href.replace(/([?&]aid=)\d+/,"$1"+aid);});
   if(/^[a-z_]{1,20}$/.test(from)) document.querySelectorAll('a[href*="kkday.com"]').forEach(function(a){a.href=a.href.replace(/([?&]ud1=)[a-z_]+/,"$1"+from);});
-  var TF={"kkul": "꿀템유튜브", "kkul_insta": "인스타", "insta": "인스타", "kkul_insta_dm": "인스타DM", "insta_dm": "인스타DM", "kkul_ig_dm": "인스타DM", "ig_dm": "인스타DM", "kkul_threads": "스레드", "threads": "스레드", "kkul_facebook": "페이스북", "facebook": "페이스북", "kkul_tiktok": "틱톡", "tiktok": "틱톡", "clip": "클립", "blog": "블로그"};
+  var TF={"kkul": "꿀템유튜브", "kkul_insta": "인스타", "insta": "인스타", "kkul_insta_dm": "인스타DM", "insta_dm": "인스타DM", "kkul_threads": "스레드", "threads": "스레드", "kkul_facebook": "페이스북", "facebook": "페이스북", "kkul_tiktok": "틱톡", "tiktok": "틱톡", "clip": "클립", "blog": "블로그"};
   document.querySelectorAll("a[data-tl]").forEach(function(a){try{var m=JSON.parse(a.dataset.tl),u=m[TF[from]];if(u&&/^https:\/\/toss\./.test(u))a.href=u;}catch(e){}});
   var tabs=document.querySelectorAll(".tab");
   function show(t){

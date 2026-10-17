@@ -56,7 +56,7 @@ footer{text-align:center;color:var(--dim);font-size:11.5px;margin-top:28px;line-
 <h2>公式情報 <small>広告ではありません</small></h2><div class="list"><a class="off" href="https://www.k-eta.go.kr" target="_blank" rel="noopener"><span class="ic">🛂</span><span class="tx"><b>K-ETA（電子渡航認証）公式サイト</b><small>申請が必要かどうかは出発前にここで確認</small></span></a><a class="off" href="https://japanese.visitkorea.or.kr" target="_blank" rel="noopener"><span class="ic">🗺</span><span class="tx"><b>韓国観光公社 VISITKOREA（日本語）</b><small>観光・交通の公式ガイド</small></span></a><a class="off" href="https://www.arex.or.kr" target="_blank" rel="noopener"><span class="ic">🚆</span><span class="tx"><b>空港鉄道 AREX 公式サイト</b><small>時刻・運賃の公式情報</small></span></a><a class="off" href="https://www.airport.kr" target="_blank" rel="noopener"><span class="ic">✈️</span><span class="tx"><b>仁川国際空港 公式サイト</b><small>ターミナル・交通案内</small></span></a></div>
 <a class="x" href="https://x.com/kr_otoku_lab" target="_blank" rel="noopener">𝕏 最新情報は @kr_otoku_lab へ</a>
 <div class="chs"><a href="https://www.youtube.com/@kr_otoku_lab" target="_blank" rel="noopener">YouTube</a></div>
-<footer>掲載内容は2026年10月時点の情報です。料金・条件は変わることがあります。<br>ご予約前に各ページで最新の内容をご確認ください。<br>韓国旅行 おトク研究所 · 2026.10.17 23:06 更新</footer>
+<footer>掲載内容は2026年10月時点の情報です。料金・条件は変わることがあります。<br>ご予約前に各ページで最新の内容をご確認ください。<br>韓国旅行 おトク研究所 · 2026.10.18 01:13 更新</footer>
 </div>
 <script>
 (function(){
@@ -67,5 +67,55 @@ footer{text-align:center;color:var(--dim);font-size:11.5px;margin-top:28px;line-
   document.querySelectorAll('a[href*="klook.com"]').forEach(function(a){a.href=a.href.replace(/([?&]aid=)\d+/,"$1"+aid);});
   document.querySelectorAll('a[href*="kkday.com"]').forEach(function(a){a.href=a.href.replace(/([?&]ud1=)[a-z0-9_]+/,"$1"+from);});
 })();
+</script>
+<script>
+(function(){try{
+  var U="https://script.google.com/macros/s/AKfycbx0nCrbeE6RkfTEf8VczGyeac04AO6xur7m7ukYNd_k5MpycOT3GR5pmiSAXw8cly2t/exec", P="ja", D="x_jp";
+  if(!U||navigator.webdriver||/bot|crawl|spider|preview|headless|lighthouse/i.test(navigator.userAgent||"")) return;
+  var q=new URLSearchParams(location.search), f=(q.get("from")||D).toLowerCase();
+  if(!/^[a-z0-9_]{1,24}$/.test(f)) f=D;
+  var v=(q.get("v")||"").replace(/[^0-9]/g,"").slice(0,4);
+  function tab(){var p=document.querySelector(".panel.on");return p?p.id:P;}
+  function cut(t,n){return String(t||"").replace(/\s+/g," ").trim().slice(0,n);}
+  function send(o){
+    o.p=P;o.f=f;o.v=v;o.t=tab();
+    var s=JSON.stringify(o);
+    try{if(navigator.sendBeacon&&navigator.sendBeacon(U,new Blob([s],{type:"text/plain;charset=UTF-8"})))return;}catch(e){}
+    try{fetch(U,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain;charset=UTF-8"},body:s}).catch(function(){});}catch(e){}
+  }
+  var once=false;
+  function open1(){
+    if(once||document.visibilityState!=="visible") return;
+    once=true;
+    var key="hwv"+P+v, seen=false;
+    try{seen=sessionStorage.getItem(key)==="1";sessionStorage.setItem(key,"1");}catch(e){}
+    if(!seen) send({k:"열림"});
+  }
+  setTimeout(open1,900);
+  document.addEventListener("visibilitychange",function(){setTimeout(open1,900);});
+  var K=[["⭐","직행"],["토스","토스"],["쿠팡","쿠팡"],["네이버","네이버"],["KKday","KKday"],["숙소","숙소"],["호텔","숙소"],["ホテル","숙소"],
+         ["항공","항공"],["이심","이심"],["eSIM","이심"],["픽업","공항픽업"],["투어","투어"],["입장권","투어"],["가이드","가이드"],["ガイド","가이드"],
+         ["SIM","이심"],["Wi-Fi","이심"],["鉄道","교통"],["列車","교통"],["バス","교통"],["カード","교통"],["チケット","투어"],["ツアー","투어"],["体験","투어"]];
+  function kind(a){var t=a.textContent||"";for(var i=0;i<K.length;i++){if(t.indexOf(K[i][0])>=0)return K[i][1];}return "기타";}
+  function name(a){
+    var S=[[".vrow",".vt"],[".drow",".nm"],[".card",".tag"],[".today",".t"]];
+    for(var i=0;i<S.length;i++){var r=a.closest(S[i][0]);if(r){var x=r.querySelector(S[i][1]);return cut(x?x.textContent:"",30);}}
+    var b=a.querySelector("b");return cut(b?b.textContent:a.textContent,30);
+  }
+  function hit(e){
+    try{
+      if(e.type==="auxclick"&&e.button!==1) return;
+      var a=e.target&&e.target.closest?e.target.closest("a[href]"):null;
+      if(!a) return;
+      var ad=(" "+(a.getAttribute("rel")||"")+" ").indexOf(" sponsored ")>=0, gd=a.classList.contains("gift");
+      if(!ad&&!gd) return;
+      var r=a.closest(".vrow"), h="";
+      try{h=new URL(a.href,location.href).hostname.replace(/^www[.]/,"").slice(0,40);}catch(x){}
+      send({k:"클릭",b:gd?"가이드":kind(a),n:name(a),r:r?String(r.getAttribute("data-v")||""):"",h:gd?"":h});
+    }catch(x){}
+  }
+  document.addEventListener("click",hit,true);
+  document.addEventListener("auxclick",hit,true);
+}catch(e){}})();
 </script>
 </body></html>

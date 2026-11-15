@@ -36,6 +36,11 @@ h1 em{font-style:normal;color:var(--gold)}
 #work.on{opacity:1}
 .float{position:fixed;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:5;padding:7px 11px;border-radius:12px;font-size:12px;font-weight:800;
   color:#1a1204;background:rgba(242,190,72,.85);text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+/* 11/15 🌏 해외쇼츠 탭 (08 방 한판 부탁 · 사장님 「추천대로 가자」) — 작업실 ↔ 해외쇼츠 바꾸기 단추 */
+.tab{position:fixed;left:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:5;padding:7px 11px;border-radius:12px;font-size:12px;font-weight:800;border:0;
+  color:var(--gold2);background:rgba(12,19,48,.9);box-shadow:0 0 0 1px rgba(242,190,72,.5),0 4px 14px rgba(0,0,0,.4);font-family:inherit;cursor:pointer}
+.tab:active{transform:scale(.97)}
+.open.alt{margin-top:-8px;min-height:50px;font-size:16px;background:var(--navy);color:var(--gold2);box-shadow:0 0 0 1px rgba(242,190,72,.5)}
 </style>
 </head>
 <body>
@@ -45,15 +50,21 @@ h1 em{font-style:normal;color:var(--gold)}
   <p class="sub">💎 HW 머니랩</p>
   <div class="bar" id="bar"><i></i></div>
   <a class="open" id="open" href="#" rel="noopener" hidden>🛠 작업실 열기</a>
+  <a class="open alt" id="open2" href="#" rel="noopener" hidden>🌏 해외쇼츠 열기</a>
   <p class="msg" id="msg" hidden></p>
 </main>
 <iframe id="work" title="HW 작업실" hidden allow="clipboard-write; clipboard-read; web-share"></iframe>
 <a class="float" id="float" href="#" target="_blank" rel="noopener" hidden>↗ 새 창</a>
+<button class="tab" id="tab" type="button" hidden>🌏 해외쇼츠</button>
 <script>
 (function () {
   // 사장님 계정만 열리는 구글 Apps Script 주소 (iframe ✗ — 구글 로그인 쿠키 문제 · 같은 창에서 넘어감)
   var URL_ = "https://script.google.com/macros/s/AKfycbxFslbHz1l4COvjGuhgTFN7nDD9_64jwYzGZZKjnRkMrpGy9DRtbPY80h1WhdWqGCVI/exec";
+  // 🌏 해외쇼츠 (11/15 · 08 방 한판 Apps Script 웹 앱 · 사장님 계정만 · 쇼츠 링크 넣기 → 드라이브 「HW해외쇼츠\넣기」 → 집 PC 한판이 굽기)
+  var URL_OS = "https://script.google.com/macros/s/AKfycbz0oeaUWfbu6zWNBJeBvd0B7bFuzNBG67mV1FcDUQKXbZZUTbZNo81sPuerXuC_YHD3/exec";
   var open = document.getElementById("open"), msg = document.getElementById("msg"), bar = document.getElementById("bar");
+  var open2 = document.getElementById("open2");
+  open2.href = URL_OS;
 
   // ── 📲 공유 받기 (10/1 사장님 「틱톡도 · 클립도 링크 자동으로」) ──
   // 틱톡·클립 앱 「공유 → HW 작업실」 → manifest share_target 이 ./?st=제목&sx=글&su=주소 로 연다
@@ -89,8 +100,11 @@ h1 em{font-style:normal;color:var(--gold)}
     window.HW공유 = { 주소: 공유주소, 제목: 공유제목, 가는곳: 가는곳 };                   // 검수용
   }
   if (!공유 && 받은.has("src")) 가는곳 = URL_ + "?src=1";                               // 10/2 📹 ./?src=1 = 「소스 찍어 보내기」 화면부터 (대표판 숏츠 메이커 메뉴에서 옴)
+  var 해외먼저 = !공유 && /[?&]os\b/.test(location.search);                              // ./?os = 해외쇼츠부터
+  if (해외먼저) 가는곳 = URL_OS;
   open.href = 가는곳;
-  function 단추(말) { bar.hidden = true; open.hidden = false; if (말) { msg.textContent = 말; msg.hidden = false; } }
+  if (해외먼저) { open.href = URL_; open.textContent = "🛠 작업실 열기"; }
+  function 단추(말) { bar.hidden = true; open.hidden = false; open2.hidden = false; if (말) { msg.textContent = 말; msg.hidden = false; } }
   var 끊김 = navigator.onLine === false;
   if (공유 && 끊김) 단추("인터넷이 끊겨 있어요. 연결되면 아래 단추를 눌러 주세요 (공유한 주소는 그대로 들어가요).");
   else if (!공유 && /[?&]stay\b/.test(location.search)) setTimeout(단추, 500);        // ?stay = 넘어가지 않고 단추만 (꼬였을 때 · 검수용)
@@ -105,6 +119,18 @@ h1 em{font-style:normal;color:var(--gold)}
     work.onload = function () { work.classList.add("on"); setTimeout(function () { document.querySelector("main").hidden = true; }, 350); };
     setTimeout(function () { work.hidden = false; work.src = 가는곳; }, 공유 ? 150 : 500);   // 금색 로고 0.5초 → 작업실 (공유면 바로)
     setTimeout(function () { fl.hidden = false; }, 8000);                              // 안 뜨면 ↗ 새 창 (구글 로그인이 풀렸을 때 등)
+    // 🌏 탭: 작업실 ↔ 해외쇼츠 (같은 칸에서 주소만 바꿈 · 처음 열 때 구글 동의 화면은 사장님 손 · 칸에서 안 열리면 ↗ 새 창)
+    var tab = document.getElementById("tab"), 지금해외 = 해외먼저;
+    function 탭글() { tab.textContent = 지금해외 ? "🛠 작업실" : "🌏 해외쇼츠"; }
+    탭글();
+    tab.onclick = function () {
+      지금해외 = !지금해외;
+      var u = 지금해외 ? URL_OS : URL_;
+      work.classList.remove("on");
+      work.src = u; fl.href = u; 탭글();
+      try { history.replaceState(null, "", 지금해외 ? "./?app=hwwork2&os" : "./?app=hwwork2"); } catch (e) {}
+    };
+    setTimeout(function () { tab.hidden = false; }, 공유 ? 150 : 500);
   }
   // ── 📸 사진 도우미 (10/1 사장님 「블로그 사진 한 장씩 복사해서 붙여 넣기」) ──
   // 작업실은 구글 칸(iframe) 두 겹 안이라 사진 복사·공유·저장이 막힐 수 있다 → 앱(이 맨 위 창)이 대신 해 준다.

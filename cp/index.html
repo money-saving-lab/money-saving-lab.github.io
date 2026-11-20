@@ -91,6 +91,7 @@ small{color:var(--sub)}
     var 저장 = el("button", "big", 아이폰 ? "📲 사진첩에 영상 저장" : "⬇ 영상 내려받기");
     저장.type = "button";
     저장.onclick = function () {
+      지금편 = 편;
       var 처음 = !받은[편.id];
       저장.disabled = true;
       영상받기(편, 칸, function (f) {
@@ -102,15 +103,16 @@ small{color:var(--sub)}
         var 짐 = { files: [f] };
         if (navigator.canShare && navigator.canShare(짐) && navigator.share) {
           칸.className = "msg ok"; 칸.textContent = 아이폰 ? "「비디오 저장」 을 누르세요" : "「저장」 할 곳을 고르세요";
-          navigator.share(짐).then(function () { 칸.textContent = "저장했어요 ✓ 사진첩을 확인하세요"; },
+          navigator.share(짐).then(function () { 칸.textContent = "저장했어요 ✓ 사진첩을 확인하세요 · 서버 영상은 몇 분 안에 지워져요"; 받았다(편); },
             function (x) { if (!x || x.name !== "AbortError") 내려받기(f, 칸); else 칸.textContent = "취소했어요 · 다시 눌러도 돼요"; });
         } else 내려받기(f, 칸);
       });
     };
+    if (편.지움) { 저장.disabled = true; 저장.textContent = "✓ 받은 영상 · 서버에서 지웠어요"; }
     c.appendChild(저장); c.appendChild(칸);
-    if (아이폰) {
+    if (아이폰 && !편.지움) {
       var 다른 = el("button", "mid", "⬇ 파일로 내려받기 (안 될 때)"); 다른.type = "button";
-      다른.onclick = function () { 영상받기(편, 칸, function (f) { 내려받기(f, 칸); }); };
+      다른.onclick = function () { 지금편 = 편; 영상받기(편, 칸, function (f) { 내려받기(f, 칸); }); };
       c.appendChild(다른);
     }
     function 줄(이름, 글) {
@@ -131,7 +133,13 @@ small{color:var(--sub)}
     c.appendChild(끝);
     return c;
   }
+  function 받았다(편) {               // 「받았다」 신호 → PC 가 그 영상을 깃허브에서 지움(로그인 없음)
+    if (!자료 || !자료.알림) return;
+    try { fetch("https://ntfy.sh/" + 자료.알림, { method: "POST", body: "saved " + 편.id }); } catch (e) {}
+  }
+  var 지금편 = null;
   function 내려받기(f, 칸) {
+    if (지금편) 받았다(지금편);
     var u = URL.createObjectURL(f), a = document.createElement("a");
     a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(u); }, 60000);

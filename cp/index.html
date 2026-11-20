@@ -109,8 +109,17 @@ small{color:var(--sub)}
       });
     };
     if (편.지움) { 저장.disabled = true; 저장.textContent = "✓ 받은 영상 · 서버에서 지웠어요"; }
+    var 드라이브편 = !편.조각;                // 11/21 사장님 최종: 영상은 구글 드라이브 채널 폴더 · 여기는 복사 단추
+    if (드라이브편) {
+      저장.textContent = "📂 드라이브에서 영상 받기";
+      저장.onclick = function () {
+        if (!자료.폴더링크) { 칸.className = "msg"; 칸.textContent = "폴더 링크가 아직 없어요 (사장님께)"; return; }
+        location.href = 자료.폴더링크;
+      };
+      칸.textContent = "파일 이름: " + (편.파일 || "") + (아이폰 ? " · 다운로드 → 파일 앱 → 공유 → 비디오 저장" : " · 다운로드 → 갤러리");
+    }
     c.appendChild(저장); c.appendChild(칸);
-    if (아이폰 && !편.지움) {
+    if (아이폰 && !편.지움 && !드라이브편) {
       var 다른 = el("button", "mid", "⬇ 파일로 내려받기 (안 될 때)"); 다른.type = "button";
       다른.onclick = function () { 지금편 = 편; 영상받기(편, 칸, function (f) { 내려받기(f, 칸); }); };
       c.appendChild(다른);
@@ -156,7 +165,7 @@ small{color:var(--sub)}
   fetch(raw("list.json")).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
     자료 = d;
     if (d.채널) { document.getElementById("ch").textContent = d.채널; document.title = d.채널; }
-    정보.textContent = "영상 " + ((d.편 || []).length) + "편 · 며칠 뒤 저절로 사라져요 · 홈 화면에 추가해 두면 편해요";
+    정보.textContent = "영상 " + ((d.편 || []).length) + "편 · 3일 뒤 저절로 사라져요 · 홈 화면에 추가해 두면 편해요";
     그리기();
   }).catch(function () { 정보.textContent = "목록을 못 불러왔어요 — 잠시 뒤 다시 열어 주세요"; });
 })();

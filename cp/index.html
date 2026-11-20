@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#000000">
+<title>채널 폰</title>
+<style>
+:root{--bg:#0b0b0c;--card:#17171a;--line:#2a2a2f;--gold:#d9b45a;--text:#f2f2f2;--sub:#a0a0a8;--ok:#5cc28a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;padding:16px 16px 60px}
+h1{font-size:20px;margin:4px 0 2px;color:var(--gold)}
+.sub{color:var(--sub);font-size:13px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:0 0 16px}
+.card.done{opacity:.55}
+.tag{display:inline-block;font-size:12px;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:2px 8px;margin-right:6px}
+.big{display:block;width:100%;border:0;border-radius:14px;padding:16px;font-size:18px;font-weight:700;margin:12px 0 8px;background:var(--gold);color:#111}
+.big:disabled{opacity:.6}
+.mid{display:block;width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:15px;margin:6px 0;background:#222226;color:var(--text);text-align:left}
+.mid b{color:var(--gold);margin-right:6px}
+.txt{white-space:pre-wrap;word-break:break-all;font-size:14px;color:#ddd;background:#101012;border-radius:10px;padding:10px;margin:4px 0 8px;max-height:9em;overflow:auto}
+.msg{font-size:13px;color:var(--sub);min-height:1.3em}
+.msg.ok{color:var(--ok)}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.empty{color:var(--sub);text-align:center;padding:40px 0}
+small{color:var(--sub)}
+</style>
+</head>
+<body>
+<h1 id="ch">채널 폰</h1>
+<div class="sub" id="info">불러오는 중…</div>
+<div id="list"></div>
+<script>
+(function () {
+  var REPO = "money-saving-lab/money-saving-lab.github.io", BR = "cp";
+  var k = (location.search.match(/[?&]k=([a-f0-9]{8,64})/) || [])[1] || "";
+  var 아이폰 = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var 목록 = document.getElementById("list"), 정보 = document.getElementById("info");
+  function raw(p) { return "https://raw.githubusercontent.com/" + REPO + "/" + BR + "/" + k + "/" + p + "?t=" + Date.now(); }
+  function 표시(id) { try { return localStorage.getItem("cp_done_" + id) === "1"; } catch (e) { return false; } }
+  function 표시하기(id, v) { try { localStorage.setItem("cp_done_" + id, v ? "1" : "0"); } catch (e) {} }
+  function 복사(글, 칸) {
+    function 됨() { 칸.textContent = "복사했어요 ✓"; 칸.className = "msg ok"; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(글).then(됨, function () { 옛복사(글); 됨(); });
+    } else { 옛복사(글); 됨(); }
+  }
+  function 옛복사(글) {
+    var t = document.createElement("textarea"); t.value = 글; t.setAttribute("readonly", "");
+    t.style.position = "fixed"; t.style.opacity = "0"; document.body.appendChild(t);
+    t.select(); t.setSelectionRange(0, 글.length); try { document.execCommand("copy"); } catch (e) {} document.body.removeChild(t);
+  }
+  function el(태그, 반, 글) { var e = document.createElement(태그); if (반) e.className = 반; if (글 != null) e.textContent = 글; return e; }
+  var 받은 = {};
+  function 영상받기(편, 칸, 끝) {
+    if (받은[편.id]) return 끝(받은[편.id]);
+    칸.className = "msg"; 칸.textContent = "영상 받는 중… (와이파이 권장)";
+    var 전체 = 편.크기 || 0, 받음 = 0, 수 = 편.조각 || 1;
+    function 한쪽(n) {
+      return fetch(raw(편.영상 + "." + n)).then(function (r) {
+        if (!r.ok) throw new Error("없음 " + r.status);
+        if (!r.body || !r.body.getReader) return r.blob();
+        var 읽기 = r.body.getReader(), 조각 = [];
+        function 다음() {
+          return 읽기.read().then(function (x) {
+            if (x.done) return new Blob(조각);
+            조각.push(x.value); 받음 += x.value.length;
+            칸.textContent = "영상 받는 중… " + (전체 ? Math.min(99, Math.round(받음 * 100 / 전체)) + "%" : Math.round(받음 / 1048576) + "MB");
+            return 다음();
+          });
+        }
+        return 다음();
+      });
+    }
+    var 쪽들 = []; for (var n = 0; n < 수; n++) 쪽들.push(한쪽(n));
+    Promise.all(쪽들).then(function (bs) { return new Blob(bs, { type: "video/mp4" }); }).then(function (b) {
+      if (전체 && b.size !== 전체) throw new Error("크기 안 맞음");
+      var f = new File([b], (편.파일이름 || 편.id) + ".mp4", { type: "video/mp4" });
+      받은[편.id] = f; 끝(f);
+    }).catch(function (e) { 칸.textContent = "받기 실패 — 다시 눌러 주세요 (" + e.message + ")"; });
+  }
+  function 카드(편) {
+    var c = el("div", "card" + (표시(편.id) ? " done" : ""));
+    var 위 = el("div"); 위.appendChild(el("span", "tag", 편.올릴날 ? "올릴 날 " + 편.올릴날 : "새 편"));
+    if (표시(편.id)) 위.appendChild(el("span", "tag", "✓ 올림"));
+    c.appendChild(위);
+    var 칸 = el("div", "msg");
+    var 저장 = el("button", "big", 아이폰 ? "📲 사진첩에 영상 저장" : "⬇ 영상 내려받기");
+    저장.type = "button";
+    저장.onclick = function () {
+      var 처음 = !받은[편.id];
+      저장.disabled = true;
+      영상받기(편, 칸, function (f) {
+        저장.disabled = false;
+        if (처음) {                    // 아이폰 공유 창은 「누른 바로 그때」 만 열림 → 다 받은 뒤 한 번 더 누르게
+          저장.textContent = 아이폰 ? "📲 다 받았어요 · 눌러서 사진첩에 저장" : "⬇ 다 받았어요 · 눌러서 저장";
+          칸.className = "msg ok"; 칸.textContent = "받기 끝 ✓ 위 단추를 한 번 더 누르세요"; return;
+        }
+        var 짐 = { files: [f] };
+        if (navigator.canShare && navigator.canShare(짐) && navigator.share) {
+          칸.className = "msg ok"; 칸.textContent = 아이폰 ? "「비디오 저장」 을 누르세요" : "「저장」 할 곳을 고르세요";
+          navigator.share(짐).then(function () { 칸.textContent = "저장했어요 ✓ 사진첩을 확인하세요"; },
+            function (x) { if (!x || x.name !== "AbortError") 내려받기(f, 칸); else 칸.textContent = "취소했어요 · 다시 눌러도 돼요"; });
+        } else 내려받기(f, 칸);
+      });
+    };
+    c.appendChild(저장); c.appendChild(칸);
+    if (아이폰) {
+      var 다른 = el("button", "mid", "⬇ 파일로 내려받기 (안 될 때)"); 다른.type = "button";
+      다른.onclick = function () { 영상받기(편, 칸, function (f) { 내려받기(f, 칸); }); };
+      c.appendChild(다른);
+    }
+    function 줄(이름, 글) {
+      if (!글) return;
+      var b = el("button", "mid"); b.type = "button";
+      b.appendChild(el("b", null, "복사")); b.appendChild(document.createTextNode(이름));
+      var 보기 = el("div", "txt", 글), m = el("div", "msg");
+      b.onclick = function () { 복사(글, m); };
+      c.appendChild(b); c.appendChild(보기); c.appendChild(m);
+    }
+    (편.제목후보 && 편.제목후보.length ? 편.제목후보 : [편.제목]).forEach(function (t, i, a) { 줄(a.length > 1 ? "제목 " + (i + 1) : "제목", t); });
+    줄("설명", 편.설명);
+    줄("해시태그", (편.해시태그 || []).join(" "));
+    줄("고정 댓글", 편.고정댓글);
+    if (편.사운드검색어) c.appendChild(el("div", "sub", "🎵 유튜브 앱 사운드 검색어: " + 편.사운드검색어));
+    var 끝 = el("button", "mid", 표시(편.id) ? "↩ 「올림」 표시 지우기" : "✅ 유튜브에 올렸어요 (표시)"); 끝.type = "button";
+    끝.onclick = function () { 표시하기(편.id, !표시(편.id)); 그리기(); };
+    c.appendChild(끝);
+    return c;
+  }
+  function 내려받기(f, 칸) {
+    var u = URL.createObjectURL(f), a = document.createElement("a");
+    a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
+    칸.className = "msg ok"; 칸.textContent = 아이폰 ? "「다운로드」 → 파일 앱 → 공유 → 비디오 저장" : "내려받았어요 ✓ 갤러리를 확인하세요";
+  }
+  var 자료 = null;
+  function 그리기() {
+    목록.innerHTML = "";
+    var 편들 = (자료 && 자료.편) || [];
+    if (!편들.length) { 목록.appendChild(el("div", "empty", "지금 올릴 영상이 없어요")); return; }
+    편들.forEach(function (p) { 목록.appendChild(카드(p)); });
+  }
+  if (!k) { 정보.textContent = "주소가 잘못됐어요 (받은 링크를 그대로 여세요)"; return; }
+  fetch(raw("list.json")).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
+    자료 = d;
+    if (d.채널) { document.getElementById("ch").textContent = d.채널; document.title = d.채널; }
+    정보.textContent = "영상 " + ((d.편 || []).length) + "편 · 며칠 뒤 저절로 사라져요 · 홈 화면에 추가해 두면 편해요";
+    그리기();
+  }).catch(function () { 정보.textContent = "목록을 못 불러왔어요 — 잠시 뒤 다시 열어 주세요"; });
+})();
+</script>
+</body>
+</html>

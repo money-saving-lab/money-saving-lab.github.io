@@ -37,6 +37,7 @@ small{color:var(--sub)}
 (function () {
   var REPO = "money-saving-lab/money-saving-lab.github.io", BR = "cp";
   var k = (location.search.match(/[?&]k=([a-f0-9]{8,64})/) || [])[1] || "";
+  if (k) { location.replace("/hw-work/?k=" + k); return; }   // 11/22 채널 폰도 HW 작업실(그 채널만)로
   var 아이폰 = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   var 목록 = document.getElementById("list"), 정보 = document.getElementById("info");
   function raw(p) { return "https://raw.githubusercontent.com/" + REPO + "/" + BR + "/" + k + "/" + p + "?t=" + Date.now(); }

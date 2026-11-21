@@ -233,8 +233,8 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
   function 다받음(편) {
     var v = 화면[편]; if (!v) return;
     v.단추.disabled = false; v.막.style.display = "block"; v.막.firstChild.style.width = "100%";
-    v.단추.textContent = 아이폰 ? "📲 눌러서 사진첩에 저장" : "⬇ 눌러서 갤러리에 저장";
-    if (!v.칸.textContent || v.칸.textContent.indexOf("받는 중") === 0) { v.칸.className = "msg ok"; v.칸.textContent = 아이폰 ? "받기 끝 ✓ 위 단추 → 「비디오 저장」" : "받기 끝 ✓"; }
+    v.단추.textContent = 아이폰 ? "📲 눌러서 사진첩에 저장" : "⬇ 한 번 더 저장(필요할 때만)";
+    if (!v.칸.textContent || v.칸.textContent.indexOf("완성본 받는 중") === 0) { v.칸.className = "msg ok"; v.칸.textContent = 아이폰 ? "준비 끝 ✓ 위 단추 → 「비디오 저장」 누르면 사진첩에 들어가요" : "저장 중…"; }
   }
   function 받기시작(p, 자동) {
     if (받은[p.편] || 진행[p.편]) return;
@@ -242,7 +242,8 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     진행[p.편] = 진; 그리기(p.편, 0);
     영상받기(p, 판 ? 판.칸 : el("div"), function (퍼) { 진.퍼 = 퍼; 그리기(p.편, 퍼); }).then(function (f) {
       delete 진행[p.편]; 다받음(p.편);
-      if (!아이폰 && 자동 && !저장됨(p.편)) { 저장됨표시(p.편); var v = 화면[p.편]; 내려받기(f, v ? v.칸 : el("div")); }
+      // 안드로이드 = 다 받으면 바로 폰(Download)에 저장 · 단추 두 번 ✗
+      if (!아이폰 && (!자동 || !저장됨(p.편))) { 저장됨표시(p.편); var v = 화면[p.편]; 내려받기(f, v ? v.칸 : el("div")); }
     }).catch(function (e) {
       delete 진행[p.편]; var v = 화면[p.편]; if (!v) return;
       v.단추.disabled = false; v.단추.textContent = 아이폰 ? "📲 사진첩에 저장" : "⬇ 갤러리에 저장";

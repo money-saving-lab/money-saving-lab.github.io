@@ -16,7 +16,12 @@
   //   그 뒤 채널 링크를 열어도 늘 네 채널 전부 (열쇠 값은 이 파일에 안 박음 · 그 폰 기억에만)
   function 열쇠() {
     var m = location.search.match(/[?&]k=([a-f0-9]{8,64})/);
-    if (m) try { history.replaceState(null, "", "./?app=hwwork2"); } catch (e) {}
+    // 11/22 아이폰 = 홈 화면 앱이 사파리와 기억을 따로 씀 → 주소에 열쇠를 남기고 manifest 를 떼어 「홈 화면에 추가」 가 지금 주소(열쇠 든)로 깔리게
+    if (m && 아이폰 && 기억("hw_os_main") == null) {
+      var 링 = document.querySelector('link[rel="manifest"]'); if (링) 링.remove();
+      var 메 = document.createElement("meta"); 메.name = "apple-mobile-web-app-capable"; 메.content = "yes"; document.head.appendChild(메);
+      try { history.replaceState(null, "", "./?app=hwwork2&k=" + m[1]); } catch (e) {}
+    } else if (m) try { history.replaceState(null, "", "./?app=hwwork2"); } catch (e) {}
     var 메인 = 기억("hw_os_main");
     if (메인) return 메인;
     if (m) 기억("hw_os_key", m[1]);

@@ -147,7 +147,25 @@ h1 em{font-style:normal;color:var(--gold)}
   else if (!공유 && /[?&]go\b/.test(location.search)) {                               // ?go = 예전처럼 구글 주소로 넘어가기
     setTimeout(function () { location.replace(URL_); }, 500);
     setTimeout(function () { 단추("자동으로 안 넘어가면 아래 단추를 눌러 주세요."); }, 3500);
-  } else if (window.HW숏츠 && HW숏츠.열쇠() && !/[?&]os\b/.test(location.search)) {
+  } else if (!공유 && !받은.has("src") && window.HW숏츠 && !HW숏츠.열쇠() && !/[?&](os|old)\b/.test(location.search)) {
+    // 11/22 사장님 「내 거 아직 작업실 메인 화면이 해외쇼츠 화면으로 안 뜨네」 → 열쇠 없는 앱(카톡 안 브라우저로 링크를 열면 앱에 기억이 안 감)
+    //   = 앱 안에서 받은 링크를 붙여 넣는 칸 · 열쇠 값은 이 파일에 안 박음
+    document.querySelector("main").hidden = true;
+    var os0 = document.getElementById("os"); os0.hidden = false;
+    document.getElementById("osh").textContent = "🎬 숏츠 첫 설정";
+    document.getElementById("osr").textContent = "🛠 기존 작업실";
+    document.getElementById("osr").onclick = function () { location.href = "./?app=hwwork2&old"; };
+    document.getElementById("osl").innerHTML =
+      '<div class="os-card"><div class="os-title">받은 작업실 링크를 아래 칸에 붙여 넣어 주세요 (한 번만)</div>' +
+      '<div class="os-sub">카톡에서 링크를 길게 눌러 「복사」 → 아래 칸을 길게 눌러 「붙여넣기」</div>' +
+      '<input id="osk" style="width:100%;padding:12px;border-radius:11px;border:1px solid #3a3a42;background:#0c0c0e;color:#fff;font:inherit;font-size:15px" placeholder="https://money-saving-lab.com/hw-work/?k=…">' +
+      '<button class="os-big" id="osgo" type="button" style="border:0;width:100%;margin-top:10px;cursor:pointer">넣기</button><div class="os-msg" id="oskm"></div></div>';
+    document.getElementById("osgo").onclick = function () {
+      var m = String(document.getElementById("osk").value).match(/k=([a-f0-9]{8,64})/);
+      if (!m) { document.getElementById("oskm").textContent = "링크가 맞지 않아요 — 받은 링크 전체를 붙여 넣어 주세요"; return; }
+      location.replace("./?app=hwwork2&k=" + m[1]);
+    };
+  } else if (!공유 && !받은.has("src") && window.HW숏츠 && HW숏츠.열쇠() && !/[?&](os|old)\b/.test(location.search)) {
     // 11/22 🎬 첫 화면 = 숏츠 (열쇠 = 메인폰 모두 / 채널 폰 그 채널만) · 메인폰만 작업실·해외쇼츠 넣기 단추
     var os = document.getElementById("os"), osl = document.getElementById("osl"), osb = document.getElementById("osb");
     document.querySelector("main").hidden = true; os.hidden = false;
@@ -164,7 +182,7 @@ h1 em{font-style:normal;color:var(--gold)}
         if (!하나 && !document.getElementById("osw")) {
           var a = document.createElement("button"); a.className = "os-btn"; a.type = "button"; a.id = "osw"; a.textContent = "🛠 작업실";
           a.onclick = function () { 칸열기(URL_); };
-          var b = document.createElement("button"); b.className = "os-btn"; b.type = "button"; b.textContent = "🌏 넣기";
+          var b = document.createElement("button"); b.className = "os-btn"; b.type = "button"; b.textContent = "🌏 해외쇼츠";
           b.onclick = function () { 칸열기(URL_OS); };
           osb.insertBefore(b, osb.firstChild); osb.insertBefore(a, osb.firstChild);
         }

@@ -117,6 +117,40 @@
   function 틱톡소재(p) { return !!(p && (p.틱톡소재 || p.원본곳 === "틱톡")); }
   function 그곳들(p) { return 틱톡소재(p) ? 곳들.filter(function (g) { return g !== "틱톡"; }) : 곳들; }
 
+  // 11/22 사장님 「배경음악 설명은 폰 앱에서 보이게」 = 올리기.json 「배경음악」(한판이 넣음) · 없으면 칸 감춤
+  function 음악칸(c, p) {
+    var m = p && p.배경음악;
+    if (!m || typeof m !== "object") return;
+    var 유 = (m.유튜브 || []).slice(0, 3), 틱 = 틱톡소재(p) ? [] : (m.틱톡 || []).slice(0, 3), 원 = m.원본 || null;
+    if (!m.한줄 && !유.length && !틱.length && !원) return;
+    var 상 = el("div", "os-music");
+    상.style.cssText = "border:1px solid #2f2f36;border-radius:12px;padding:10px 11px;margin:10px 0 6px;background:#16161b";
+    상.appendChild(el("div", null, "🎵 배경음악")).style.cssText = "font-weight:800;color:var(--gold);margin-bottom:4px";
+    if (m.한줄) 상.appendChild(el("div", null, m.한줄)).style.cssText = "font-size:14.5px;margin-bottom:6px";
+    function 줄들(머리, 목록) {
+      if (!목록.length) return;
+      상.appendChild(el("div", "os-sub", 머리)).style.margin = "8px 0 2px";
+      목록.forEach(function (x) {
+        var 곡 = String(x.곡 || "").trim(); if (!곡) return;
+        var 글 = [곡, x.가수, x.크기퍼센트 != null ? "크기 " + x.크기퍼센트 + "%" : ""].filter(Boolean).join(" · ");
+        var b = el("button", "os-copy"); b.type = "button";
+        b.appendChild(el("b", null, "복사")); b.appendChild(document.createTextNode(글));
+        var 메 = el("div", "os-msg");
+        b.onclick = function () { 복사(곡 + (x.가수 ? " " + x.가수 : ""), 메); };
+        상.appendChild(b);
+        if (x.까닭) 상.appendChild(el("div", "os-sub", x.까닭)).style.margin = "0 0 4px 4px";
+        상.appendChild(메);
+      });
+    }
+    줄들("유튜브 쇼츠 인기 곡", 유);
+    줄들("틱톡 인기 곡", 틱);
+    if (원) {
+      var 원글 = "원본 음악: " + (원.곡 || "곡 이름 모름") + (원.크기퍼센트 != null ? " · 크기 " + 원.크기퍼센트 + "%" : "") + (원.목소리보다dB != null ? " · 목소리보다 " + 원.목소리보다dB + "dB" : "");
+      상.appendChild(el("div", "os-sub", 원글)).style.cssText = "font-size:11.5px;margin:8px 0 0";
+    }
+    c.appendChild(상);
+  }
+
   function 편카드(p, 채널) {
     var c = el("div", "os-card");
     var 위 = el("div", "os-meta");
@@ -150,6 +184,7 @@
       c.appendChild(b); c.appendChild(보기); c.appendChild(m);
     });
     if (지금 === "유튜브" && p.사운드검색어) c.appendChild(el("div", "os-sub", "🎵 유튜브 앱 사운드 검색어: " + p.사운드검색어));
+    음악칸(c, p);
     var 끝 = el("button", "os-done", 올렸나(p.id, 지금) ? "↩ " + 지금 + " 「올림」 지우기" : "✅ " + 지금 + "에 올렸어요");
     끝.type = "button"; 끝.onclick = function () { 올렸나(p.id, 지금, !올렸나(p.id, 지금)); 다시(); };
     c.appendChild(끝);

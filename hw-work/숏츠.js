@@ -12,11 +12,17 @@
   function raw(p) { return "https://raw.githubusercontent.com/" + REPO + "/" + BR + "/" + p + "?t=" + Date.now(); }
   function el(태그, 반, 글) { var e = document.createElement(태그); if (반) e.className = 반; if (글 != null) e.textContent = 글; return e; }
 
+  // 11/22 사장님 「메인폰은 어디를 열든 상관없게」 → 메인(모두) 링크를 한 번 연 폰은 「메인」 으로 굳음 →
+  //   그 뒤 채널 링크를 열어도 늘 네 채널 전부 (열쇠 값은 이 파일에 안 박음 · 그 폰 기억에만)
   function 열쇠() {
     var m = location.search.match(/[?&]k=([a-f0-9]{8,64})/);
-    if (m) { 기억("hw_os_key", m[1]); try { history.replaceState(null, "", "./?app=hwwork2"); } catch (e) {} return m[1]; }
-    return 기억("hw_os_key") || "";
+    if (m) try { history.replaceState(null, "", "./?app=hwwork2"); } catch (e) {}
+    var 메인 = 기억("hw_os_main");
+    if (메인) return 메인;
+    if (m) 기억("hw_os_key", m[1]);
+    return (m && m[1]) || 기억("hw_os_key") || "";
   }
+  function 메인으로(k) { 기억("hw_os_main", k); }
 
   function 복사(글, m) {
     function 됨() { m.textContent = "복사했어요 ✓"; m.className = "os-msg ok"; }
@@ -136,7 +142,7 @@
       판.innerHTML = '<div class="os-empty">불러오는 중…</div>';
       // 메인폰 열쇠면 all.json · 아니면 그 채널 list.json
       fetch(raw(k + "/all.json")).then(function (r) {
-        if (r.ok) return r.json().then(function (d) { 하나 = false; return d; });
+        if (r.ok) return r.json().then(function (d) { 하나 = false; 메인으로(k); return d; });   // 모두 열쇠 = 이 폰은 메인으로 굳힘
         return fetch(raw(k + "/list.json")).then(function (r2) { if (!r2.ok) throw new Error(r2.status); 하나 = true; return r2.json(); });
       }).then(function (d) {
         자료 = d;

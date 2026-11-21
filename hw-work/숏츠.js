@@ -27,6 +27,17 @@
     if (m) 기억("hw_os_key", m[1]);
     return (m && m[1]) || 기억("hw_os_key") || "";
   }
+  // 11/22 사장님 「아이콘은 각각의 채널명이 들어가게」 → 채널 폰은 그 채널 아이콘·이름으로 깔림(메인폰은 기존 HW 작업실 그대로)
+  function 채널얼굴(코드, 이름) {
+    if (!/^[a-z0-9_]+$/.test(코드)) return;
+    document.title = 이름;
+    var t = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+    if (!t) { t = document.createElement("meta"); t.name = "apple-mobile-web-app-title"; document.head.appendChild(t); }
+    t.content = 이름;
+    var a = document.querySelector('link[rel="apple-touch-icon"]'); if (a) a.href = "icons/ch/" + 코드 + "-180.png";
+    var f = document.querySelector('link[rel="icon"]'); if (f) f.href = "icons/ch/" + 코드 + "-192.png";
+    var m = document.querySelector('link[rel="manifest"]'); if (m) m.href = "m/" + 코드 + ".webmanifest";
+  }
   function 메인으로(k) { 기억("hw_os_main", k); }
 
   function 복사(글, m) {
@@ -151,6 +162,7 @@
         return fetch(raw(k + "/list.json")).then(function (r2) { if (!r2.ok) throw new Error(r2.status); 하나 = true; return r2.json(); });
       }).then(function (d) {
         자료 = d;
+        if (하나 && d.코드) 채널얼굴(d.코드, d.채널 || "채널");
         if (머리) 머리(하나 ? (d.채널 || "채널") : "숏츠 · 채널 " + (d.채널들 || []).length + "개", 하나);
         다시();
       }).catch(function () { 판.innerHTML = '<div class="os-empty">목록을 못 불러왔어요 — 잠시 뒤 다시 열어 주세요</div>'; });

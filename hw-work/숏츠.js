@@ -123,30 +123,58 @@
     if (!m || typeof m !== "object") return;
     var 유 = (m.유튜브 || []).slice(0, 3), 틱 = 틱톡소재(p) ? [] : (m.틱톡 || []).slice(0, 3), 원 = m.원본 || null;
     if (!m.한줄 && !유.length && !틱.length && !원) return;
-    var 상 = el("div", "os-music");
-    상.style.cssText = "border:1px solid #2f2f36;border-radius:12px;padding:10px 11px;margin:10px 0 6px;background:#16161b";
-    상.appendChild(el("div", null, "🎵 배경음악")).style.cssText = "font-weight:800;color:var(--gold);margin-bottom:4px";
-    if (m.한줄) 상.appendChild(el("div", null, m.한줄)).style.cssText = "font-size:14.5px;margin-bottom:6px";
+    if (!document.getElementById("os-music-css")) {       // 11/22 사장님 「업로드할 때 잘 읽을 수 있게」 = 크게 · 곡마다 카드 · 숫자 색 · 1번 추천 크게 · 큰 복사 단추 · 색은 직접 정해 밝은·어두운 화면 둘 다
+      var st = document.createElement("style"); st.id = "os-music-css";
+      st.textContent =
+        ".mu{border:2px solid #F2BE48;border-radius:16px;padding:14px 13px;margin:14px 0 8px;background:#14141a;color:#ffffff;color-scheme:dark}" +
+        ".mu-h{font-size:19px;font-weight:900;color:#F2BE48;margin-bottom:6px}" +
+        ".mu-one{font-size:17px;font-weight:700;line-height:1.55;color:#ffffff;margin-bottom:10px}" +
+        ".mu-sec{font-size:15px;font-weight:800;color:#FFDE8C;margin:16px 0 8px}" +
+        ".mu-card{background:#24242c;border:1px solid #3a3a46;border-radius:14px;padding:13px 13px 12px;margin:0 0 12px}" +
+        ".mu-card.top{background:#2b2410;border:2px solid #F2BE48;padding:16px 14px 14px}" +
+        ".mu-tag{display:inline-block;background:#F2BE48;color:#1a1204;font-weight:900;font-size:13px;border-radius:8px;padding:3px 9px;margin-bottom:8px}" +
+        ".mu-song{font-size:18px;font-weight:900;line-height:1.4;color:#ffffff;word-break:keep-all}" +
+        ".mu-card.top .mu-song{font-size:22px}" +
+        ".mu-artist{font-size:15.5px;color:#d8d8e0;margin-top:3px}" +
+        ".mu-vol{display:inline-block;margin-top:8px;background:#3DDC84;color:#062b14;font-weight:900;font-size:15px;border-radius:8px;padding:4px 10px}" +
+        ".mu-why{font-size:14.5px;line-height:1.6;color:#c4c4cc;margin-top:8px}" +
+        ".mu-copy{display:block;width:100%;min-height:52px;margin-top:11px;border:0;border-radius:12px;background:#F2BE48;color:#1a1204;font:inherit;font-size:17px;font-weight:900;cursor:pointer}" +
+        ".mu-ok{font-size:14px;color:#3DDC84;min-height:1em;margin-top:5px;text-align:center}" +
+        ".mu-orig{font-size:14px;line-height:1.6;color:#b8b8c2;border-top:1px solid #33333c;margin-top:6px;padding-top:10px}" +
+        ".mu-orig b{color:#3DDC84}";
+      document.head.appendChild(st);
+    }
+    var 상 = el("div", "mu");
+    상.appendChild(el("div", "mu-h", "🎵 배경음악"));
+    if (m.한줄) 상.appendChild(el("div", "mu-one", m.한줄));
     function 줄들(머리, 목록) {
+      목록 = 목록.filter(function (x) { return x && String(x.곡 || "").trim(); });
       if (!목록.length) return;
-      상.appendChild(el("div", "os-sub", 머리)).style.margin = "8px 0 2px";
-      목록.forEach(function (x) {
-        var 곡 = String(x.곡 || "").trim(); if (!곡) return;
-        var 글 = [곡, x.가수, x.크기퍼센트 != null ? "크기 " + x.크기퍼센트 + "%" : ""].filter(Boolean).join(" · ");
-        var b = el("button", "os-copy"); b.type = "button";
-        b.appendChild(el("b", null, "복사")); b.appendChild(document.createTextNode(글));
-        var 메 = el("div", "os-msg");
+      상.appendChild(el("div", "mu-sec", 머리));
+      목록.forEach(function (x, i) {
+        var 곡 = String(x.곡).trim();
+        var 카 = el("div", "mu-card" + (i === 0 ? " top" : ""));
+        if (i === 0) 카.appendChild(el("div", "mu-tag", "⭐ 추천 1번"));
+        else 카.appendChild(el("div", "mu-sec", (i + 1) + "번")).style.margin = "0 0 4px";
+        카.appendChild(el("div", "mu-song", 곡));
+        if (x.가수) 카.appendChild(el("div", "mu-artist", x.가수));
+        if (x.크기퍼센트 != null) 카.appendChild(el("div", "mu-vol", "음악 크기 " + x.크기퍼센트 + "%"));
+        if (x.까닭) 카.appendChild(el("div", "mu-why", x.까닭));
+        var b = el("button", "mu-copy", "📋 곡 이름 복사"); b.type = "button";
+        var 메 = el("div", "mu-ok");
         b.onclick = function () { 복사(곡 + (x.가수 ? " " + x.가수 : ""), 메); };
-        상.appendChild(b);
-        if (x.까닭) 상.appendChild(el("div", "os-sub", x.까닭)).style.margin = "0 0 4px 4px";
-        상.appendChild(메);
+        카.appendChild(b); 카.appendChild(메);
+        상.appendChild(카);
       });
     }
-    줄들("유튜브 쇼츠 인기 곡", 유);
-    줄들("틱톡 인기 곡", 틱);
+    줄들("▶ 유튜브 쇼츠 인기 곡", 유);
+    줄들("🎵 틱톡 인기 곡", 틱);
     if (원) {
-      var 원글 = "원본 음악: " + (원.곡 || "곡 이름 모름") + (원.크기퍼센트 != null ? " · 크기 " + 원.크기퍼센트 + "%" : "") + (원.목소리보다dB != null ? " · 목소리보다 " + 원.목소리보다dB + "dB" : "");
-      상.appendChild(el("div", "os-sub", 원글)).style.cssText = "font-size:11.5px;margin:8px 0 0";
+      var 원칸 = el("div", "mu-orig");
+      원칸.appendChild(document.createTextNode("원본 음악: " + (원.곡 || "곡 이름 모름")));
+      if (원.크기퍼센트 != null) { 원칸.appendChild(document.createTextNode(" · 크기 ")); 원칸.appendChild(el("b", null, 원.크기퍼센트 + "%")); }
+      if (원.목소리보다dB != null) 원칸.appendChild(document.createTextNode(" · 목소리보다 " + 원.목소리보다dB + "dB"));
+      상.appendChild(원칸);
     }
     c.appendChild(상);
   }

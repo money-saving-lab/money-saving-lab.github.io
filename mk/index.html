@@ -220,6 +220,35 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     var t = document.createElement("textarea"); t.value = 글; t.style.position = "fixed"; t.style.opacity = "0";
     document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch (e) {} t.remove();
   }
+  // 11/21 밤 사장님 「사진첩으로 바로 못 가?」 → 웹은 아이폰 사진첩에 직접 못 씀(애플이 막음) → 화면을 열면 최신 완성본을 저절로 미리 받아 둠
+  //   아이폰 = 단추 한 번 → 「비디오 저장」 한 번 · 안드로이드 = 다 받으면 저절로 내려받기(갤러리 Download) · 한 번 저장한 편은 다시 저절로 안 받음
+  var 진행 = {}, 화면 = {};
+  function 저장됨(편) { try { return localStorage.getItem("hwmk_저장_" + 편) === "1"; } catch (e) { return false; } }
+  function 저장됨표시(편) { try { localStorage.setItem("hwmk_저장_" + 편, "1"); } catch (e) {} }
+  function 그리기(편, 퍼) {
+    var v = 화면[편]; if (!v) return;
+    v.단추.disabled = true; v.막.style.display = "block"; v.막.firstChild.style.width = 퍼 + "%";
+    v.단추.textContent = "받는 중… " + 퍼 + "%";
+  }
+  function 다받음(편) {
+    var v = 화면[편]; if (!v) return;
+    v.단추.disabled = false; v.막.style.display = "block"; v.막.firstChild.style.width = "100%";
+    v.단추.textContent = 아이폰 ? "📲 눌러서 사진첩에 저장" : "⬇ 눌러서 갤러리에 저장";
+    if (!v.칸.textContent || v.칸.textContent.indexOf("받는 중") === 0) { v.칸.className = "msg ok"; v.칸.textContent = 아이폰 ? "받기 끝 ✓ 위 단추 → 「비디오 저장」" : "받기 끝 ✓"; }
+  }
+  function 받기시작(p, 자동) {
+    if (받은[p.편] || 진행[p.편]) return;
+    var 판 = 화면[p.편], 진 = { 퍼: 0 };
+    진행[p.편] = 진; 그리기(p.편, 0);
+    영상받기(p, 판 ? 판.칸 : el("div"), function (퍼) { 진.퍼 = 퍼; 그리기(p.편, 퍼); }).then(function (f) {
+      delete 진행[p.편]; 다받음(p.편);
+      if (!아이폰 && 자동 && !저장됨(p.편)) { 저장됨표시(p.편); var v = 화면[p.편]; 내려받기(f, v ? v.칸 : el("div")); }
+    }).catch(function (e) {
+      delete 진행[p.편]; var v = 화면[p.편]; if (!v) return;
+      v.단추.disabled = false; v.단추.textContent = 아이폰 ? "📲 사진첩에 저장" : "⬇ 갤러리에 저장";
+      v.칸.className = "msg bad"; v.칸.textContent = "받기 실패 — 다시 눌러 주세요 (" + e.message + ")";
+    });
+  }
   function 카드(p) {
     var c = el("div", "card"), 위 = el("div");
     위.appendChild(el("span", "tag" + (p.상태 === "완성" ? " ok" : ""), p.상태 === "완성" ? "✓ 완성" : (p.상태 || "받음")));
@@ -230,16 +259,15 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     if (p.상태 !== "완성") return c;
     var 칸 = el("div", "msg"), 단추 = el("button", "big", 아이폰 ? "📲 사진첩에 저장" : "⬇ 갤러리에 저장");
     단추.type = "button";
-    단추.onclick = function () {
-      if (받은[p.편]) return 저장(받은[p.편], 칸);
-      단추.disabled = true; 막.style.display = "block";
-      영상받기(p, 칸, function (퍼) { 막.firstChild.style.width = 퍼 + "%"; 단추.textContent = "받는 중… " + 퍼 + "%"; }).then(function () {
-        단추.disabled = false; 단추.textContent = 아이폰 ? "📲 다 받았어요 · 눌러서 사진첩에 저장" : "⬇ 다 받았어요 · 눌러서 저장";
-        칸.className = "msg ok"; 칸.textContent = "받기 끝 ✓ 위 단추를 한 번 더 누르세요";
-      }).catch(function (e) { 단추.disabled = false; 칸.className = "msg bad"; 칸.textContent = "받기 실패 — 다시 눌러 주세요 (" + e.message + ")"; });
-    };
     var 막 = el("div", "bar"); 막.appendChild(el("i")); 막.style.display = "none";
+    var 판 = { 단추: 단추, 막: 막, 칸: 칸 };
+    화면[p.편] = 판;
+    단추.onclick = function () {
+      if (받은[p.편]) { 저장됨표시(p.편); return 저장(받은[p.편], 칸); }
+      받기시작(p, false);
+    };
     c.appendChild(단추); c.appendChild(막); c.appendChild(칸);
+    if (받은[p.편]) 다받음(p.편); else if (진행[p.편]) 그리기(p.편, 진행[p.편].퍼);
     var 글 = p.글 || {};
     function 줄(이름, 값) {
       if (!값) return;
@@ -264,6 +292,8 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
       var L = $("list"); L.innerHTML = "";
       if (!(d.편 || []).length) { L.appendChild(el("div", "empty", "아직 보낸 영상이 없어요")); return; }
       d.편.forEach(function (p) { L.appendChild(카드(p)); });
+      var 새것 = d.편.filter(function (p) { return p.상태 === "완성"; })[0];   // 가장 최근 완성본만 저절로 미리 받기
+      if (새것 && !저장됨(새것.편)) 받기시작(새것, true);
     }).catch(function (e) { $("info").textContent = "불러오기 실패 — 잠시 뒤 다시 열어 주세요 (" + e.message + ")"; });
   }
   // 11/21 밤 앱 아이콘(사모님 = 헤어 · 사장님 = 편집) + 편집 끝 알림(웹 푸시)

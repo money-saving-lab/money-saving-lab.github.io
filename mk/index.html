@@ -42,8 +42,8 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
 <div class="sub" id="info">불러오는 중…</div>
 
 <div class="card">
-  <button class="big" id="고르기" type="button">🎬 영상 고르기</button>
-  <input type="file" id="파일" accept="video/*" style="display:none">
+  <button class="big" id="고르기" type="button">🎬 영상·사진 고르기 (여러 개 섞어도 돼요)</button>
+  <input type="file" id="파일" accept="video/*,image/*" multiple style="display:none">
   <div class="msg" id="고른"></div>
   <label for="설명">어떤 영상인지 대충 적어 주세요</label>
   <textarea id="설명" placeholder="예) 손상모 클리닉 + 레이어드컷 · 30대 손님 · 가을 분위기 · 예약은 네이버"></textarea>
@@ -76,7 +76,7 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
   var 아이폰 = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   var $ = function (id) { return document.getElementById(id); };
   var 분야들 = { "사모님": ["헤어"], "사장님": ["헤어", "헬스", "가게·맛집", "여행", "살림·꿀템", "그 밖"] };
-  var 고른 = null, 누구 = "";
+  var 고른 = [], 누구 = "";
 
   function 부르기(몸) {
     return fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(몸) })
@@ -99,38 +99,54 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
 
   $("고르기").onclick = function () { $("파일").click(); };
   $("파일").onchange = function () {
-    고른 = this.files && this.files[0];
-    if (!고른) return;
-    말("고른", "고른 영상: " + 고른.name + " · " + Math.round(고른.size / 1048576) + "MB", "ok");
+    고른 = Array.prototype.slice.call(this.files || []).slice(0, 30);
+    if (!고른.length) return;
+    var 영 = 고른.filter(function (f) { return /^video/.test(f.type); }).length, 사 = 고른.length - 영;
+    var 합 = 고른.reduce(function (a, f) { return a + f.size; }, 0);
+    말("고른", "고른 것: " + (영 ? "영상 " + 영 + "개 " : "") + (사 ? "사진 " + 사 + "장 " : "") + "· " + Math.round(합 / 1048576) + "MB" +
+      (!영 ? " · 사진만이면 소리는 「음악만」 이나 「AI 목소리」 로 만들어요" : ""), "ok");
     $("보내기").disabled = false;
   };
 
   $("보내기").onclick = function () {
-    if (!고른) return;
+    if (!고른.length) return;
     var 버튼 = this; 버튼.disabled = true; $("고르기").disabled = true;
-    var 전체 = 고른.size, 편 = "", 자리 = "";
+    var 수 = 고른.length, 총 = 고른.reduce(function (a, f) { return a + f.size; }, 0), 보낸 = 0, 편 = "";
     말("올림말", "올리는 중… 화면을 끄지 말고 기다려 주세요 (와이파이 권장)");
-    부르기({ k: k, act: "시작", 이름: 고른.name, 크기: 전체, 형식: 고른.type || "video/mp4",
+    function 하나(f, 자리) {
+      var 전체 = f.size;
+      function 다음(시작) {
+        if (시작 >= 전체) return Promise.resolve();
+        var 끝 = Math.min(전체, 시작 + 조각);
+        return b64(f.slice(시작, 끝)).then(function (s) {
+          return 되풀이(function () { return 부르기({ k: k, act: "조각", 자리: 자리, 시작: 시작, 전체: 전체, b64: s }); }, 3);
+        }).then(function () {
+          var 퍼 = Math.round((보낸 + 끝) * 100 / 총);
+          $("막대").style.width = 퍼 + "%";
+          말("올림말", "올리는 중… " + 퍼 + "%" + (수 > 1 ? " (" + 수 + "개)" : ""));
+          return 다음(끝);
+        });
+      }
+      return 다음(0).then(function () { 보낸 += 전체; });
+    }
+    var 첫 = 고른[0];
+    부르기({ k: k, act: "시작", 이름: 첫.name, 크기: 첫.size, 형식: 첫.type || "video/mp4", 파일수: 수,
       설명: $("설명").value, 분야: $("분야").value, 소리: $("소리").value })
       .then(function (d) {
-        편 = d.편; 자리 = d.자리;
-        function 다음(시작) {
-          if (시작 >= 전체) return Promise.resolve();
-          var 끝 = Math.min(전체, 시작 + 조각);
-          return b64(고른.slice(시작, 끝)).then(function (s) {
-            return 되풀이(function () { return 부르기({ k: k, act: "조각", 자리: 자리, 시작: 시작, 전체: 전체, b64: s }); }, 3);
-          }).then(function () {
-            $("막대").style.width = Math.round(끝 * 100 / 전체) + "%";
-            말("올림말", "올리는 중… " + Math.round(끝 * 100 / 전체) + "%");
-            return 다음(끝);
+        편 = d.편;
+        var 일 = 하나(첫, d.자리);
+        고른.slice(1).forEach(function (f, i) {
+          일 = 일.then(function () {
+            return 부르기({ k: k, act: "더하기", 편: 편, 번호: i + 2, 이름: f.name, 크기: f.size, 형식: f.type || "image/jpeg" })
+              .then(function (r) { return 하나(f, r.자리); });
           });
-        }
-        return 다음(0);
+        });
+        return 일;
       })
-      .then(function () { return 부르기({ k: k, act: "끝", 편: 편 }); })
+      .then(function () { return 부르기({ k: k, act: "끝", 편: 편, 파일수: 수 }); })
       .then(function () {
         말("올림말", "보냈어요 ✓ 편집이 끝나면 아래에 완성본이 떠요 (보통 10~20분)", "ok");
-        고른 = null; $("파일").value = ""; $("설명").value = ""; 말("고른", "");
+        고른 = []; $("파일").value = ""; $("설명").value = ""; 말("고른", "");
         $("고르기").disabled = false; 목록();
       })
       .catch(function (e) {

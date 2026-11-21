@@ -41,6 +41,35 @@ h1 em{font-style:normal;color:var(--gold)}
   color:var(--gold2);background:rgba(12,19,48,.9);box-shadow:0 0 0 1px rgba(242,190,72,.5),0 4px 14px rgba(0,0,0,.4);font-family:inherit;cursor:pointer}
 .tab:active{transform:scale(.97)}
 .open.alt{margin-top:-8px;min-height:50px;font-size:16px;background:var(--navy);color:var(--gold2);box-shadow:0 0 0 1px rgba(242,190,72,.5)}
+/* 11/22 🎬 첫 화면 = 숏츠 (숏츠.js) */
+#os{min-height:100%;padding:14px 16px calc(70px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto}
+.os-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 10px}
+.os-top h2{font-size:20px;font-weight:900;color:var(--gold)}
+.os-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.os-btn{border:1px solid rgba(242,190,72,.45);background:var(--navy);color:var(--gold2);border-radius:11px;padding:7px 10px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
+.os-jump{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px}
+.os-chip{flex:none;padding:6px 11px;border-radius:999px;background:#15151a;border:1px solid #2a2a30;color:var(--text);text-decoration:none;font-size:13px;font-weight:700}
+.os-ch{margin:10px 0 18px;scroll-margin-top:10px}
+.os-chhead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,rgba(242,190,72,.16),rgba(12,19,48,.6));border:1px solid rgba(242,190,72,.35);margin-bottom:10px}
+.os-chname{font-size:18px;font-weight:900}
+.os-folder{flex:none;padding:9px 13px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1204;font-weight:900;text-decoration:none;font-size:14px}
+.os-card{background:#141417;border:1px solid #2a2a30;border-radius:16px;padding:13px;margin:0 0 12px}
+.os-meta{display:flex;gap:6px;margin-bottom:6px}
+.os-pill{font-size:12px;color:var(--muted);border:1px solid #2f2f36;border-radius:999px;padding:2px 8px}
+.os-pill.ok{color:#5cc28a;border-color:#2f6b4c}
+.os-title{font-size:16px;font-weight:800;line-height:1.45;margin-bottom:8px}
+.os-big{display:block;text-align:center;border-radius:13px;padding:13px;font-size:16px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1204;text-decoration:none}
+.os-sub{color:var(--muted);font-size:12.5px;margin:5px 0 8px;line-height:1.5}
+.os-tabs{display:flex;gap:4px;background:#1d1d22;padding:4px;border-radius:12px;margin:6px 0 8px}
+.os-tab{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:800;padding:8px 0;border-radius:9px;cursor:pointer}
+.os-tab.on{background:#000;color:var(--text)}
+.os-copy{display:block;width:100%;text-align:left;border:1px solid #2f2f36;border-radius:11px;padding:10px 11px;margin:6px 0 4px;background:#202026;color:var(--text);font:inherit;font-size:14.5px;cursor:pointer}
+.os-copy b{color:var(--gold);margin-right:7px}
+.os-txt{white-space:pre-wrap;word-break:break-all;font-size:13px;color:#cfcfd4;background:#0c0c0e;border-radius:9px;padding:8px 10px;max-height:7.5em;overflow:auto}
+.os-msg{font-size:12.5px;color:var(--muted);min-height:1.2em;margin:2px 0}
+.os-msg.ok{color:#5cc28a}
+.os-done{display:block;width:100%;border:1px dashed #3a3a42;border-radius:11px;padding:10px;margin-top:8px;background:none;color:var(--text);font:inherit;font-size:14px;cursor:pointer}
+.os-empty{color:var(--muted);text-align:center;padding:26px 0;font-size:14px}
 </style>
 </head>
 <body>
@@ -53,9 +82,15 @@ h1 em{font-style:normal;color:var(--gold)}
   <a class="open alt" id="open2" href="#" rel="noopener" hidden>🌏 해외쇼츠 열기</a>
   <p class="msg" id="msg" hidden></p>
 </main>
+<div id="os" hidden>
+  <div class="os-top"><h2 id="osh">🎬 숏츠</h2>
+    <div class="os-btns" id="osb"><button class="os-btn" type="button" id="osr">새로고침</button></div></div>
+  <div id="osl"></div>
+</div>
 <iframe id="work" title="HW 작업실" hidden allow="clipboard-write; clipboard-read; web-share"></iframe>
 <a class="float" id="float" href="#" target="_blank" rel="noopener" hidden>↗ 새 창</a>
 <button class="tab" id="tab" type="button" hidden>🌏 해외쇼츠</button>
+<script src="숏츠.js"></script>
 <script>
 (function () {
   // 사장님 계정만 열리는 구글 Apps Script 주소 (iframe ✗ — 구글 로그인 쿠키 문제 · 같은 창에서 넘어감)
@@ -112,6 +147,31 @@ h1 em{font-style:normal;color:var(--gold)}
   else if (!공유 && /[?&]go\b/.test(location.search)) {                               // ?go = 예전처럼 구글 주소로 넘어가기
     setTimeout(function () { location.replace(URL_); }, 500);
     setTimeout(function () { 단추("자동으로 안 넘어가면 아래 단추를 눌러 주세요."); }, 3500);
+  } else if (window.HW숏츠 && HW숏츠.열쇠() && !/[?&]os\b/.test(location.search)) {
+    // 11/22 🎬 첫 화면 = 숏츠 (열쇠 = 메인폰 모두 / 채널 폰 그 채널만) · 메인폰만 작업실·해외쇼츠 넣기 단추
+    var os = document.getElementById("os"), osl = document.getElementById("osl"), osb = document.getElementById("osb");
+    document.querySelector("main").hidden = true; os.hidden = false;
+    var work2 = document.getElementById("work"), 뒤 = document.getElementById("tab");
+    function 칸열기(u) {
+      os.hidden = true; work2.hidden = false; work2.classList.remove("on"); work2.src = u;
+      work2.onload = function () { work2.classList.add("on"); };
+      뒤.textContent = "🎬 숏츠"; 뒤.hidden = false;
+      뒤.onclick = function () { work2.hidden = true; work2.src = "about:blank"; 뒤.hidden = true; os.hidden = false; };
+    }
+    function 불러() {
+      HW숏츠.열기(HW숏츠.열쇠(), osl, function (머리, 하나) {
+        document.getElementById("osh").textContent = 하나 ? "🎬 " + 머리 : "🎬 숏츠";
+        if (!하나 && !document.getElementById("osw")) {
+          var a = document.createElement("button"); a.className = "os-btn"; a.type = "button"; a.id = "osw"; a.textContent = "🛠 작업실";
+          a.onclick = function () { 칸열기(URL_); };
+          var b = document.createElement("button"); b.className = "os-btn"; b.type = "button"; b.textContent = "🌏 넣기";
+          b.onclick = function () { 칸열기(URL_OS); };
+          osb.insertBefore(b, osb.firstChild); osb.insertBefore(a, osb.firstChild);
+        }
+      });
+    }
+    document.getElementById("osr").onclick = 불러;
+    불러();
   } else {
     // 10/1 사장님 「딱 앱까지 뜨게 · URL 도 뜨고 그러네」 → 앱 창 안에 끼워 보인다 (주소 줄·구글 「악용사례 신고」 띠 없음)
     var work = document.getElementById("work"), fl = document.getElementById("float");

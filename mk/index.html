@@ -160,23 +160,38 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
 
   // 완성본 받기
   var 받은 = {};
-  function 영상받기(p, 칸) {
+  function 영상받기(p, 칸, 알림) {
     if (받은[p.편]) return Promise.resolve(받은[p.편]);
     var 수 = Math.max(1, Math.ceil((p.크기 || 1) / (8 * 1024 * 1024))), 쪽 = [], 된 = 0;
+    // 11/21 밤 사장님 「퍼센트 올라가게」: 8MB 조각 하나가 몇 초 걸려 숫자가 멈춰 보임 → 조각 안에서도 걸린 시간으로 어림해 1%씩 올림
+    var 지금 = 0, 한조각초 = 6, 조각시작 = Date.now();
+    function 보이기(퍼) {
+      지금 = Math.max(지금, Math.min(99, Math.floor(퍼)));
+      칸.className = "msg"; 칸.textContent = "완성본 받는 중… " + 지금 + "%";
+      if (알림) 알림(지금);
+    }
+    var 시계 = setInterval(function () {
+      var 지난 = (Date.now() - 조각시작) / 1000, 안 = 1 - Math.exp(-지난 / 한조각초);   // 조각 안에서 천천히 다가감(끝까지는 안 감)
+      보이기((된 + 안 * 0.95) * 100 / 수);
+    }, 200);
+    보이기(0);
     function 한쪽(n) {
+      조각시작 = Date.now();
       return 되풀이(function () { return 묻기("act=받기&id=" + encodeURIComponent(p.편) + "&n=" + n); }, 3).then(function (d) {
         var 이진 = atob(d.b64), 배열 = new Uint8Array(이진.length);
         for (var i = 0; i < 이진.length; i++) 배열[i] = 이진.charCodeAt(i);
         쪽[n] = 배열; 된++;
-        칸.textContent = "완성본 받는 중… " + Math.round(된 * 100 / 수) + "%";
+        한조각초 = Math.max(2, (Date.now() - 조각시작) / 1000 / 1.5);
+        보이기(된 * 100 / 수);
       });
     }
     var 일 = Promise.resolve();
     for (var n = 0; n < 수; n++) (function (n) { 일 = 일.then(function () { return 한쪽(n); }); })(n);
     return 일.then(function () {
+      clearInterval(시계); if (알림) 알림(100);
       var f = new File([new Blob(쪽, { type: "video/mp4" })], "HW편집_" + p.편 + ".mp4", { type: "video/mp4" });
       받은[p.편] = f; return f;
-    });
+    }, function (e) { clearInterval(시계); throw e; });
   }
   function 저장(f, 칸) {
     var 짐 = { files: [f] };
@@ -217,13 +232,14 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     단추.type = "button";
     단추.onclick = function () {
       if (받은[p.편]) return 저장(받은[p.편], 칸);
-      단추.disabled = true;
-      영상받기(p, 칸).then(function () {
+      단추.disabled = true; 막.style.display = "block";
+      영상받기(p, 칸, function (퍼) { 막.firstChild.style.width = 퍼 + "%"; 단추.textContent = "받는 중… " + 퍼 + "%"; }).then(function () {
         단추.disabled = false; 단추.textContent = 아이폰 ? "📲 다 받았어요 · 눌러서 사진첩에 저장" : "⬇ 다 받았어요 · 눌러서 저장";
         칸.className = "msg ok"; 칸.textContent = "받기 끝 ✓ 위 단추를 한 번 더 누르세요";
       }).catch(function (e) { 단추.disabled = false; 칸.className = "msg bad"; 칸.textContent = "받기 실패 — 다시 눌러 주세요 (" + e.message + ")"; });
     };
-    c.appendChild(단추); c.appendChild(칸);
+    var 막 = el("div", "bar"); 막.appendChild(el("i")); 막.style.display = "none";
+    c.appendChild(단추); c.appendChild(막); c.appendChild(칸);
     var 글 = p.글 || {};
     function 줄(이름, 값) {
       if (!값) return;

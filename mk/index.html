@@ -282,7 +282,8 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     }
     (글.제목후보 && 글.제목후보.length ? 글.제목후보 : [글.제목]).forEach(function (t, i, a) { 줄(a.length > 1 ? "제목 " + (i + 1) : "제목", t); });
     줄("설명", 글.설명);
-    줄("해시태그", (글.해시태그 || []).join(" "));
+    // 11/21 밤 사장님: 설명 끝에 # 이 붙어 있음 · 태그란은 쉼표로(유튜브 「태그」 칸에 그대로 붙여넣기)
+    줄("태그 (쉼표)", 글.태그 || (글.해시태그 || []).map(function (x) { return String(x).replace(/^#/, ""); }).filter(function (x) { return x.toLowerCase() !== "shorts"; }).join(", "));
     return c;
   }
   function 목록() {

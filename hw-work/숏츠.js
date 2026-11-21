@@ -59,7 +59,7 @@
   }
   function 본문(p) {
     return String(p.설명 || "").split("\n").filter(function (줄) {
-      var s = 줄.trim(); return !(s && /^(#\S+\s*)+$/.test(s));          // 해시태그만 있는 줄은 빼고 끝에 한 번만
+      var s = 줄.trim(); return !(s && (/^(#\S+\s*)+$/.test(s) || /^(원본|元動画|出典|출처)\s*[:：]/.test(s)));   // 해시태그만 있는 줄(끝에 한 번만) · 원본 출처 줄(11/22 사장님 「해짜들 안 씀 → 우리도 안 씀」) 뺌
     }).join("\n").replace(/\n{3,}/g, "\n\n").trim();
   }
   function 제목들(p) { var a = (p.제목후보 && p.제목후보.length ? p.제목후보 : [p.제목]).filter(Boolean); return a.length ? a : [""]; }

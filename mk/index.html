@@ -199,7 +199,9 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     if (navigator.canShare && navigator.canShare(짐) && navigator.share) {
       칸.className = "msg ok"; 칸.textContent = "아래 목록에서 「비디오 저장」 을 누르세요 (「파일에 저장」 ✗)";
       return navigator.share(짐).then(function () { 칸.textContent = "저장했어요 ✓ 사진첩 맨 아래(최근 항목)를 보세요 · 없으면 다시 눌러 「비디오 저장」"; }, function (x) {
-        if (x && x.name === "AbortError") 칸.textContent = "취소했어요 · 다시 눌러도 돼요"; else 내려받기(f, 칸);
+        // 11/21 밤: 아이폰 홈 화면 앱은 파일 내려받기가 안 됨(조용히 사라짐) → 내려받기로 빠지지 않고 다시 누르게
+        if (x && x.name === "AbortError") { 칸.className = "msg"; 칸.textContent = "취소했어요 · 다시 눌러 「비디오 저장」"; }
+        else { 칸.className = "msg bad"; 칸.textContent = "공유창이 안 떴어요 · 단추를 한 번 더 눌러 주세요"; }
       });
     }
     내려받기(f, 칸);

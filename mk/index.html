@@ -10,6 +10,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="theme-color" content="#000000">
 <title>HW 편집</title>
+<link rel="apple-touch-icon" id="애플아이콘" href="icon_hair_180.png">
+<link rel="icon" id="아이콘" href="icon_hair_192.png">
 <style>
 :root{--bg:#0b0b0c;--card:#17171a;--line:#2a2a2f;--gold:#d9b45a;--text:#f2f2f2;--sub:#a0a0a8;--ok:#5cc28a;--bad:#e07070}
 *{box-sizing:border-box}
@@ -56,6 +58,11 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
   <button class="big" id="보내기" type="button" disabled>📤 보내기</button>
   <div class="bar"><i id="막대"></i></div>
   <div class="msg" id="올림말"></div>
+</div>
+
+<div class="card" id="알림칸" style="display:none">
+  <button class="big" id="알림켜기" type="button">🔔 편집 끝나면 알림 받기</button>
+  <div class="msg" id="알림말"></div>
 </div>
 
 <h2>보낸 영상 · 완성본</h2>
@@ -216,6 +223,7 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
   }
   function 목록() {
     return 묻기("act=목록").then(function (d) {
+      if (누구 !== d.누구) 아이콘(d.누구);
       누구 = d.누구;
       $("ch").textContent = 누구 === "사모님" ? "HW 편집 · 헤어" : "HW 편집 · 사장님";
       $("info").textContent = "영상을 보내면 PC 가 편집해서 여기로 돌려줘요 · 완성본은 3일 뒤 사라져요";
@@ -225,8 +233,55 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
       d.편.forEach(function (p) { L.appendChild(카드(p)); });
     }).catch(function (e) { $("info").textContent = "불러오기 실패 — 잠시 뒤 다시 열어 주세요 (" + e.message + ")"; });
   }
+  // 11/21 밤 앱 아이콘(사모님 = 헤어 · 사장님 = 편집) + 편집 끝 알림(웹 푸시)
+  var 푸시열쇠 = "BG1MK3TR4CIplGq1DkXKtX_KGf_kVWLZXra142gjDGFGHBjEcsI6i61yCuWxkdi8-ALI7qyOvM4z43s6CpSLfls";
+  function 아이콘(누) {
+    var 꼬 = 누 === "사장님" ? "boss" : "hair";
+    $("애플아이콘").href = "icon_" + 꼬 + "_180.png"; $("아이콘").href = "icon_" + 꼬 + "_192.png";
+    try {
+      var 짐 = { name: 누 === "사장님" ? "HW 편집" : "HW 헤어 편집", short_name: 누 === "사장님" ? "HW 편집" : "HW 헤어",
+        start_url: location.href, scope: location.origin + "/mk/", display: "standalone", background_color: "#0b0b0c", theme_color: "#000000",
+        icons: [{ src: location.origin + "/mk/icon_" + 꼬 + "_192.png", sizes: "192x192", type: "image/png" },
+                { src: location.origin + "/mk/icon_" + 꼬 + "_512.png", sizes: "512x512", type: "image/png" }] };
+      var m = document.createElement("link"); m.rel = "manifest";
+      m.href = URL.createObjectURL(new Blob([JSON.stringify(짐)], { type: "application/manifest+json" }));
+      document.head.appendChild(m);
+    } catch (e) {}
+  }
+  function 열쇠바꿈(b) {
+    var p = "=".repeat((4 - b.length % 4) % 4), s = atob((b + p).replace(/-/g, "+").replace(/_/g, "/")), a = new Uint8Array(s.length);
+    for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i);
+    return a;
+  }
+  function 알림준비() {
+    var 칸 = $("알림칸");
+    if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+      if (아이폰) { 칸.style.display = ""; $("알림켜기").disabled = true; 말("알림말", "알림은 「공유 → 홈 화면에 추가」 한 뒤, 홈 화면 아이콘으로 열면 켤 수 있어요"); }
+      return;
+    }
+    칸.style.display = "";
+    navigator.serviceWorker.register("sw.js", { scope: "./" }).then(function (r) {
+      return r.pushManager.getSubscription().then(function (s) {
+        if (s && Notification.permission === "granted") { $("알림켜기").textContent = "🔔 알림 켜져 있어요 (다시 누르면 새로 고침)"; 말("알림말", "편집이 끝나면 이 폰으로 알려 드려요", "ok"); }
+      });
+    }).catch(function () {});
+    $("알림켜기").onclick = function () {
+      var 단 = this; 단.disabled = true;
+      Notification.requestPermission().then(function (허락) {
+        if (허락 !== "granted") throw new Error("알림 허용을 눌러 주세요");
+        return navigator.serviceWorker.ready;
+      }).then(function (r) {
+        return r.pushManager.getSubscription().then(function (s) { return s || r.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: 열쇠바꿈(푸시열쇠) }); });
+      }).then(function (s) {
+        return 부르기({ k: k, act: "구독", 구독: JSON.parse(JSON.stringify(s)) });
+      }).then(function () {
+        단.disabled = false; 단.textContent = "🔔 알림 켜져 있어요"; 말("알림말", "켰어요 ✓ 편집이 끝나면 이 폰으로 알려 드려요", "ok");
+      }).catch(function (e) { 단.disabled = false; 말("알림말", "알림 켜기 실패 — " + e.message, "bad"); });
+    };
+  }
   if (!k) { $("info").textContent = "주소가 잘못됐어요 (받은 링크를 그대로 여세요)"; return; }
   목록();
+  알림준비();
   setInterval(function () { if (!document.hidden) 목록(); }, 60000);
 })();
 </script>

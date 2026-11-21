@@ -113,13 +113,18 @@
     });
   }
   var 고른곳 = {};
+  // 11/22 사장님: 원본이 틱톡 소재인 편 = 「틱톡 소재」 표시 · 틱톡 칸 뺌(원본과 겹침)
+  function 틱톡소재(p) { return !!(p && (p.틱톡소재 || p.원본곳 === "틱톡")); }
+  function 그곳들(p) { return 틱톡소재(p) ? 곳들.filter(function (g) { return g !== "틱톡"; }) : 곳들; }
 
   function 편카드(p, 채널) {
     var c = el("div", "os-card");
     var 위 = el("div", "os-meta");
     위.appendChild(el("span", "os-pill", p.올릴날 ? "올릴 날 " + p.올릴날.slice(5).replace("-", "/") : "새 편"));
-    var 된 = 곳들.filter(function (g) { return 올렸나(p.id, g); }).length;
-    위.appendChild(el("span", "os-pill" + (된 === 곳들.length ? " ok" : ""), "올림 " + 된 + "/" + 곳들.length));
+    var 곳s = 그곳들(p);
+    if (틱톡소재(p)) 위.appendChild(el("span", "os-pill", "🎵 틱톡 소재 · 틱톡엔 안 올림"));
+    var 된 = 곳s.filter(function (g) { return 올렸나(p.id, g); }).length;
+    위.appendChild(el("span", "os-pill" + (된 === 곳s.length ? " ok" : ""), "올림 " + 된 + "/" + 곳s.length));
     var 때들 = p.올림 ? Object.keys(p.올림).map(function (g) { return g + " " + p.올림[g]; }) : [];
     if (때들.length) 위.appendChild(el("span", "os-pill", 때들.join(" · ")));
     c.appendChild(위);
@@ -128,9 +133,9 @@
     받.href = 채널.폴더링크 || "#"; 받.target = "_blank"; 받.rel = "noopener";
     c.appendChild(받);
     c.appendChild(el("div", "os-sub", "파일 이름: " + (p.파일 || "") + (아이폰 ? " · 다운로드 → 파일 앱 → 공유 → 비디오 저장" : " · 다운로드 → 갤러리")));
-    var 지금 = 고른곳[p.id] || 곳들.filter(function (g) { return !올렸나(p.id, g); })[0] || 곳들[0];
+    var 지금 = (곳s.indexOf(고른곳[p.id]) >= 0 && 고른곳[p.id]) || 곳s.filter(function (g) { return !올렸나(p.id, g); })[0] || 곳s[0];
     var 탭 = el("div", "os-tabs");
-    곳들.forEach(function (g) {
+    곳s.forEach(function (g) {
       var b = el("button", "os-tab" + (g === 지금 ? " on" : ""), g + (올렸나(p.id, g) ? " ✓" : ""));
       b.type = "button"; b.onclick = function () { 고른곳[p.id] = g; 다시(); };
       탭.appendChild(b);
@@ -155,7 +160,7 @@
     var s = el("section", "os-ch");
     var h = el("div", "os-chhead");
     var 이름 = el("div", "os-chname", ch.채널 || ch.코드 || "채널");
-    var 안올 = 0; (ch.편 || []).forEach(function (p) { 곳들.forEach(function (g) { if (!올렸나(p.id, g)) 안올++; }); });
+    var 안올 = 0; (ch.편 || []).forEach(function (p) { 그곳들(p).forEach(function (g) { if (!올렸나(p.id, g)) 안올++; }); });
     var 곁 = el("div", "os-sub", [ch.결, ch.폰, "영상 " + (ch.편 || []).length + "편", (ch.편 || []).length ? "안 올린 곳 " + 안올 : ""].filter(Boolean).join(" · "));
     var 왼 = el("div"); 왼.appendChild(이름); 왼.appendChild(곁);
     h.appendChild(왼);

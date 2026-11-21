@@ -82,7 +82,36 @@
     return [["설명 (제목 + 설명 + 해시태그)", 붙([제[0], 본, 해])], ["고정 댓글", p.고정댓글]];   // 틱톡
   }
 
-  function 올렸나(id, 곳, v) { var k = "hw_os_done_" + id + "_" + 곳; if (v === undefined) return 기억(k) === "1"; 기억(k, v ? "1" : "0"); }
+  // ③ 올림 모아 보기(11/22) — 누르면 이 폰에 기억 + ntfy 로 알림(로그인 ✗) → 메인폰이 바로 모아 봄 · PC 가 10분마다 목록에 새김
+  var 편표 = {}, 채널표 = {};
+  function 올렸나(id, 곳, v) {
+    var k = "hw_os_done_" + id + "_" + 곳, p = 편표[id];
+    if (v === undefined) return 기억(k) === "1" || !!(p && p.올림 && p.올림[곳]);
+    기억(k, v ? "1" : "0");
+    if (p) { p.올림 = p.올림 || {}; if (v) p.올림[곳] = 지금때(); else delete p.올림[곳]; }
+    var ch = 채널표[id];
+    if (ch && ch.알림) try { fetch("https://ntfy.sh/" + ch.알림, { method: "POST", body: "up " + id + " " + 곳 + " " + (v ? 1 : 0) }); } catch (e) {}
+  }
+  function 지금때() { var d = new Date(), z = function (n) { return (n < 10 ? "0" : "") + n; }; return z(d.getMonth() + 1) + "/" + z(d.getDate()) + " " + z(d.getHours()) + ":" + z(d.getMinutes()); }
+  function 새신호(채널들, 끝) {                        // 메인폰 = PC 를 기다리지 않고 ntfy 에서 바로 읽음(12시간 안)
+    var 남 = 채널들.filter(function (c) { return c.알림; });
+    if (!남.length) return 끝();
+    var n = 남.length;
+    남.forEach(function (c) {
+      fetch("https://ntfy.sh/" + c.알림 + "/json?poll=1&since=12h").then(function (r) { return r.text(); }).then(function (t) {
+        t.split("\n").forEach(function (줄) {
+          try {
+            var j = JSON.parse(줄), m = String(j.message || "").split(" ");
+            if (m.length !== 4 || m[0] !== "up" || !편표[m[1]]) return;
+            var p = 편표[m[1]]; p.올림 = p.올림 || {};
+            if (m[3] === "1") { var d = new Date(j.time * 1000), z = function (x) { return (x < 10 ? "0" : "") + x; };
+              p.올림[m[2]] = z(d.getMonth() + 1) + "/" + z(d.getDate()) + " " + z(d.getHours()) + ":" + z(d.getMinutes()); }
+            else delete p.올림[m[2]];
+          } catch (e) {}
+        });
+      }).catch(function () {}).then(function () { if (--n === 0) 끝(); });
+    });
+  }
   var 고른곳 = {};
 
   function 편카드(p, 채널) {
@@ -91,6 +120,8 @@
     위.appendChild(el("span", "os-pill", p.올릴날 ? "올릴 날 " + p.올릴날.slice(5).replace("-", "/") : "새 편"));
     var 된 = 곳들.filter(function (g) { return 올렸나(p.id, g); }).length;
     위.appendChild(el("span", "os-pill" + (된 === 곳들.length ? " ok" : ""), "올림 " + 된 + "/" + 곳들.length));
+    var 때들 = p.올림 ? Object.keys(p.올림).map(function (g) { return g + " " + p.올림[g]; }) : [];
+    if (때들.length) 위.appendChild(el("span", "os-pill", 때들.join(" · ")));
     c.appendChild(위);
     c.appendChild(el("div", "os-title", 제목들(p)[0]));
     var 받 = el("a", "os-big", "📂 드라이브에서 영상 받기");
@@ -124,7 +155,8 @@
     var s = el("section", "os-ch");
     var h = el("div", "os-chhead");
     var 이름 = el("div", "os-chname", ch.채널 || ch.코드 || "채널");
-    var 곁 = el("div", "os-sub", [ch.결, ch.폰, "영상 " + (ch.편 || []).length + "편"].filter(Boolean).join(" · "));
+    var 안올 = 0; (ch.편 || []).forEach(function (p) { 곳들.forEach(function (g) { if (!올렸나(p.id, g)) 안올++; }); });
+    var 곁 = el("div", "os-sub", [ch.결, ch.폰, "영상 " + (ch.편 || []).length + "편", (ch.편 || []).length ? "안 올린 곳 " + 안올 : ""].filter(Boolean).join(" · "));
     var 왼 = el("div"); 왼.appendChild(이름); 왼.appendChild(곁);
     h.appendChild(왼);
     if (ch.폴더링크) { var f = el("a", "os-folder", "📂 폴더"); f.href = ch.폴더링크; f.target = "_blank"; f.rel = "noopener"; h.appendChild(f); }
@@ -162,9 +194,12 @@
         return fetch(raw(k + "/list.json")).then(function (r2) { if (!r2.ok) throw new Error(r2.status); 하나 = true; return r2.json(); });
       }).then(function (d) {
         자료 = d;
+        편표 = {}; 채널표 = {};
+        (하나 ? [d] : (d.채널들 || [])).forEach(function (c) { (c.편 || []).forEach(function (p) { 편표[p.id] = p; 채널표[p.id] = c; }); });
         if (하나 && d.코드) 채널얼굴(d.코드, d.채널 || "채널");
         if (머리) 머리(하나 ? (d.채널 || "채널") : "숏츠 · 채널 " + (d.채널들 || []).length + "개", 하나);
         다시();
+        if (!하나) 새신호(d.채널들 || [], 다시);
       }).catch(function () { 판.innerHTML = '<div class="os-empty">목록을 못 불러왔어요 — 잠시 뒤 다시 열어 주세요</div>'; });
     }
   };

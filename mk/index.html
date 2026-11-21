@@ -180,9 +180,10 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
   }
   function 저장(f, 칸) {
     var 짐 = { files: [f] };
+    if (!아이폰) return 내려받기(f, 칸);                 // 11/21 밤: 안드로이드 공유창엔 갤러리 저장 칸이 없음 → 바로 내려받기(다운로드 폴더 = 갤러리에 보임)
     if (navigator.canShare && navigator.canShare(짐) && navigator.share) {
-      칸.className = "msg ok"; 칸.textContent = 아이폰 ? "「비디오 저장」 을 누르세요" : "저장할 곳(갤러리·파일)을 고르세요";
-      return navigator.share(짐).then(function () { 칸.textContent = "저장했어요 ✓"; }, function (x) {
+      칸.className = "msg ok"; 칸.textContent = "아래 목록에서 「비디오 저장」 을 누르세요 (「파일에 저장」 ✗)";
+      return navigator.share(짐).then(function () { 칸.textContent = "저장했어요 ✓ 사진첩 맨 아래(최근 항목)를 보세요 · 없으면 다시 눌러 「비디오 저장」"; }, function (x) {
         if (x && x.name === "AbortError") 칸.textContent = "취소했어요 · 다시 눌러도 돼요"; else 내려받기(f, 칸);
       });
     }
@@ -192,7 +193,7 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     var u = URL.createObjectURL(f), a = document.createElement("a");
     a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
-    칸.className = "msg ok"; 칸.textContent = 아이폰 ? "「다운로드」 → 파일 앱 → 공유 → 비디오 저장" : "내려받았어요 ✓ 갤러리를 확인하세요";
+    칸.className = "msg ok"; 칸.textContent = 아이폰 ? "파일 앱 → 다운로드 폴더에 있어요 · 영상을 열고 공유(□↑) → 「비디오 저장」 하면 사진첩에 들어가요" : "내려받았어요 ✓ 갤러리 → 앨범 → 「Download(다운로드)」 에 있어요 · 안 보이면 파일 앱 → 다운로드";
   }
   function el(태그, 반, 글) { var e = document.createElement(태그); if (반) e.className = 반; if (글 != null) e.textContent = 글; return e; }
   function 복사(글, 칸) {

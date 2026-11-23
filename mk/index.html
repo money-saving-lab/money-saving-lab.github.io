@@ -162,7 +162,13 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
   var 받은 = {};
   function 영상받기(p, 칸, 알림) {
     if (받은[p.편]) return Promise.resolve(받은[p.편]);
-    var 수 = Math.max(1, Math.ceil((p.크기 || 1) / (8 * 1024 * 1024))), 쪽 = [], 된 = 0;
+    // 11/23 밤 사장님 「영상 두 개(유튜브 템플릿 · 인스타 꽉 채움) · 받기 한 번에 둘」
+    var 판들 = [{ f: "", 크기: p.크기 || 1, 이름: "HW편집_" + p.편 + "_유튜브.mp4" }];
+    if (p.크기2) 판들.push({ f: "인스타", 크기: p.크기2, 이름: "HW편집_" + p.편 + "_인스타.mp4" });
+    else 판들[0].이름 = "HW편집_" + p.편 + ".mp4";
+    var 일감 = [];
+    판들.forEach(function (판, j) { var m = Math.max(1, Math.ceil(판.크기 / (8 * 1024 * 1024))); 판.쪽 = []; for (var n = 0; n < m; n++) 일감.push([j, n]); });
+    var 수 = 일감.length, 된 = 0;
     // 11/21 밤 사장님 「퍼센트 올라가게」: 8MB 조각 하나가 몇 초 걸려 숫자가 멈춰 보임 → 조각 안에서도 걸린 시간으로 어림해 1%씩 올림
     var 지금 = 0, 한조각초 = 6, 조각시작 = Date.now();
     function 보이기(퍼) {
@@ -175,41 +181,46 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
       보이기((된 + 안 * 0.95) * 100 / 수);
     }, 200);
     보이기(0);
-    function 한쪽(n) {
+    function 한쪽(j, n) {
       조각시작 = Date.now();
-      return 되풀이(function () { return 묻기("act=받기&id=" + encodeURIComponent(p.편) + "&n=" + n); }, 3).then(function (d) {
+      return 되풀이(function () { return 묻기("act=받기&id=" + encodeURIComponent(p.편) + "&n=" + n + (판들[j].f ? "&f=" + encodeURIComponent(판들[j].f) : "")); }, 3).then(function (d) {
         var 이진 = atob(d.b64), 배열 = new Uint8Array(이진.length);
         for (var i = 0; i < 이진.length; i++) 배열[i] = 이진.charCodeAt(i);
-        쪽[n] = 배열; 된++;
+        판들[j].쪽[n] = 배열; 된++;
         한조각초 = Math.max(2, (Date.now() - 조각시작) / 1000 / 1.5);
         보이기(된 * 100 / 수);
       });
     }
     var 일 = Promise.resolve();
-    for (var n = 0; n < 수; n++) (function (n) { 일 = 일.then(function () { return 한쪽(n); }); })(n);
+    일감.forEach(function (x) { 일 = 일.then(function () { return 한쪽(x[0], x[1]); }); });
     return 일.then(function () {
       clearInterval(시계); if (알림) 알림(100);
-      var f = new File([new Blob(쪽, { type: "video/mp4" })], "HW편집_" + p.편 + ".mp4", { type: "video/mp4" });
-      받은[p.편] = f; return f;
+      var fs = 판들.map(function (판) { return new File([new Blob(판.쪽, { type: "video/mp4" })], 판.이름, { type: "video/mp4" }); });
+      받은[p.편] = fs; return fs;
     }, function (e) { clearInterval(시계); throw e; });
   }
   function 저장(f, 칸) {
-    var 짐 = { files: [f] };
-    if (!아이폰) return 내려받기(f, 칸);                 // 11/21 밤: 안드로이드 공유창엔 갤러리 저장 칸이 없음 → 바로 내려받기(다운로드 폴더 = 갤러리에 보임)
+    var fs = Array.isArray(f) ? f : [f], 짐 = { files: fs };
+    if (!아이폰) return 내려받기(fs, 칸);                 // 11/21 밤: 안드로이드 공유창엔 갤러리 저장 칸이 없음 → 바로 내려받기(다운로드 폴더 = 갤러리에 보임)
     if (navigator.canShare && navigator.canShare(짐) && navigator.share) {
-      칸.className = "msg ok"; 칸.textContent = "아래 목록에서 「비디오 저장」 을 누르세요 (「파일에 저장」 ✗)";
+      칸.className = "msg ok"; 칸.textContent = "아래 목록에서 「비디오 저장」 을 누르세요 (「파일에 저장」 ✗)" + (fs.length > 1 ? " · 유튜브·인스타 두 개가 같이 들어가요" : "");
       return navigator.share(짐).then(function () { 칸.textContent = "저장했어요 ✓ 사진첩 맨 아래(최근 항목)를 보세요 · 없으면 다시 눌러 「비디오 저장」"; }, function (x) {
         // 11/21 밤: 아이폰 홈 화면 앱은 파일 내려받기가 안 됨(조용히 사라짐) → 내려받기로 빠지지 않고 다시 누르게
         if (x && x.name === "AbortError") { 칸.className = "msg"; 칸.textContent = "취소했어요 · 다시 눌러 「비디오 저장」"; }
         else { 칸.className = "msg bad"; 칸.textContent = "공유창이 안 떴어요 · 단추를 한 번 더 눌러 주세요"; }
       });
     }
-    내려받기(f, 칸);
+    내려받기(fs, 칸);
   }
   function 내려받기(f, 칸) {
-    var u = URL.createObjectURL(f), a = document.createElement("a");
-    a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
+    var fs = Array.isArray(f) ? f : [f];
+    fs.forEach(function (x, i) {
+      setTimeout(function () {
+        var u = URL.createObjectURL(x), a = document.createElement("a");
+        a.href = u; a.download = x.name; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
+      }, i * 1200);                                   // 두 개 = 1.2초 사이 두고 차례로
+    });
     칸.className = "msg ok"; 칸.textContent = 아이폰 ? "파일 앱 → 다운로드 폴더에 있어요 · 영상을 열고 공유(□↑) → 「비디오 저장」 하면 사진첩에 들어가요" : "내려받았어요 ✓ 갤러리 → 앨범 → 「Download(다운로드)」 에 있어요 · 안 보이면 파일 앱 → 다운로드";
   }
   function el(태그, 반, 글) { var e = document.createElement(태그); if (반) e.className = 반; if (글 != null) e.textContent = 글; return e; }

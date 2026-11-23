@@ -272,6 +272,15 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     c.appendChild(단추); c.appendChild(막); c.appendChild(칸);
     if (받은[p.편]) 다받음(p.편); else if (진행[p.편]) 그리기(p.편, 진행[p.편].퍼);
     var 글 = p.글 || {};
+    // 11/23 사장님 「우리 채널 하듯 드라이브에서 받게 · 유튜브 설명·태그 · 인스타 캡션 복붙」 → 드라이브 단추(한 번 받은 뒤에도 늘 열림) + 유튜브·인스타 칸
+    if (글.폴더링크) {
+      var 드 = el("a", "big", "📂 드라이브에서 영상 받기"); 드.href = 글.폴더링크; 드.target = "_blank"; 드.rel = "noopener";
+      드.style.cssText = "display:block;text-align:center;text-decoration:none;margin-top:8px;background:#1f2a44;color:#fff;border:1px solid #3b4a72";
+      c.appendChild(드);
+      c.appendChild(el("div", "sub", "파일 이름: 편집_" + p.편 + ".mp4 · 3일 뒤 사라져요"));
+    }
+    function 머리(t) { var h = el("div", null, t); h.style.cssText = "margin:16px 0 6px;font-weight:900;color:var(--gold);font-size:17px"; c.appendChild(h); }
+    머리("▶ 유튜브");
     function 줄(이름, 값) {
       if (!값) return;
       var b = el("button", "mid"); b.type = "button";
@@ -284,6 +293,10 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     줄("설명", 글.설명);
     // 11/21 밤 사장님: 설명 끝에 # 이 붙어 있음 · 태그란은 쉼표로(유튜브 「태그」 칸에 그대로 붙여넣기)
     줄("태그 (쉼표)", 글.태그 || (글.해시태그 || []).map(function (x) { return String(x).replace(/^#/, ""); }).filter(function (x) { return x.toLowerCase() !== "shorts"; }).join(", "));
+    머리("📷 인스타");
+    var 첫제목 = (글.제목후보 && 글.제목후보[0]) || 글.제목 || "";
+    var 캡 = [첫제목, String(글.설명 || "").replace(/\s*#(shorts|쇼츠|숏츠)(?![\w가-힣])/gi, "").trim()].filter(Boolean).join(String.fromCharCode(10, 10));
+    줄("캡션 (제목 + 설명 + 해시태그)", 캡);
     return c;
   }
   function 목록() {

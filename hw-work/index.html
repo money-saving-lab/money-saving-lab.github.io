@@ -73,6 +73,12 @@ h1 em{font-style:normal;color:var(--gold)}
 .os-copy{display:block;width:100%;text-align:left;border:1px solid #2f2f36;border-radius:11px;padding:10px 11px;margin:6px 0 4px;background:#202026;color:var(--text);font:inherit;font-size:14.5px;cursor:pointer}
 .os-copy b{color:var(--gold);margin-right:7px}
 .os-txt{white-space:pre-wrap;word-break:break-all;font-size:13px;color:#cfcfd4;background:#0c0c0e;border-radius:9px;padding:8px 10px;max-height:7.5em;overflow:auto}
+.os-copy,.os-done,.os-big,.os-tab,.os-btn,.mu-copy{transition:transform .08s ease,background-color .2s,border-color .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.os-copy:active,.os-done:active,.os-big:active,.os-tab:active,.os-btn:active,.mu-copy:active{transform:scale(.95);filter:brightness(1.25);box-shadow:inset 0 2px 8px rgba(0,0,0,.5)}
+.hw-hit{background:#1e7a48 !important;border-color:#3DDC84 !important;color:#fff !important;font-weight:900;animation:hwpop .35s ease}
+.hw-hit b{color:#fff !important}
+@keyframes hwpop{0%{transform:scale(.93)}55%{transform:scale(1.04)}100%{transform:scale(1)}}
+.os-done.report{border:2px solid #F2BE48;background:#2b2410;color:#F2BE48;font-weight:900;font-size:16px;padding:13px}
 .os-msg{font-size:12.5px;color:var(--muted);min-height:1.2em;margin:2px 0}
 .os-msg.ok{color:#5cc28a}
 .os-done{display:block;width:100%;border:1px dashed #3a3a42;border-radius:11px;padding:10px;margin-top:8px;background:none;color:var(--text);font:inherit;font-size:14px;cursor:pointer}

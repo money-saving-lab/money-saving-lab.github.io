@@ -77,6 +77,9 @@ h1 em{font-style:normal;color:var(--gold)}
 .os-msg.ok{color:#5cc28a}
 .os-done{display:block;width:100%;border:1px dashed #3a3a42;border-radius:11px;padding:10px;margin-top:8px;background:none;color:var(--text);font:inherit;font-size:14px;cursor:pointer}
 .os-empty{color:var(--muted);text-align:center;padding:26px 0;font-size:14px}
+/* 11/23 사장님 「단추 누를 때 느낌 나게」 = 눌리면 쏙 들어가고 살짝 밝아짐 + 폰 진동(안드로이드) */
+button,a.big,a.os-big,a.os-chip,a.os-folder,.mu-copy,[role=button]{transition:transform .09s ease,filter .09s ease,box-shadow .09s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:active,a.big:active,a.os-big:active,a.os-chip:active,a.os-folder:active,.mu-copy:active,[role=button]:active,.hw-press{transform:scale(.94);filter:brightness(1.18);box-shadow:0 0 0 3px rgba(242,190,72,.35) inset}
 </style>
 </head>
 <body>
@@ -302,6 +305,15 @@ h1 em{font-style:normal;color:var(--gold)}
   addEventListener("pageshow", function (e) { if (e.persisted) 단추(); });               // 뒤로 가기로 돌아오면 다시 안 튕기고 단추만
   addEventListener("online", function () { msg.hidden = true; });
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function () {});
+})();
+</script>
+<script>
+// 11/23 누름 느낌: 손가락 닿는 순간 쏙(아이폰은 :active 가 늦어서 클래스로) + 안드로이드 짧은 진동
+(function () {
+  function 단(e) { return e.target && e.target.closest && e.target.closest("button,a.big,a.os-big,a.os-chip,a.os-folder,.mu-copy,[role=button]"); }
+  document.addEventListener("touchstart", function (e) { var b = 단(e); if (b) b.classList.add("hw-press"); }, { passive: true });
+  ["touchend", "touchcancel"].forEach(function (n) { document.addEventListener(n, function () { var x = document.querySelectorAll(".hw-press"); for (var i = 0; i < x.length; i++) (function (b) { setTimeout(function () { b.classList.remove("hw-press"); }, 90); })(x[i]); }, { passive: true }); });
+  document.addEventListener("click", function (e) { if (단(e)) try { navigator.vibrate && navigator.vibrate(18); } catch (er) {} }, true);
 })();
 </script>
 </body>

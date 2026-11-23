@@ -1,6 +1,6 @@
 /* HW 작업실 껍데기 — 이 화면만 저장해 두어 인터넷이 없어도 앱이 열리고 「작업실 열기」 단추가 보이게.
    작업실(Apps Script) 쪽 요청은 건드리지 않는다. 화면을 고치면 V 숫자를 올린다. */
-var V = "hwwork-v13";   // 11/22 🎬 첫 화면 숏츠(숏츠.js)
+var V = "hwwork-v14";   // 11/22 🎬 첫 화면 숏츠(숏츠.js)
 // (v6)   // 11/15 🌏 해외쇼츠 탭 (v5: 10/1 사진 도우미(블로그 사진 복사·공유·저장) (v4: 공유 받기 share_target · v3: 앱 이름표 id 새로)
 var SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png", "./숏츠.js"];
 

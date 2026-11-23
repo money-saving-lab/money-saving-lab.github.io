@@ -297,6 +297,17 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     var 첫제목 = (글.제목후보 && 글.제목후보[0]) || 글.제목 || "";
     var 캡 = [첫제목, String(글.설명 || "").replace(/\s*#(shorts|쇼츠|숏츠)(?![\w가-힣])/gi, "").trim()].filter(Boolean).join(String.fromCharCode(10, 10));
     줄("캡션 (제목 + 설명 + 해시태그)", 캡);
+    // 11/23 사장님 「완성본 지우는 단추」 = 묻고 → 드라이브 휴지통(30일 안 되살림)
+    var 지 = el("button", "mid", "🗑 이 기록 지우기 (폰에 저장한 영상은 그대로)"); 지.type = "button";
+    지.style.cssText = "margin-top:18px;background:#2a1416;color:#ffb3b3;border:1px solid #5a2a2e";
+    var 지말 = el("div", "msg");
+    지.onclick = function () {
+      if (!confirm("이 기록을 목록에서 지울까요? (폰 사진첩·갤러리에 저장한 영상은 그대로 남아요)")) return;
+      지.disabled = true; 지말.className = "msg"; 지말.textContent = "지우는 중…";
+      부르기({ k: k, act: "지우기", 편: p.편 }).then(function () { 지말.className = "msg ok"; 지말.textContent = "지웠어요 ✓"; c.style.opacity = ".35"; setTimeout(function () { 목록(); }, 700); })
+        .catch(function (e) { 지.disabled = false; 지말.className = "msg bad"; 지말.textContent = "못 지웠어요 · 다시 눌러 주세요 (" + (e && e.message || e) + ")"; });
+    };
+    c.appendChild(지); c.appendChild(지말);
     return c;
   }
   function 목록() {

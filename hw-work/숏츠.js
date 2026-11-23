@@ -115,7 +115,7 @@
   var 고른곳 = {};
   // 11/22 사장님: 원본이 틱톡 소재인 편 = 「틱톡 소재」 표시 · 틱톡 칸 뺌(원본과 겹침)
   function 틱톡소재(p) { return !!(p && (p.틱톡소재 || p.원본곳 === "틱톡")); }
-  function 그곳들(p) { return 틱톡소재(p) ? 곳들.filter(function (g) { return g !== "틱톡"; }) : 곳들; }
+  function 그곳들(p) { var 바탕 = (p && p.곳들 && p.곳들.length) ? 곳들.filter(function (g) { return p.곳들.indexOf(g) >= 0; }) : 곳들; return 틱톡소재(p) ? 바탕.filter(function (g) { return g !== "틱톡"; }) : 바탕; }   // 11/23 채널마다 올릴 곳
 
   // 11/22 사장님 「배경음악 설명은 폰 앱에서 보이게」 = 올리기.json 「배경음악」(한판이 넣음) · 없으면 칸 감춤
   function 음악칸(c, p) {

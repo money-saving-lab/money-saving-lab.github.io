@@ -40,8 +40,18 @@
   }
   function 메인으로(k) { 기억("hw_os_main", k); }
 
-  function 복사(글, m) {
-    function 됨() { m.textContent = "복사했어요 ✓"; m.className = "os-msg ok"; }
+  function 눌림(b, 글) {                                // 11/23 사장님 「복사 누를 때 누르는 느낌 · 밋밋해」 = 떨림 + 초록 번쩍 + 단추 글자
+    try { if (navigator.vibrate) navigator.vibrate(35); } catch (e) {}
+    if (!b) return;
+    var 옛 = b.getAttribute("data-old");
+    if (옛 == null) { 옛 = b.innerHTML; b.setAttribute("data-old", 옛); }
+    b.classList.remove("hw-hit"); void b.offsetWidth; b.classList.add("hw-hit");
+    b.innerHTML = 글 || "✓ 복사됨!";
+    clearTimeout(b._hwT);
+    b._hwT = setTimeout(function () { b.classList.remove("hw-hit"); b.innerHTML = b.getAttribute("data-old"); b.removeAttribute("data-old"); }, 1100);
+  }
+  function 복사(글, m, 단추) {
+    function 됨() { m.textContent = "복사했어요 ✓ 붙여 넣으세요"; m.className = (m.className.indexOf("mu-ok") >= 0 ? "mu-ok" : "os-msg ok"); 눌림(단추); }
     function 옛() {
       var t = document.createElement("textarea"); t.value = 글; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
       document.body.appendChild(t); t.select(); t.setSelectionRange(0, 글.length);
@@ -91,6 +101,13 @@
     if (p) { p.올림 = p.올림 || {}; if (v) p.올림[곳] = 지금때(); else delete p.올림[곳]; }
     var ch = 채널표[id];
     if (ch && ch.알림) try { fetch("https://ntfy.sh/" + ch.알림, { method: "POST", body: "up " + id + " " + 곳 + " " + (v ? 1 : 0) }); } catch (e) {}
+  }
+  var 보고통로 = "hwreport787ad204254be5bece2a";        // 11/23 사장님 「올리고 보고하기 단추 · 나한테 알림 오게」 = 사장님 폰이 https://ntfy.sh/<이 통로> 구독
+  function 보고(p, 곳) {
+    var ch = 채널표[p.id] || 자료 || {};
+    var 제 = (제목들(p)[0] || "").slice(0, 80);
+    var 주 = "https://ntfy.sh/" + 보고통로 + "?title=" + encodeURIComponent("📤 " + (ch.채널 || ch.코드 || "채널") + " · " + 곳 + " 올림") + "&tags=outbox_tray";
+    try { fetch(주, { method: "POST", body: 제 + " (" + 지금때() + ")" }); } catch (e) {}
   }
   function 지금때() { var d = new Date(), z = function (n) { return (n < 10 ? "0" : "") + n; }; return z(d.getMonth() + 1) + "/" + z(d.getDate()) + " " + z(d.getHours()) + ":" + z(d.getMinutes()); }
   function 새신호(채널들, 끝) {                        // 메인폰 = PC 를 기다리지 않고 ntfy 에서 바로 읽음(12시간 안)
@@ -162,7 +179,7 @@
         if (x.까닭) 카.appendChild(el("div", "mu-why", x.까닭));
         var b = el("button", "mu-copy", "📋 곡 이름 복사"); b.type = "button";
         var 메 = el("div", "mu-ok");
-        b.onclick = function () { 복사(곡 + (x.가수 ? " " + x.가수 : ""), 메); };
+        b.onclick = function () { 복사(곡 + (x.가수 ? " " + x.가수 : ""), 메, b); };
         카.appendChild(b); 카.appendChild(메);
         상.appendChild(카);
       });
@@ -208,13 +225,19 @@
       var b = el("button", "os-copy"); b.type = "button";
       b.appendChild(el("b", null, "복사")); b.appendChild(document.createTextNode(x[0]));
       var 보기 = el("div", "os-txt", x[1]), m = el("div", "os-msg");
-      b.onclick = function () { 복사(x[1], m); };
+      b.onclick = function () { 복사(x[1], m, b); };
       c.appendChild(b); c.appendChild(보기); c.appendChild(m);
     });
     if (지금 === "유튜브" && p.사운드검색어) c.appendChild(el("div", "os-sub", "🎵 유튜브 앱 사운드 검색어: " + p.사운드검색어));
     음악칸(c, p);
-    var 끝 = el("button", "os-done", 올렸나(p.id, 지금) ? "↩ " + 지금 + " 「올림」 지우기" : "✅ " + 지금 + "에 올렸어요");
-    끝.type = "button"; 끝.onclick = function () { 올렸나(p.id, 지금, !올렸나(p.id, 지금)); 다시(); };
+    var 했 = 올렸나(p.id, 지금);
+    var 끝 = el("button", "os-done" + (했 ? "" : " report"), 했 ? "↩ " + 지금 + " 「올림」 지우기" : "📤 " + 지금 + "에 올리고 보고하기");
+    끝.type = "button";
+    끝.onclick = function () {
+      var 새 = !올렸나(p.id, 지금);
+      올렸나(p.id, 지금, 새);
+      if (새) { 보고(p, 지금); 눌림(끝, "✓ 보고했어요! 사장님께 알림 갔어요"); setTimeout(다시, 1200); } else 다시();
+    };
     c.appendChild(끝);
     return c;
   }

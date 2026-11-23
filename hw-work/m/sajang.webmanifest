@@ -1,0 +1,33 @@
+{
+ "name": "사장님 숏츠",
+ "short_name": "사장님 숏츠",
+ "description": "HW 작업실 · 사장님 숏츠",
+ "lang": "ko",
+ "id": "./?app=hwwork-sajang",
+ "start_url": "../?app=hwwork2&ch=sajang",
+ "scope": "../",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#000000",
+ "theme_color": "#000000",
+ "icons": [
+  {
+   "src": "../icons/ch/sajang-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "../icons/ch/sajang-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "../icons/ch/sajang-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

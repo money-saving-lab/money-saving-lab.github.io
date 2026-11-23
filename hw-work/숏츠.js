@@ -56,8 +56,9 @@
       var t = document.createElement("textarea"); t.value = 글; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
       document.body.appendChild(t); t.select(); t.setSelectionRange(0, 글.length);
       var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
-      t.remove(); if (ok) 됨(); else { m.textContent = "길게 눌러 복사해 주세요"; m.className = "os-msg"; }
+      t.remove(); if (ok) 됨(); else { m.textContent = "길게 눌러 복사해 주세요"; m.className = "os-msg"; }   // 실패해도 누른 느낌(떨림·톡)은 위에서 이미 줌
     }
+    if (단추) { try { if (navigator.vibrate) navigator.vibrate(20); } catch (e) {} 단추.classList.remove("hw-tap"); void 단추.offsetWidth; 단추.classList.add("hw-tap"); }   // 누르는 그 순간 톡
     if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(글).then(됨, 옛); else 옛();
   }
 

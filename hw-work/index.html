@@ -7,7 +7,14 @@
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <title>HW 작업실</title>
-<link rel="manifest" href="manifest.webmanifest">
+<script>
+// 11/23 아이폰 「홈 화면에 추가」 = 처음 읽은 manifest 의 start_url(열쇠 없음)로 깔려 401 → 아이폰엔 manifest 를 아예 안 붙임(지금 주소 = 열쇠 든 주소로 깔림)
+(function () {
+  var 아 = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (아 && /[?&]k=[a-f0-9]{8,64}/.test(location.search)) return;
+  var l = document.createElement("link"); l.rel = "manifest"; l.href = "manifest.webmanifest"; document.head.appendChild(l);
+})();
+</script>
 <link rel="icon" href="icons/favicon-64.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
@@ -186,7 +193,7 @@ h1 em{font-style:normal;color:var(--gold)}
       document.body.appendChild(줄);
       os.style.paddingBottom = "calc(80px + env(safe-area-inset-bottom,0px))";
       var 전 = ""; try { 전 = sessionStorage.getItem("hw_main_tab") || ""; } catch (e) {}
-      보기(전 || "해외쇼츠");
+      보기(전 || (HW숏츠.열쇠() ? "해외쇼츠" : "숏츠"));   // 11/23 열쇠 없는 폰 = 구글 칸(사장님 계정만 · 남 폰은 401) 말고 링크 붙여 넣는 칸부터
     }
     function 열쇠칸() {
       document.getElementById("osh").textContent = "🎬 채널 숏츠 첫 설정";

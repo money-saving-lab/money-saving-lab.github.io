@@ -45,6 +45,10 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
   <button class="big" id="고르기" type="button">🎬 영상·사진 고르기 (여러 개 섞어도 돼요)</button>
   <input type="file" id="파일" accept="video/*,image/*" multiple style="display:none">
   <div class="msg" id="고른"></div>
+  <button class="mid" id="같이녹음" type="button" style="margin-top:8px">🎙 음성 먼저 녹음해서 같이 보내기</button>
+  <audio id="같이들어" controls style="width:100%;margin-top:6px;display:none"></audio>
+  <button class="mid" id="같이지우기" type="button" style="display:none;background:#2a1416;color:#ffb3b3;border:1px solid #5a2a2e">🗑 녹음 빼기</button>
+  <div class="msg" id="같이말">영상 설명을 말로 녹음해 같이 보내면, 그 목소리로 컷 편집하고 자막도 넣어 드려요</div>
   <label for="설명">어떤 영상인지 대충 적어 주세요</label>
   <textarea id="설명" placeholder="예) 손상모 클리닉 + 레이어드컷 · 30대 손님 · 가을 분위기 · 예약은 네이버"></textarea>
   <label for="분야">분야</label>
@@ -109,9 +113,41 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     $("보내기").disabled = false;
   };
 
+  // 11/23 밤 「음성 먼저 녹음해 같이 보내기」 = 녹음 파일을 영상 뒤에 붙여 한 번에 올림(PC 가 받아써서 컷·자막)
+  var 같이녹음파일 = null, 같이기 = null, 같이흐름 = null, 같이조각 = [], 같이시작 = 0, 같이시계 = null;
+  function 같이빼기() {
+    같이녹음파일 = null; $("같이들어").style.display = "none"; $("같이지우기").style.display = "none";
+    $("같이녹음").textContent = "🎙 음성 먼저 녹음해서 같이 보내기";
+    말("같이말", "영상 설명을 말로 녹음해 같이 보내면, 그 목소리로 컷 편집하고 자막도 넣어 드려요");
+  }
+  $("같이지우기").onclick = 같이빼기;
+  $("같이녹음").onclick = function () {
+    if (같이기 && 같이기.state === "recording") { 같이기.stop(); return; }
+    if (!navigator.mediaDevices || !window.MediaRecorder) { 말("같이말", "이 폰 브라우저는 녹음이 안 돼요 · 사파리·크롬 최신으로 열어 주세요", "bad"); return; }
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (s) {
+      같이흐름 = s; 같이조각 = [];
+      var 형 = ["audio/mp4", "audio/webm;codecs=opus", "audio/webm", "audio/aac"].filter(function (x) { return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(x); })[0] || "";
+      같이기 = 형 ? new MediaRecorder(s, { mimeType: 형 }) : new MediaRecorder(s);
+      같이기.ondataavailable = function (e) { if (e.data && e.data.size) 같이조각.push(e.data); };
+      같이기.onstop = function () {
+        녹음중 = false; clearInterval(같이시계);
+        같이흐름.getTracks().forEach(function (t) { t.stop(); });
+        var t = (같이기.mimeType || 형 || "audio/mp4").split(";")[0];
+        같이녹음파일 = new File(같이조각, /webm|ogg/.test(t) ? "녹음.weba" : "녹음.m4a", { type: t });
+        $("같이들어").src = URL.createObjectURL(같이녹음파일); $("같이들어").style.display = "block";
+        $("같이지우기").style.display = "block"; $("같이녹음").textContent = "🔁 처음부터 다시 녹음";
+        말("같이말", "녹음 " + Math.round((Date.now() - 같이시작) / 1000) + "초 붙였어요 ✓ 영상 고르고 「보내기」 누르면 같이 가요", "ok");
+      };
+      같이기.start(1000); 녹음중 = true; 같이시작 = Date.now(); $("같이녹음").textContent = "⏹ 녹음 끝내기";
+      같이시계 = setInterval(function () { 말("같이말", "🔴 녹음 중… " + Math.round((Date.now() - 같이시작) / 1000) + "초"); }, 500);
+    }).catch(function (e) { 말("같이말", "마이크를 못 열었어요 · 마이크 허용을 눌러 주세요 (" + (e && e.message || e) + ")", "bad"); });
+  };
+
   $("보내기").onclick = function () {
     if (!고른.length) return;
     var 버튼 = this; 버튼.disabled = true; $("고르기").disabled = true;
+    var 소리값 = $("소리").value;
+    if (같이녹음파일) { 고른 = 고른.concat([같이녹음파일]); 소리값 = "녹음함께"; }      // 11/23 밤 사장님 「영상과 음성 녹음을 한 번에 보내면 알아서 자막과 함께 편집」
     var 수 = 고른.length, 총 = 고른.reduce(function (a, f) { return a + f.size; }, 0), 보낸 = 0, 편 = "";
     말("올림말", "올리는 중… 화면을 끄지 말고 기다려 주세요 (와이파이 권장)");
     function 하나(f, 자리) {
@@ -132,7 +168,7 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     }
     var 첫 = 고른[0];
     부르기({ k: k, act: "시작", 이름: 첫.name, 크기: 첫.size, 형식: 첫.type || "video/mp4", 파일수: 수,
-      설명: $("설명").value, 분야: $("분야").value, 소리: $("소리").value })
+      설명: $("설명").value, 분야: $("분야").value, 소리: 소리값 })
       .then(function (d) {
         편 = d.편;
         var 일 = 하나(첫, d.자리);
@@ -147,10 +183,11 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
       .then(function () { return 부르기({ k: k, act: "끝", 편: 편, 파일수: 수 }); })
       .then(function () {
         말("올림말", "보냈어요 ✓ 편집이 끝나면 아래에 완성본이 떠요 (보통 10~20분)", "ok");
-        고른 = []; $("파일").value = ""; $("설명").value = ""; 말("고른", "");
+        고른 = []; $("파일").value = ""; $("설명").value = ""; 말("고른", ""); 같이빼기();
         $("고르기").disabled = false; 목록();
       })
       .catch(function (e) {
+        고른 = 고른.filter(function (f) { return f !== 같이녹음파일; });     // 다시 누를 때 녹음이 두 번 붙지 않게
         말("올림말", "보내기 실패 — 다시 눌러 주세요 (" + e.message + ")", "bad");
         버튼.disabled = false; $("고르기").disabled = false;
       });

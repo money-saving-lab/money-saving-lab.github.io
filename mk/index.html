@@ -149,7 +149,8 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     var 소리값 = $("소리").value;
     if (같이녹음파일) { 고른 = 고른.concat([같이녹음파일]); 소리값 = "녹음함께"; }      // 11/23 밤 사장님 「영상과 음성 녹음을 한 번에 보내면 알아서 자막과 함께 편집」
     var 수 = 고른.length, 총 = 고른.reduce(function (a, f) { return a + f.size; }, 0), 보낸 = 0, 편 = "";
-    말("올림말", "올리는 중… 화면을 끄지 말고 기다려 주세요 (와이파이 권장)");
+    말("올림말", "올리는 중… 다 올라갈 때까지 이 화면에 있어 주세요 (와이파이 권장 · 화면이 꺼져도 다시 켜면 이어서 올라가요)");
+    올리는중 = true; 화면켜기();
     function 하나(f, 자리) {
       var 전체 = f.size;
       function 다음(시작) {
@@ -182,18 +183,39 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
       })
       .then(function () { return 부르기({ k: k, act: "끝", 편: 편, 파일수: 수 }); })
       .then(function () {
+        올리는중 = false; 화면풀기();
         말("올림말", "보냈어요 ✓ 편집이 끝나면 아래에 완성본이 떠요 (보통 10~20분)", "ok");
         고른 = []; $("파일").value = ""; $("설명").value = ""; 말("고른", ""); 같이빼기();
         $("고르기").disabled = false; 목록();
       })
       .catch(function (e) {
+        올리는중 = false; 화면풀기();
         고른 = 고른.filter(function (f) { return f !== 같이녹음파일; });     // 다시 누를 때 녹음이 두 번 붙지 않게
         말("올림말", "보내기 실패 — 다시 눌러 주세요 (" + e.message + ")", "bad");
         버튼.disabled = false; $("고르기").disabled = false;
       });
   };
+  // 11/24 사모님 .mov 3번 못 옴(서버 시험은 됨) = 올리는 도중 화면 꺼짐·다른 앱 → 조각 3번 실패 → 멈춤
+  // → 화면 켜 두기(wakeLock) + 실패하면 화면이 다시 보일 때까지 기다렸다가 같은 조각부터 이어 올림(8번까지)
+  var 켜둠 = null;
+  function 화면켜기() { try { if (navigator.wakeLock) navigator.wakeLock.request("screen").then(function (w) { 켜둠 = w; }).catch(function () {}); } catch (e) {} }
+  function 화면풀기() { try { if (켜둠) 켜둠.release(); } catch (e) {} 켜둠 = null; }
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible" && 켜둠 === null && 올리는중) 화면켜기(); });
+  var 올리는중 = false;
+  function 보일때까지() {
+    if (document.visibilityState === "visible") return new Promise(function (ok) { setTimeout(ok, 3000); });
+    return new Promise(function (ok) {
+      function 봄() { if (document.visibilityState === "visible") { document.removeEventListener("visibilitychange", 봄); setTimeout(ok, 1500); } }
+      document.addEventListener("visibilitychange", 봄);
+    });
+  }
   function 되풀이(일, 번) {
-    return 일().catch(function (e) { if (번 <= 1) throw e; return new Promise(function (ok) { setTimeout(ok, 2000); }).then(function () { return 되풀이(일, 번 - 1); }); });
+    번 = Math.max(번 || 0, 8);
+    return 일().catch(function (e) {
+      if (번 <= 1) throw e;
+      if ($("올림말")) 말("올림말", "잠깐 끊겼어요 · 이어서 올리는 중… (화면을 켜 두고 이 화면에 있어 주세요)");
+      return 보일때까지().then(function () { return 되풀이(일, 번 - 1); });
+    });
   }
 
   // 완성본 받기

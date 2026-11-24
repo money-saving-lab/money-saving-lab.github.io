@@ -149,41 +149,57 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
     var 소리값 = $("소리").value;
     if (같이녹음파일) { 고른 = 고른.concat([같이녹음파일]); 소리값 = "녹음함께"; }      // 11/23 밤 사장님 「영상과 음성 녹음을 한 번에 보내면 알아서 자막과 함께 편집」
     var 수 = 고른.length, 총 = 고른.reduce(function (a, f) { return a + f.size; }, 0), 보낸 = 0, 편 = "";
-    말("올림말", "올리는 중… 다 올라갈 때까지 이 화면에 있어 주세요 (와이파이 권장 · 화면이 꺼져도 다시 켜면 이어서 올라가요)");
+    // 11/24 사장님 「빨리 제대로 되게」 = 끊겨도 처음부터 다시 ✗ → 같은 파일을 다시 「보내기」 하면 끊긴 편·자리·조각부터 이어 올림(창을 닫았다 열어도 · 6일 안)
+    var 이어열쇠 = "hwmk_이어_" + k.slice(0, 6) + "_" + 고른.map(function (f) { return f.name + ":" + f.size; }).join("|");
+    var 이어 = null;
+    try { 이어 = JSON.parse(localStorage.getItem(이어열쇠) || "null"); } catch (x) { 이어 = null; }
+    if (이어 && (!이어.편 || Date.now() - (이어.때 || 0) > 6 * 864e5)) 이어 = null;
+    function 이어적기() { try { 이어.때 = Date.now(); localStorage.setItem(이어열쇠, JSON.stringify(이어)); } catch (x) {} }
+    말("올림말", (이어 ? "끊긴 곳부터 이어서 올리는 중… " : "올리는 중… ") + "다 올라갈 때까지 이 화면에 있어 주세요 (와이파이 권장 · 화면이 꺼져도 다시 켜면 이어서 올라가요)");
     올리는중 = true; 화면켜기();
-    function 하나(f, 자리) {
+    function 하나(f, 자리, 번) {
       var 전체 = f.size;
       function 다음(시작) {
         if (시작 >= 전체) return Promise.resolve();
         var 끝 = Math.min(전체, 시작 + 조각);
         return b64(f.slice(시작, 끝)).then(function (s) {
-          return 되풀이(function () { return 부르기({ k: k, act: "조각", 자리: 자리, 시작: 시작, 전체: 전체, b64: s }); }, 3);
+          return 되풀이(function () { return 부르기({ k: k, act: "조각", 자리: 자리, 시작: 시작, 전체: 전체, b64: s }); }, 8);
         }).then(function () {
+          이어.파일 = 번; 이어.다음 = 끝; 이어적기();
           var 퍼 = Math.round((보낸 + 끝) * 100 / 총);
           $("막대").style.width = 퍼 + "%";
           말("올림말", "올리는 중… " + 퍼 + "%" + (수 > 1 ? " (" + 수 + "개)" : ""));
           return 다음(끝);
         });
       }
-      return 다음(0).then(function () { 보낸 += 전체; });
+      var 처음 = (이어 && 이어.파일 === 번) ? (이어.다음 || 0) : 0;
+      return 다음(처음).then(function () { 보낸 += 전체; 이어.파일 = 번 + 1; 이어.다음 = 0; 이어적기(); });
     }
     var 첫 = 고른[0];
-    부르기({ k: k, act: "시작", 이름: 첫.name, 크기: 첫.size, 형식: 첫.type || "video/mp4", 파일수: 수,
-      설명: $("설명").value, 분야: $("분야").value, 소리: 소리값 })
+    var 시작함 = 이어 ? Promise.resolve({ 편: 이어.편, 자리: 이어.자리[0] }) :
+      부르기({ k: k, act: "시작", 이름: 첫.name, 크기: 첫.size, 형식: 첫.type || "video/mp4", 파일수: 수,
+        설명: $("설명").value, 분야: $("분야").value, 소리: 소리값 }).then(function (d) {
+          이어 = { 편: d.편, 자리: [d.자리], 파일: 0, 다음: 0 }; 이어적기(); return d;
+        });
+    시작함
       .then(function (d) {
         편 = d.편;
-        var 일 = 하나(첫, d.자리);
-        고른.slice(1).forEach(function (f, i) {
+        고른.forEach(function (f, i) { if (i < (이어.파일 || 0)) 보낸 += f.size; });   // 이미 다 올린 파일은 건너뜀
+        var 일 = Promise.resolve();
+        고른.forEach(function (f, i) {
+          if (i < (이어.파일 || 0)) return;
           일 = 일.then(function () {
-            return 부르기({ k: k, act: "더하기", 편: 편, 번호: i + 2, 이름: f.name, 크기: f.size, 형식: f.type || "image/jpeg" })
-              .then(function (r) { return 하나(f, r.자리); });
+            if (이어.자리[i]) return 하나(f, 이어.자리[i], i);
+            return 부르기({ k: k, act: "더하기", 편: 편, 번호: i + 1, 이름: f.name, 크기: f.size, 형식: f.type || "image/jpeg" })
+              .then(function (r) { 이어.자리[i] = r.자리; 이어적기(); return 하나(f, r.자리, i); });
           });
         });
         return 일;
       })
-      .then(function () { return 부르기({ k: k, act: "끝", 편: 편, 파일수: 수 }); })
+      .then(function () { return 되풀이(function () { return 부르기({ k: k, act: "끝", 편: 편, 파일수: 수 }); }, 8); })
       .then(function () {
         올리는중 = false; 화면풀기();
+        try { localStorage.removeItem(이어열쇠); } catch (x) {}
         말("올림말", "보냈어요 ✓ 편집이 끝나면 아래에 완성본이 떠요 (보통 10~20분)", "ok");
         고른 = []; $("파일").value = ""; $("설명").value = ""; 말("고른", ""); 같이빼기();
         $("고르기").disabled = false; 목록();
@@ -191,7 +207,10 @@ label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
       .catch(function (e) {
         올리는중 = false; 화면풀기();
         고른 = 고른.filter(function (f) { return f !== 같이녹음파일; });     // 다시 누를 때 녹음이 두 번 붙지 않게
-        말("올림말", "보내기 실패 — 다시 눌러 주세요 (" + e.message + ")", "bad");
+        var 왜 = (e && (e.name ? e.name + ": " : "") + (e.message || e)) || "모름";
+        부르기({ k: k, act: "오류", 편: 편, 글: 왜, 파일: 고른.map(function (f) { return f.name + " " + f.type + " " + f.size; }).join(" | "),
+          이어: 이어 ? (이어.파일 + ":" + 이어.다음) : "", 폰: navigator.userAgent }).catch(function () {});   // 11/24 = 실패 까닭을 PC 가 볼 수 있게
+        말("올림말", "잠깐 끊겼어요 — 「보내기」 를 한 번 더 누르면 끊긴 곳부터 이어서 올라가요 (" + 왜 + ")", "bad");
         버튼.disabled = false; $("고르기").disabled = false;
       });
   };

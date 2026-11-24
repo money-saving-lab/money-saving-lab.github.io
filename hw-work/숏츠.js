@@ -103,6 +103,17 @@
     var ch = 채널표[id];
     if (ch && ch.알림) try { fetch("https://ntfy.sh/" + ch.알림, { method: "POST", body: "up " + id + " " + 곳 + " " + (v ? 1 : 0) }); } catch (e) {}
   }
+  // 11/24 사장님 「채널폰 업로드 끝나면 폰 화면에서 삭제」 = 이 폰에서 바로 숨김 + ntfy 「del <id>」 → PC 채널폰.py 가 10분 안에 드라이브 영상·글 휴지통 + 목록에서 뺌
+  function 지웠나(id) { return 기억("hw_os_del_" + id) === "1" || !!(편표[id] && 편표[id]._지움); }
+  function 지우기(p) {
+    if (!confirm("이 영상을 지울까요?\n\n「" + (제목들(p)[0] || "").slice(0, 40) + "」\n\n드라이브 영상과 글이 휴지통으로 가고 목록에서 빠져요.")) return;
+    기억("hw_os_del_" + p.id, "1");
+    if (편표[p.id]) 편표[p.id]._지움 = true;
+    var ch = 채널표[p.id];
+    if (ch && ch.알림) try { fetch("https://ntfy.sh/" + ch.알림, { method: "POST", body: "del " + p.id }); } catch (e) {}
+    다시();
+  }
+  function 남은편(ch) { return (ch.편 || []).filter(function (p) { return !지웠나(p.id); }); }
   var 보고통로 = "hwreport787ad204254be5bece2a";        // 11/23 사장님 「올리고 보고하기 단추 · 나한테 알림 오게」 = 사장님 폰이 https://ntfy.sh/<이 통로> 구독
   function 보고(p, 곳) {
     var ch = 채널표[p.id] || 자료 || {};
@@ -120,6 +131,7 @@
         t.split("\n").forEach(function (줄) {
           try {
             var j = JSON.parse(줄), m = String(j.message || "").split(" ");
+            if (m.length === 2 && m[0] === "del" && 편표[m[1]]) { 편표[m[1]]._지움 = true; return; }
             if (m.length !== 4 || m[0] !== "up" || !편표[m[1]]) return;
             var p = 편표[m[1]]; p.올림 = p.올림 || {};
             if (m[3] === "1") { var d = new Date(j.time * 1000), z = function (x) { return (x < 10 ? "0" : "") + x; };
@@ -240,6 +252,10 @@
       if (새) { 보고(p, 지금); 눌림(끝, "✓ 보고했어요! 사장님께 알림 갔어요"); setTimeout(다시, 1200); } else 다시();
     };
     c.appendChild(끝);
+    var 지 = el("button", "os-done os-del", "🗑 올렸어요 · 지우기");
+    지.type = "button";
+    지.onclick = function () { 지우기(p); };
+    c.appendChild(지);
     return c;
   }
 
@@ -247,13 +263,13 @@
     var s = el("section", "os-ch");
     var h = el("div", "os-chhead");
     var 이름 = el("div", "os-chname", ch.채널 || ch.코드 || "채널");
-    var 안올 = 0; (ch.편 || []).forEach(function (p) { 그곳들(p).forEach(function (g) { if (!올렸나(p.id, g)) 안올++; }); });
-    var 곁 = el("div", "os-sub", [ch.결, ch.폰, "영상 " + (ch.편 || []).length + "편", (ch.편 || []).length ? "안 올린 곳 " + 안올 : ""].filter(Boolean).join(" · "));
+    var 편들 = 남은편(ch);
+    var 안올 = 0; 편들.forEach(function (p) { 그곳들(p).forEach(function (g) { if (!올렸나(p.id, g)) 안올++; }); });
+    var 곁 = el("div", "os-sub", [ch.결, ch.폰, "영상 " + 편들.length + "편", 편들.length ? "안 올린 곳 " + 안올 : ""].filter(Boolean).join(" · "));
     var 왼 = el("div"); 왼.appendChild(이름); 왼.appendChild(곁);
     h.appendChild(왼);
     if (ch.폴더링크) { var f = el("a", "os-folder", "📂 폴더"); f.href = ch.폴더링크; f.target = "_blank"; f.rel = "noopener"; h.appendChild(f); }
     s.appendChild(h);
-    var 편들 = ch.편 || [];
     if (!편들.length) s.appendChild(el("div", "os-empty", "지금 올릴 영상이 없어요"));
     편들.forEach(function (p) { s.appendChild(편카드(p, ch)); });
     return s;
@@ -267,7 +283,7 @@
     if (!하나) {
       var 줄 = el("div", "os-jump");
       채널들.forEach(function (ch, i) {
-        var a = el("a", "os-chip", (ch.채널 || ch.코드) + " " + (ch.편 || []).length); a.href = "#os-ch-" + i; 줄.appendChild(a);
+        var a = el("a", "os-chip", (ch.채널 || ch.코드) + " " + 남은편(ch).length); a.href = "#os-ch-" + i; 줄.appendChild(a);
       });
       판.appendChild(줄);
     }

@@ -240,6 +240,10 @@
     c.appendChild(탭);
     글들(p, 지금).forEach(function (x) {
       if (!x[1]) return;
+      if (p.인스타빼기 && /^설명/.test(x[0])) {   // 11/25 한판 = 설명 칸 바로 위 빨간 경고(복사 글에는 안 들어감)
+        var 경 = el("div", "os-sub", p.인스타빼기); 경.style.cssText = "color:#ff6b5e;font-weight:900;font-size:15px;margin:10px 0 4px";
+        c.appendChild(경);
+      }
       var b = el("button", "os-copy"); b.type = "button";
       b.appendChild(el("b", null, "복사")); b.appendChild(document.createTextNode(x[0]));
       var 보기 = el("div", "os-txt", x[1]), m = el("div", "os-msg");

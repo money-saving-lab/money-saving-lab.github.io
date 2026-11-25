@@ -215,6 +215,11 @@
     위.appendChild(el("span", "os-pill", p.올릴날 ? "올릴 날 " + p.올릴날.slice(5).replace("-", "/") : "새 편"));
     var 곳s = 그곳들(p);
     if (틱톡소재(p)) 위.appendChild(el("span", "os-pill", "🎵 틱톡 소재 · 틱톡엔 안 올림"));
+    if (p.인스타빼기 || (p.곳들 && p.곳들.length && p.곳들.indexOf("인스타") < 0)) {   // 11/25 한판 방 = 메타 저작권 차단 위험 편
+      var 인 = el("span", "os-pill", "🚫 인스타 ✗ · 유튜브만"); 인.style.cssText = "background:#5a1d1d;color:#ffb4ab;border-color:#a33";
+      if (p.인스타빼기) 인.title = p.인스타빼기;
+      위.appendChild(인);
+    }
     var 된 = 곳s.filter(function (g) { return 올렸나(p.id, g); }).length;
     위.appendChild(el("span", "os-pill" + (된 === 곳s.length ? " ok" : ""), "올림 " + 된 + "/" + 곳s.length));
     var 때들 = p.올림 ? Object.keys(p.올림).map(function (g) { return g + " " + p.올림[g]; }) : [];

@@ -3,9 +3,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme:light)"><meta name="theme-color" content="#0b0b0d" media="(prefers-color-scheme:dark)">
 <title>K-Beauty Savings Lab</title>
-<meta name="description" content="K-Beauty Savings Lab. A free guide to Korean beauty best sellers on Amazon, sorted by skin concern. Contains affiliate links.">
+<meta name="description" content="K-Beauty Savings Lab. Korean beauty best sellers on Amazon, sorted by skin concern, plus a free guide. Contains affiliate links.">
 <meta property="og:type" content="website"><meta property="og:title" content="K-Beauty Savings Lab">
-<meta property="og:description" content="Free guide: K-Beauty by Skin Concern. Amazon best sellers, explained.">
+<meta property="og:description" content="Korean beauty best sellers on Amazon, sorted by skin concern. Free guide included.">
 <meta property="og:url" content="https://money-saving-lab.com/en/">
 <link rel="icon" href="../img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,11 +67,52 @@ h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:21px
 footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:11.5px;line-height:1.7}
 @keyframes lxf{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:no-preference){.lx-more[open]>.lx-rows{animation:lxf .25s ease}}
+
+.gx-stat{display:flex;gap:24px;margin-top:22px}
+.gx-stat div{font-size:12px;color:var(--dim);line-height:1.5}
+.gx-stat b{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:24px;color:var(--txt);line-height:1.2}
+.gx-nav,.gx-bar{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:22px -20px 0;padding:0 20px 2px}
+.gx-nav::-webkit-scrollbar,.gx-bar::-webkit-scrollbar{display:none}
+.gx-chip{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--txt);font:inherit;font-size:13px;font-weight:500;line-height:1;text-decoration:none;cursor:pointer;white-space:nowrap}
+.gx-chip small{color:var(--dim);font-size:11.5px}
+.gx-chip[aria-pressed="true"]{border-color:var(--gold);color:var(--gold2)}
+.gx-bar{position:sticky;top:37px;z-index:4;background:var(--bg);margin-top:20px;padding:10px 20px;border-bottom:1px solid var(--line)}
+.gx-count{color:var(--dim);font-size:12.5px;margin-top:14px}
+.gx-grid{display:grid;gap:12px;margin-top:14px}
+.gx-item[hidden]{display:none}
+.gx-hd{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.gx-ini{flex:none;width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);color:var(--gold2);display:grid;place-items:center;font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:19px;line-height:1}
+.gx-br{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);font-weight:500;line-height:1.4;overflow-wrap:anywhere}
+.gx-ty{display:block;font-size:12.5px;color:var(--dim);line-height:1.4}
+.gx-big h3{font-size:25px}
+.gx-rank{display:block;font-size:11.5px;line-height:1.6;color:var(--dim);border-top:1px solid var(--line);margin-top:14px;padding-top:10px}
+.gx-rank b{color:var(--gold2);font-weight:700}
+#shop,.lx-sec{scroll-margin-top:104px}
+.gx-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gx-two>:last-child:nth-child(odd){grid-column:1/-1}
+.gx-book,.gx-tile{display:flex;flex-direction:column;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;text-decoration:none;color:var(--txt);min-width:0}
+.gx-book span,.gx-tile span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);font-weight:500}
+.gx-book b,.gx-tile b{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:17px;line-height:1.35;overflow-wrap:anywhere}
+.gx-book small,.gx-tile small{color:var(--dim);font-size:12px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.gx-book i,.gx-tile i{font-style:normal;color:var(--gold2);font-size:12.5px;margin-top:auto;padding-top:10px}
+.gx-prods{display:grid;gap:10px;margin-top:16px}
+.gx-prod{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--card2);text-decoration:none;color:var(--txt);min-width:0}
+.gx-prod .lx-tx span{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);font-weight:500;line-height:1.4}
+.gx-prod b{display:block;font-weight:700;font-size:15px;line-height:1.4;margin-top:2px;overflow-wrap:anywhere}
+.gx-prod small{display:block;color:var(--dim);font-size:12.5px;line-height:1.5;margin-top:2px}
+.gx-prod i{font-style:normal;flex:none;color:var(--gold2);font-size:15px}
+.gx-vid{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-top:1px solid var(--line);text-decoration:none;color:var(--txt)}
+.gx-vid:first-child{border-top:0;padding-top:0}
+.gx-vid:last-child{padding-bottom:0}
+.gx-vid em{flex:none;font-style:normal;font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:20px;line-height:1.3;color:var(--gold2);min-width:26px}
+.gx-vid b{display:block;font-weight:500;font-size:14.5px;line-height:1.5;overflow-wrap:anywhere}
+.gx-vid small{display:block;color:var(--gold2);font-size:12.5px;margin-top:4px}
 </style></head><body>
+<div class="lx-pr" role="note"><b>#ad</b>Contains affiliate links</div>
 <div class="lx-wrap">
-<header class="lx-hero"><div class="lx-logo">K</div><span class="lx-eb">Free guide · Nov 2026 edition</span><h1>K-Beauty<br>Savings Lab</h1><p class="lx-lead">Korean beauty, sorted by what is inside</p></header>
-<p class="lx-law">The guide linked below contains affiliate links (#ad). As an Amazon Associate I earn from qualifying purchases.</p>
-<section class="lx-sec"><div class="lx-band"><span class="lx-eb">Free guide</span><h2>K-Beauty by Skin Concern<small>Nov 2026 edition</small></h2><p class="lx-why" style="margin-top:14px">Amazon best sellers, explained. 25 products in 6 chapters.</p><a class="lx-cta" href="guide/kbeauty/?from=en_home"><b>Open the free guide</b><i>→</i></a></div></section><section class="lx-sec"><span class="lx-eb">Start here</span><h2>Pick your skin concern</h2><div class="lx-body"><div class="lx-card"><p class="lx-why" style="margin-top:0">Dry, Pores &amp; oil, Redness, Dullness, Lips &amp; eyes, Sunscreen.</p><a class="lx-cta" href="cosme/?from=en_home"><b>Choose a concern</b><i>→</i></a></div></div></section>
+<header class="lx-hero"><div class="lx-logo">K</div><span class="lx-eb">Korean beauty on Amazon</span><h1>K-Beauty<br>Savings Lab</h1><p class="lx-lead">Korean beauty, sorted by what is inside</p><div class="gx-stat"><div><b>25 products</b>Korean beauty</div><div><b>6 concerns</b>to choose from</div></div><a class="lx-cta" href="cosme/?from=en_home"><b>Shop all 25 products</b><i>→</i></a></header>
+<p class="lx-law">This page contains affiliate links (#ad). As an Amazon Associate I earn from qualifying purchases.</p>
+<section class="lx-sec" id="concerns"><span class="lx-eb">Start here</span><h2>Pick your skin concern</h2><div class="lx-body"><div class="gx-two"><a class="gx-tile" href="cosme/?from=en_home#dry"><span>Products: 7</span><b>Dry</b><small>Ceramides, hyaluronic acid, collagen, PDRN</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#pores"><span>Products: 3</span><b>Pores &amp; oil</b><small>AHA, BHA, PHA, heartleaf</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#redness"><span>Products: 2</span><b>Redness</b><small>Azelaic acid, cica (centella), panthenol</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#dullness"><span>Products: 3</span><b>Dullness</b><small>Niacinamide, tranexamic acid, arbutin</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#lips-eyes"><span>Products: 9</span><b>Lips &amp; eyes</b><small>Shea butter, retinal, caffeine, peptides</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#sunscreen"><span>Products: 1</span><b>Sunscreen</b><small>SPF 50, UVA and UVB</small><i>Shop →</i></a></div></div></section><section class="lx-sec" id="popular"><span class="lx-eb">Popular now</span><h2>Popular right now<small>Positions on the Amazon.com Best Sellers list (Beauty &amp; Personal Care) when we looked on Nov 28, 2026. Rankings change.</small></h2><div class="lx-body"><article class="lx-card gx-item gx-big"><div class="gx-hd"><span class="gx-ini" aria-hidden="true">M</span><span class="lx-tx"><span class="gx-br">medicube</span><span class="gx-ty">Toner Pads</span></span></div><h3>medicube Zero Pore Pad 2.0</h3><p class="lx-why">Contains white willow bark (a natural BHA) and citric acid (an AHA), per the listing.</p><a class="lx-cta" href="https://www.amazon.com/dp/B09V7Z4TJG?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener"><b>View on Amazon</b><i>→</i></a><span class="gx-rank">Amazon Best Sellers, Beauty &amp; Personal Care: <b>#1</b> (checked Nov 28, 2026)</span></article><article class="lx-card gx-item gx-big"><div class="gx-hd"><span class="gx-ini" aria-hidden="true">B</span><span class="lx-tx"><span class="gx-br">BIODANCE</span><span class="gx-ty">Sheet Mask</span></span></div><h3>BIODANCE Bio-Collagen Real Deep Mask</h3><p class="lx-why">Formulated with low-molecular collagen and oligo-hyaluronic acid, per the listing.</p><a class="lx-cta" href="https://www.amazon.com/dp/B0B2RM68G2?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener"><b>View on Amazon</b><i>→</i></a><span class="gx-rank">Amazon Best Sellers, Beauty &amp; Personal Care: <b>#2</b> (checked Nov 28, 2026)</span></article><article class="lx-card gx-item gx-big"><div class="gx-hd"><span class="gx-ini" aria-hidden="true">I</span><span class="lx-tx"><span class="gx-br">ILLIYOON</span><span class="gx-ty">Moisturizer</span></span></div><h3>ILLIYOON Ceramide Ato Concentrate Cream</h3><p class="lx-why">The listing describes a multi-ceramide complex made with plant-sourced ceramides.</p><a class="lx-cta" href="https://www.amazon.com/dp/B077RTL1HJ?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener"><b>View on Amazon</b><i>→</i></a><span class="gx-rank">Amazon Best Sellers, Beauty &amp; Personal Care: <b>#3</b> (checked Nov 28, 2026)</span></article><a class="lx-ghost" href="cosme/?from=en_home"><b>See all 25 products</b><i>→</i></a></div></section><section class="lx-sec" id="guide"><div class="lx-band"><span class="lx-eb">Free guide</span><h2>K-Beauty by Skin Concern — Amazon best sellers, explained</h2><p class="lx-why" style="margin-top:14px">What each Amazon listing says is inside, product by product. A free guide.</p><a class="lx-cta" href="guide/kbeauty/?from=en_home"><b>Open the free guide</b><i>→</i></a></div></section>
 <section class="lx-sec"><span class="lx-eb">Follow</span><div class="lx-chs"><a class="lx-ghost" href="https://www.instagram.com/kbeauty_savings_lab/" target="_blank" rel="noopener">Instagram</a><a class="lx-ghost" href="https://www.threads.net/@kbeauty_savings_lab" target="_blank" rel="noopener">Threads</a></div></section>
 <footer>Not a review and not a claim about results.<br>Please check names and details on each retailer's page.<br>K-Beauty Savings Lab</footer>
 </div>

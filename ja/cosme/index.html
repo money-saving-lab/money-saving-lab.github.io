@@ -1,43 +1,76 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ff3d7f">
+<meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme:light)"><meta name="theme-color" content="#0b0b0d" media="(prefers-color-scheme:dark)">
 <title>Kコスメ おトク研究所</title>
 <meta name="description" content="動画で紹介した韓国コスメの商品ページをまとめています（アフィリエイトリンクを含む場合があります）。">
+<link rel="icon" href="../../img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Noto+Serif+JP:wght@600&amp;display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff6f0;--card:#ffffff;--line:#f3d6df;--txt:#2a1622;--dim:#7d6470;--acc:#ff3d7f;--pr:#fff4d6;--prline:#f0d58a;--prtxt:#6b4e00}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1016;--card:#24161e;--line:#3d2632;--txt:#fbeef3;--dim:#c9a9b7;--acc:#ff6b9b;--pr:#2a2410;--prline:#5b4a17;--prtxt:#f5d57a}}
-:root[data-theme="dark"]{--bg:#1a1016;--card:#24161e;--line:#3d2632;--txt:#fbeef3;--dim:#c9a9b7;--acc:#ff6b9b;--pr:#2a2410;--prline:#5b4a17;--prtxt:#f5d57a}
+:root{--bg:#faf8f4;--card:#ffffff;--card2:#f3efe7;--line:rgba(20,18,12,.10);--txt:#1a1814;--dim:#7b756a;--gold:#a8843c;--gold2:#8a6a26;--ink:#14120e;--band:#16140f;--bandtxt:#f3efe6;--banddim:#a9a294;--bandline:rgba(255,255,255,.12);--bandgold:#c8a45c;--bandgold2:#e3c88f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0b0d;--card:#141416;--card2:#1b1b1f;--line:rgba(255,255,255,.09);--txt:#f3efe6;--dim:#9c968a;--gold:#c8a45c;--gold2:#e3c88f;--ink:#0b0b0d;--band:#141416;--bandtxt:#f3efe6;--banddim:#9c968a;--bandline:rgba(255,255,255,.09);--bandgold:#c8a45c;--bandgold2:#e3c88f}}
+:root[data-theme="dark"]{--bg:#0b0b0d;--card:#141416;--card2:#1b1b1f;--line:rgba(255,255,255,.09);--txt:#f3efe6;--dim:#9c968a;--gold:#c8a45c;--gold2:#e3c88f;--ink:#0b0b0d;--band:#141416;--bandtxt:#f3efe6;--banddim:#9c968a;--bandline:rgba(255,255,255,.09);--bandgold:#c8a45c;--bandgold2:#e3c88f}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--txt);font-family:"Noto Sans JP",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
-.wrap{max-width:540px;margin:0 auto;padding:0 16px 40px}
-.pr{position:sticky;top:0;z-index:5;background:var(--pr);border-bottom:1px solid var(--prline);color:var(--prtxt);font-size:13px;font-weight:700;text-align:center;padding:8px 12px}
-.pr b{background:var(--prtxt);color:var(--pr);border-radius:4px;padding:1px 6px;margin-right:6px;font-size:12px}
-header{text-align:center;padding:26px 0 10px}
-.logo{width:84px;height:84px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;font-size:30px;font-weight:900;color:#fff;background:linear-gradient(135deg,#ff6b9b,#ff3d7f);box-shadow:0 10px 26px rgba(255,61,127,.3)}
-h1{font-size:24px;font-weight:900} h1 em{font-style:normal;color:var(--acc)}
-header p{color:var(--dim);font-size:14px}
-.notice{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:12px;color:var(--dim);margin:14px 0 4px}
-h2{font-size:17px;font-weight:900;margin:22px 0 10px;display:flex;align-items:center;gap:8px}
-h2::before{content:"";width:5px;height:18px;border-radius:3px;background:var(--acc)}
-.list{display:grid;gap:12px}
-.item{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;color:var(--txt);text-decoration:none;transition:transform .15s,border-color .15s}
-.item:hover,.item:active{transform:translateY(-2px);border-color:var(--acc)}
-.item img,.ph{width:88px;height:88px;border-radius:14px;object-fit:contain;background:#fff;flex:none;display:grid;place-items:center;font-size:34px;border:1px solid var(--line)}
-.tx{min-width:0} .tx b{display:block;font-size:15px;font-weight:900;line-height:1.35} .tx small{display:block;color:var(--dim);font-size:12px;margin-top:2px}
-.tx em{display:inline-block;font-style:normal;margin-top:6px;font-size:12.5px;font-weight:900;color:var(--acc)}
-.empty{color:var(--dim);font-size:13px;text-align:center;padding:18px 0}
-footer{text-align:center;color:var(--dim);font-size:11.5px;margin-top:28px;line-height:1.7}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--txt);font-family:"Noto Sans JP",system-ui,sans-serif;font-size:15px;line-height:1.65;font-weight:400;-webkit-font-smoothing:antialiased}
+.lx-pr{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);color:var(--dim);font-size:11.5px;line-height:1.6;text-align:center;padding:9px 20px;letter-spacing:.04em}
+.lx-pr b{color:var(--gold2);font-weight:700;margin-right:8px;letter-spacing:.12em}
+.lx-wrap{max-width:560px;margin:0 auto;padding:0 20px 72px}
+.lx-hero{padding:44px 0 28px}
+.lx-logo{width:44px;height:44px;border-radius:50%;border:1px solid var(--gold);color:var(--gold2);display:grid;place-items:center;font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:600;font-size:20px;line-height:1;margin-bottom:22px}
+.lx-eb{display:block;font-size:11px;line-height:1.4;letter-spacing:.22em;text-transform:uppercase;color:var(--gold2);font-weight:500;margin-bottom:10px}
+h1{font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:600;font-size:30px;line-height:1.28;letter-spacing:-.02em}
+.lx-lead{color:var(--dim);font-size:15px;margin-top:12px}
+.lx-law{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;font-size:11.5px;line-height:1.6;color:var(--dim)}
+.lx-sec{margin-top:56px}
+h2{font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:600;font-size:22px;line-height:1.3}
+h2 small{display:block;font-family:"Noto Sans JP",system-ui,sans-serif;font-weight:400;font-size:13px;color:var(--dim);margin-top:6px;line-height:1.55}
+.lx-body{margin-top:20px;display:grid;gap:12px}
+.lx-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0}
+h3{font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:600;font-size:18px;line-height:1.3;overflow-wrap:anywhere}
+.lx-city h3{font-size:26px}
+.lx-why{color:var(--dim);font-size:13px;line-height:1.55;margin-top:6px}
+.lx-cta{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;width:100%;margin-top:16px;padding:10px 16px;border-radius:10px;background:var(--gold);color:var(--ink);text-decoration:none;font-size:15px;line-height:1.35}
+.lx-cta b{font-weight:700;min-width:0;overflow-wrap:anywhere}
+.lx-cta i,.lx-row i{font-style:normal;flex:none}
+.lx-more{margin-top:14px}
+.lx-more summary{list-style:none;cursor:pointer;color:var(--gold2);font-size:13px;padding:6px 0}
+.lx-more summary::-webkit-details-marker{display:none}
+.lx-more summary::after{content:"  +"}
+.lx-more[open] summary::after{content:"  \2212"}
+.lx-rows{display:grid}
+.lx-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line);text-decoration:none;color:var(--txt)}
+.lx-rows.lx-flat>.lx-row:first-child{border-top:0;padding-top:0}
+.lx-rows.lx-flat>.lx-row:last-child{padding-bottom:0}
+.lx-tx{min-width:0;flex:1}
+.lx-row b{display:block;font-weight:500;font-size:14.5px;line-height:1.4;overflow-wrap:anywhere}
+.lx-row small{display:block;color:var(--dim);font-size:12.5px;line-height:1.5;margin-top:2px}
+.lx-row i{color:var(--gold2);font-size:14px}
+.lx-tag{flex:none;font-size:12px;color:var(--dim)}
+.lx-band{background:var(--band);color:var(--bandtxt);border-radius:14px;padding:28px 20px;border:1px solid var(--bandline)}
+.lx-band .lx-eb{color:var(--bandgold2)}
+.lx-band .lx-why,.lx-band h2 small,.lx-band .lx-row small,.lx-band .lx-tag{color:var(--banddim)}
+.lx-band .lx-cta{background:var(--bandgold);color:#0b0b0d}
+.lx-band .lx-row{color:var(--bandtxt);border-color:var(--bandline)}
+.lx-band .lx-row i,.lx-band .lx-more summary{color:var(--bandgold2)}
+.lx-band h3{margin-top:22px}
+.lx-ghost{display:flex;align-items:center;justify-content:center;min-height:40px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;text-decoration:none;font-size:13.5px;font-weight:500;color:var(--txt);text-align:center}
+.lx-chs{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:20px}
+.lx-num{display:block;font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:600;color:var(--gold2);font-size:22px;line-height:1;margin-bottom:12px}
+.lx-ty{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.lx-pic{display:block;width:100%;max-width:220px;aspect-ratio:1;object-fit:contain;background:#fff;border-radius:10px;margin:0 auto 18px}
+.lx-empty{color:var(--dim);font-size:13px}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:11.5px;line-height:1.7}
+@keyframes lxf{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:no-preference){.lx-more[open]>.lx-rows{animation:lxf .25s ease}}
 </style></head><body>
-<div class="pr" role="note"><b>#PR</b>アフィリエイトリンクを含みます</div>
-<div class="wrap">
-<header><div class="logo">K</div><h1>Kコスメ <em>おトク</em>研究所</h1><p>動画で紹介した韓国コスメの商品ページ</p></header>
-<div class="notice"><p>当ページには楽天アフィリエイトのリンクが含まれます。リンク経由で購入されると、当アカウントに報酬が入ることがあります（お客様の価格は変わりません）。</p></div>
-<h2>紹介した商品</h2><div class="list"><a class="item" href="https://hb.afl.rakuten.co.jp/ichiba/58e2a415.e404ea0d.58e2a416.46052ea5/_RTLink152146?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fanuajapan%2Fanua00118%2F&amp;link_type=hybrid_url&amp;ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="sponsored noopener"><img src="img/anua_pdrn_serum.jpg" alt="" loading="lazy"><span class="tx"><b>Anua PDRN ヒアルロン酸100 セラム</b><small>@cosme 韓国コスメ クチコミ1位のセラム（動画で紹介）</small><em>楽天市場 ANUA Official で見る ›</em></span></a></div>
-<footer>掲載内容は2026年11月時点の情報です。価格・在庫・ランキングは変わることがあります。<br>使用感・効果を保証するものではありません。<br>Kコスメ おトク研究所 · 2026.11.28 04:20 更新</footer>
+<div class="lx-pr" role="note"><b>#PR</b>アフィリエイトリンクを含みます</div>
+<div class="lx-wrap">
+<header class="lx-hero"><div class="lx-logo">K</div><span class="lx-eb">K-Beauty</span><h1>Kコスメ<br>おトク研究所</h1><p class="lx-lead">動画で紹介した韓国コスメの商品ページ</p></header>
+<p class="lx-law">当ページには楽天アフィリエイトのリンクが含まれます。リンク経由で購入されると、当アカウントに報酬が入ることがあります（お客様の価格は変わりません）。</p>
+<section class="lx-sec"><span class="lx-eb">Pick up</span><h2>紹介した商品</h2><div class="lx-body"><div class="lx-card"><img class="lx-pic" src="img/anua_pdrn_serum.jpg" alt="" loading="lazy"><h3>Anua PDRN ヒアルロン酸100 セラム</h3><p class="lx-why">@cosme 韓国コスメ クチコミ1位のセラム（動画で紹介）</p><a class="lx-cta" href="https://hb.afl.rakuten.co.jp/ichiba/58e2a415.e404ea0d.58e2a416.46052ea5/_RTLink152146?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fanuajapan%2Fanua00118%2F&amp;link_type=hybrid_url&amp;ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="sponsored noopener"><b>楽天市場 ANUA Official で見る</b><i>→</i></a></div></div></section><section class="lx-sec"><div class="lx-band"><span class="lx-eb">Free guide</span><h2>肌悩み別にえらぶ<small>肌悩み別 韓国コスメ 失敗しない選び方</small></h2><a class="gift lx-cta" href="../guide/kcosme-amazon/?from=cosme"><b>無料ガイドを開く</b><i>→</i></a><div class="lx-rows" style="margin-top:20px"><a class="lx-row" href="../guide/kcosme-amazon/?from=cosme#c2"><span class="lx-tx"><b>乾燥・ゆらぎが気になるとき</b></span><span class="lx-tag">5</span><i>→</i></a><a class="lx-row" href="../guide/kcosme-amazon/?from=cosme#c3"><span class="lx-tx"><b>毛穴・皮脂・テカリが気になるとき</b></span><span class="lx-tag">2</span><i>→</i></a><a class="lx-row" href="../guide/kcosme-amazon/?from=cosme#c4"><span class="lx-tx"><b>くすみ・ハリ・キメが気になるとき</b></span><span class="lx-tag">3</span><i>→</i></a><a class="lx-row" href="../guide/kcosme-amazon/?from=cosme#c5"><span class="lx-tx"><b>UV・ベースメイクを選ぶとき</b></span><span class="lx-tag">3</span><i>→</i></a><a class="lx-row" href="../guide/kcosme-amazon/?from=cosme#c6"><span class="lx-tx"><b>シートマスクの選び方</b></span><span class="lx-tag">4</span><i>→</i></a></div></div></section><section class="lx-sec"><span class="lx-eb">From the guide</span><h2>ガイドに載せた商品</h2><div class="lx-body"><div class="lx-card"><span class="lx-num">01</span><span class="lx-ty">保湿クリーム</span><h3>AESTURA アトバリア365 クリーム</h3><p class="lx-why">「高密度セラミドカプセル」配合の高保湿クリームと説明されています。商品名に「無香料」「無着色」の表記があります。</p><a class="lx-cta" href="../guide/kcosme-amazon/?from=cosme#p-jp-017"><b>ガイドで詳しく見る</b><i>→</i></a></div><div class="lx-card"><span class="lx-num">02</span><span class="lx-ty">美容液</span><h3>ANUA アゼライン酸15 インテンスカーミングセラム 30ml</h3><p class="lx-why">説明文は「皮脂バランスをサポート」。さっぱりとした軽い塗り心地と書かれています。</p><a class="lx-cta" href="../guide/kcosme-amazon/?from=cosme#p-jp-013"><b>ガイドで詳しく見る</b><i>→</i></a></div><div class="lx-card"><span class="lx-num">03</span><span class="lx-ty">美容液（夜用）</span><h3>CELIMAX ビタA レチナールショット タイトニングブースター 15ml</h3><p class="lx-why">夜のお手入れに使う美容液と案内されています。初めての人は少量から始め、翌朝は日焼け止めを使うようにとの説明があります。</p><a class="lx-cta" href="../guide/kcosme-amazon/?from=cosme#p-jp-005"><b>ガイドで詳しく見る</b><i>→</i></a></div></div></section>
+<footer>掲載内容は2026年11月時点の情報です。価格・在庫・ランキングは変わることがあります。<br>使用感・効果を保証するものではありません。<br>Kコスメ おトク研究所 · 2026.11.28 04:34 更新</footer>
 </div>
 <script>
 (function(){try{
@@ -89,4 +122,5 @@ footer{text-align:center;color:var(--dim);font-size:11.5px;margin-top:28px;line-
   document.addEventListener("auxclick",hit,true);
 }catch(e){}})();
 </script>
+<script src="/snd/bgm.js" defer></script>
 </body></html>

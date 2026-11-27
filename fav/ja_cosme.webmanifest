@@ -1,0 +1,25 @@
+{
+ "name": "Kコスメ おトク研究所",
+ "short_name": "Kコスメ研究所",
+ "lang": "ja",
+ "id": "/ja/cosme/?from=home_icon",
+ "start_url": "/ja/cosme/?from=home_icon",
+ "scope": "/ja/cosme/",
+ "display": "minimal-ui",
+ "background_color": "#0b0b0d",
+ "theme_color": "#0b0b0d",
+ "icons": [
+  {
+   "src": "/fav/jc-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "/fav/jc-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+{
+ "name": "K-Beauty Savings Lab",
+ "short_name": "K-Beauty Lab",
+ "lang": "en",
+ "id": "/en/cosme/?from=home_icon",
+ "start_url": "/en/cosme/?from=home_icon",
+ "scope": "/en/",
+ "display": "minimal-ui",
+ "background_color": "#0b0b0d",
+ "theme_color": "#0b0b0d",
+ "icons": [
+  {
+   "src": "/fav/en-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "/fav/en-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  }
+ ]
+}

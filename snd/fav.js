@@ -6,7 +6,7 @@
   if (window.__hwFav) return; window.__hwFav = 1;
   var C = window.HWFAV || {}, L = C.lang || "ko", D = document;
   var TX = {
-    ko: { ey: "TODAY", h: "오늘 확인하고 가세요", upd: "마지막 업데이트 ", live: "환율·날씨는 열 때마다 새로 불러와요", fav: "즐겨찾기", favLong: "즐겨찾기 해 두기",
+    ko: { ey: "TODAY", h: "오늘 확인하고 가세요", upd: "마지막 업데이트 ", live: "환율은 열 때마다 새로 불러와요", fav: "즐겨찾기", favLong: "즐겨찾기 해 두기",
       codes: "지금 쓸 수 있는 할인 코드", n: "개", copy: "복사", copied: "복사됨 ✓", until: "까지", today: "오늘까지", noend: "끝나는 날 미정", more: "코드 더 보기", morefx: "다른 나라 돈 더 보기", where: "쓰는 곳 보기",
       cnote: "조건·기간은 여행사 사정으로 바뀌거나 일찍 끝날 수 있어요. 쓰기 전에 여행사 화면에서 한 번 더 확인하세요.",
       fx: "오늘 환율", fxn: "참고용 기준 환율이에요. 실제 환전·카드 결제 값과는 달라요.", asof: "기준 ", src: "출처 ",
@@ -18,7 +18,7 @@
       app: "지금은 앱 안 창이에요. 먼저 오른쪽 위 <b>⋯</b> 에서 <b>다른 브라우저로 열기</b>(Safari·Chrome)를 누른 뒤 따라 해 주세요.",
       url: "주소 복사", done: "해 뒀어요", close: "닫기", x: "작게 접기",
       w: ["맑음", "대체로 맑음", "구름 조금", "흐림", "안개", "이슬비", "비", "눈", "소나기", "뇌우"], cur: "원" },
-    ja: { ey: "TODAY", h: "今日の旅メモ", upd: "最終更新 ", live: "為替と天気は開くたびに更新されます", fav: "お気に入り", favLong: "お気に入りに追加",
+    ja: { ey: "TODAY", h: "今日の旅メモ", upd: "最終更新 ", live: "為替は開くたびに更新されます", fav: "お気に入り", favLong: "お気に入りに追加",
       codes: "今使えるクーポンコード", n: "件", copy: "コピー", copied: "コピー済み ✓", until: "まで", today: "本日まで", noend: "終了日は未定", more: "もっと見る", morefx: "ほかの通貨", where: "使えるページを見る",
       cnote: "対象商品のみ。予告なく変更・終了する場合があります。ご利用前に公式ページでご確認ください。",
       fx: "今日の為替", fxn: "参考レートです。実際の両替・カード決済のレートとは異なります。", asof: "基準 ", src: "出典 ",
@@ -30,7 +30,7 @@
       app: "アプリ内ブラウザで開いています。右上の<b>⋯</b>から<b>ブラウザで開く</b>（Safari・Chrome）を選んでからお試しください。",
       url: "URLをコピー", done: "追加しました", close: "閉じる", x: "小さくする",
       w: ["晴れ", "おおむね晴れ", "晴れ時々くもり", "くもり", "霧", "霧雨", "雨", "雪", "にわか雨", "雷雨"], cur: "ウォン" },
-    en: { ey: "TODAY", h: "Today at a glance", upd: "Last updated ", live: "Rates and weather refresh every visit", fav: "Save", favLong: "Save this page",
+    en: { ey: "TODAY", h: "Today at a glance", upd: "Last updated ", live: "Updated regularly", fav: "Save", favLong: "Save this page",
       codes: "Codes you can use now", n: "", copy: "Copy", copied: "Copied ✓", until: "", today: "Ends today", noend: "No end date listed", more: "More codes", morefx: "More currencies", where: "See where to use",
       cnote: "Terms can change or end early. Please check the retailer's page before use.",
       fx: "Today's rates", fxn: "Reference rates only. Actual exchange and card rates differ.", asof: "As of ", src: "Source ",

@@ -17,7 +17,8 @@
       a1: "오른쪽 위 <b>⋮</b> (삼성 인터넷은 아래 <b>≡</b>) 를 눌러요", a2: "<b>홈 화면에 추가</b>를 눌러요", a3: "<b>추가</b>를 누르면 끝",
       app: "지금은 앱 안 창이에요. 먼저 오른쪽 위 <b>⋯</b> 에서 <b>다른 브라우저로 열기</b>(Safari·Chrome)를 누른 뒤 따라 해 주세요.",
       url: "주소 복사", done: "해 뒀어요", close: "닫기", x: "작게 접기",
-      w: ["맑음", "대체로 맑음", "구름 조금", "흐림", "안개", "이슬비", "비", "눈", "소나기", "뇌우"], cur: "원" },
+      w: ["맑음", "대체로 맑음", "구름 조금", "흐림", "안개", "이슬비", "비", "눈", "소나기", "뇌우"], cur: "원",
+      ref: "참고 환율", load: "환율을 불러오는 중…", fail: "환율을 불러오지 못했어요.", retry: "다시 불러오기", old: "지난번에 받은 값" },
     ja: { ey: "TODAY", h: "今日の旅メモ", upd: "最終更新 ", live: "為替は開くたびに更新されます", fav: "お気に入り", favLong: "お気に入りに追加",
       codes: "今使えるクーポンコード", n: "件", copy: "コピー", copied: "コピー済み ✓", until: "まで", today: "本日まで", noend: "終了日は未定", more: "もっと見る", morefx: "ほかの通貨", where: "使えるページを見る",
       cnote: "対象商品のみ。予告なく変更・終了する場合があります。ご利用前に公式ページでご確認ください。",
@@ -29,7 +30,8 @@
       a1: "右上の<b>⋮</b>をタップ", a2: "<b>ホーム画面に追加</b>をタップ", a3: "<b>追加</b>で完了",
       app: "アプリ内ブラウザで開いています。右上の<b>⋯</b>から<b>ブラウザで開く</b>（Safari・Chrome）を選んでからお試しください。",
       url: "URLをコピー", done: "追加しました", close: "閉じる", x: "小さくする",
-      w: ["晴れ", "おおむね晴れ", "晴れ時々くもり", "くもり", "霧", "霧雨", "雨", "雪", "にわか雨", "雷雨"], cur: "ウォン" },
+      w: ["晴れ", "おおむね晴れ", "晴れ時々くもり", "くもり", "霧", "霧雨", "雨", "雪", "にわか雨", "雷雨"], cur: "ウォン",
+      ref: "参考レート", load: "為替レートを読み込み中…", fail: "為替レートを読み込めませんでした。", retry: "もう一度読み込む", old: "前回取得したレート" },
     en: { ey: "TODAY", h: "Today at a glance", upd: "Last updated ", live: "Updated regularly", fav: "Save", favLong: "Save this page",
       codes: "Codes you can use now", n: "", copy: "Copy", copied: "Copied ✓", until: "", today: "Ends today", noend: "No end date listed", more: "More codes", morefx: "More currencies", where: "See where to use",
       cnote: "Terms can change or end early. Please check the retailer's page before use.",
@@ -41,7 +43,8 @@
       a1: "Tap <b>⋮</b> at the top right", a2: "Tap <b>Add to Home screen</b>", a3: "Tap <b>Add</b>",
       app: "You're in an in-app browser. Tap <b>⋯</b> at the top right and choose <b>Open in browser</b> (Safari or Chrome) first.",
       url: "Copy link", done: "Done", close: "Close", x: "Minimize",
-      w: ["Clear", "Mostly clear", "Partly cloudy", "Cloudy", "Fog", "Drizzle", "Rain", "Snow", "Showers", "Thunderstorm"], cur: "KRW" }
+      w: ["Clear", "Mostly clear", "Partly cloudy", "Cloudy", "Fog", "Drizzle", "Rain", "Snow", "Showers", "Thunderstorm"], cur: "KRW",
+      ref: "Reference rate", load: "Loading rates…", fail: "Could not load rates.", retry: "Try again", old: "last saved rate" }
   };
   var T = TX[L] || TX.ko;
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -84,6 +87,17 @@
     ".hwf-fx em{display:block;font-style:normal;font-size:11.5px;color:var(--dim,#9c968a);line-height:1.4}" +
     ".hwf-fx b{display:block;font-size:17px;font-weight:700;line-height:1.35;color:var(--gold2,#e3c88f);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}" +
     ".hwf-fx i{display:block;font-style:normal;font-size:11.5px;color:var(--dim,#9c968a);line-height:1.4;font-variant-numeric:tabular-nums}" +
+    /* 📷 11/28 계산기 꼴(HWFAV.fx.calc 일 때만 쓰임) */
+    ".hwf-big{margin-top:12px;background:var(--card2,#1b1b1f);border-radius:12px;padding:14px}" +
+    ".hwf-big b{display:block;font-size:21px;font-weight:700;line-height:1.35;color:var(--gold2,#e3c88f);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}" +
+    ".hwf-big i{display:block;font-style:normal;font-size:12.5px;line-height:1.5;color:var(--dim,#9c968a);font-variant-numeric:tabular-nums}" +
+    ".hwf-cal{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-top:12px}" +
+    ".hwf-cal label{display:flex;align-items:center;gap:6px;min-width:0;min-height:48px;padding:0 10px;border:1px solid var(--line,rgba(255,255,255,.09));border-radius:10px;background:var(--card,#141416)}" +
+    ".hwf-cal label:focus-within{border-color:var(--gold,#c8a45c)}" +
+    ".hwf-cal input{flex:1;min-width:0;width:100%;border:0;background:none;color:inherit;font:inherit;font-size:16px;font-weight:700;text-align:right;outline:none;font-variant-numeric:tabular-nums}" +
+    ".hwf-cal span{flex:none;font-size:12px;color:var(--dim,#9c968a)}.hwf-cal em{font-style:normal;color:var(--gold2,#e3c88f)}" +
+    ".hwf-q{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}" +
+    ".hwf-qb{font:inherit;font-size:12.5px;color:var(--gold2,#e3c88f);background:none;border:1px solid var(--line,rgba(255,255,255,.09));border-radius:999px;padding:0 12px;min-height:34px;cursor:pointer}" +
     ".hwf-wx{display:flex;gap:8px;overflow-x:auto;margin:14px -18px 0;padding:0 18px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.hwf-wx::-webkit-scrollbar{display:none}" +
     ".hwf-wx div{flex:none;min-width:86px;background:var(--card2,#1b1b1f);border-radius:10px;padding:10px 12px;text-align:center}" +
     ".hwf-wx em{display:block;font-style:normal;font-size:12px;line-height:1.4;white-space:nowrap}" +
@@ -210,8 +224,67 @@
     card.appendChild(el("p", "hwf-n", esc(T.cnote)));
     return card;
   }
+  /* 📷 11/28 환율 + 계산기 (HWFAV.fx.calc 일 때만 · 일본 「사진판」) — 칸을 바로 보이고(불러오는 중) · 첫 출처가 안 되면 예비 출처(Frankfurter · 유럽중앙은행 기준값) ·
+     둘 다 안 되면 지난번에 받은 값(그렇게 적음) · 그것도 없으면 「못 불러왔다」 + 다시 단추 — 값은 전부 공개 API 에서 온 것만(여기서 숫자를 짓지 않는다) */
+  function fxCalc(F) {
+    var card = el("div", "hwf-c"), to = F.to || F.list[0][0], tu = F.tounit || F.list[0][5], key = "hw_fx_" + F.base, rate = 0, per = F.list[0][4] || 1;
+    var loc = L === "en" ? "en-US" : (L === "ja" ? "ja-JP" : "ko-KR");
+    var S1 = '<a href="https://www.exchangerate-api.com" target="_blank" rel="noopener nofollow">Rates By Exchange Rate API</a>';
+    var S2 = '<a href="https://frankfurter.dev" target="_blank" rel="noopener nofollow">Frankfurter (ECB)</a>';
+    var head = '<div class="hwf-t">' + esc(T.fx) + "<small>" + esc(T.ref) + "</small></div>";
+    function fmt(v) { return Math.round(v).toLocaleString(loc); }
+    function parse(s) { var v = parseFloat(String(s).replace(/[^0-9.]/g, "")); return isFinite(v) && v > 0 ? v : 0; }
+    function when(u) { try { var t = new Date(u * 1000); if (isNaN(t)) return ""; return t.getFullYear() + "." + ("0" + (t.getMonth() + 1)).slice(-2) + "." + ("0" + t.getDate()).slice(-2) + " " + ("0" + t.getHours()).slice(-2) + ":" + ("0" + t.getMinutes()).slice(-2); } catch (e) { return ""; } }
+    function fetchJ(url, ok, bad) {
+      if (!window.fetch) return bad();
+      var ac = window.AbortController ? new AbortController() : null, done = 0, tm = setTimeout(function () { if (ac) ac.abort(); }, 8000);
+      fetch(url, ac ? { signal: ac.signal } : {}).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) { clearTimeout(tm); done = 1; ok(d); }).catch(function () { clearTimeout(tm); if (!done) bad(); });
+    }
+    function draw(r, at, src, old) {
+      rate = r;
+      var q = "";
+      (F.quick || []).forEach(function (a) { q += '<button type="button" class="hwf-qb" data-a="' + (+a) + '">' + fmt(+a) + esc(F.unit) + "</button>"; });
+      card.innerHTML = head +
+        '<div class="hwf-big"><b>' + fmt(F.amt) + esc(F.unit) + " ≒ " + fmt(F.amt * r) + esc(tu) + "</b><i>" + fmt(per) + esc(tu) + " ≒ " + fmt(per / r) + esc(F.unit) + "</i></div>" +
+        '<div class="hwf-cal"><label><input type="text" inputmode="decimal" autocomplete="off" data-s="a" aria-label="' + esc(F.unit) + '"><span>' + esc(F.unit) + "</span></label><em>⇄</em>" +
+        '<label><input type="text" inputmode="decimal" autocomplete="off" data-s="b" aria-label="' + esc(tu) + '"><span>' + esc(tu) + "</span></label></div>" +
+        (q ? '<div class="hwf-q">' + q + "</div>" : "") +
+        '<p class="hwf-n">' + esc(T.fxn) + (at ? " " + T.asof + esc(at) + " ·" : "") + " " + T.src + src + (old ? " · " + esc(T.old) : "") + "</p>";
+      var a = card.querySelector('[data-s="a"]'), b = card.querySelector('[data-s="b"]');
+      function setA(v) { a.value = v ? fmt(v) : ""; b.value = v ? fmt(v * rate) : ""; }
+      a.oninput = function () { var v = parse(a.value); b.value = v ? fmt(v * rate) : ""; };
+      b.oninput = function () { var v = parse(b.value); a.value = v ? fmt(v / rate) : ""; };
+      a.onblur = function () { var v = parse(a.value); if (v) a.value = fmt(v); };
+      b.onblur = function () { var v = parse(b.value); if (v) b.value = fmt(v); };
+      [].forEach.call(card.querySelectorAll(".hwf-qb"), function (x) { x.onclick = function () { setA(+x.getAttribute("data-a")); }; });
+      setA(+((F.quick || [])[2] || F.amt * 10));
+    }
+    var c = null;
+    try { c = JSON.parse(get(key) || "null"); } catch (e) {}
+    var has = c && c.d && c.d.rates && c.d.rates[to] > 0;
+    if (has && c.t && Date.now() - c.t < 6 * 36e5) { draw(c.d.rates[to], when(c.d.time_last_update_unix), S1); return card; }
+    function fail() {
+      if (has) return draw(c.d.rates[to], when(c.d.time_last_update_unix), S1, 1);
+      card.innerHTML = head + '<p class="hwf-n">' + esc(T.fail) + "</p>";
+      var rb = el("button", "hwf-lnk", esc(T.retry)); rb.type = "button"; rb.onclick = load; card.appendChild(rb);
+    }
+    function second() {
+      fetchJ("https://api.frankfurter.dev/v1/latest?base=" + encodeURIComponent(F.base) + "&symbols=" + encodeURIComponent(to), function (d) {
+        if (d && d.rates && d.rates[to] > 0) draw(d.rates[to], String(d.date || "").replace(/-/g, "."), S2); else fail();
+      }, fail);
+    }
+    function load() {
+      card.innerHTML = head + '<p class="hwf-n">' + esc(T.load) + "</p>";
+      fetchJ("https://open.er-api.com/v6/latest/" + encodeURIComponent(F.base), function (d) {
+        if (d && d.result === "success" && d.rates && d.rates[to] > 0) { set(key, JSON.stringify({ t: Date.now(), d: d })); draw(d.rates[to], when(d.time_last_update_unix), S1); } else second();
+      }, second);
+    }
+    load();
+    return card;
+  }
   function fxCard() {
     var F = C.fx; if (!F || !F.list || !F.list.length) return null;
+    if (F.calc) return fxCalc(F);
     var card = el("div", "hwf-c"); card.style.display = "none";
     getJSON("https://open.er-api.com/v6/latest/" + F.base, "hw_fx_" + F.base, 6 * 36e5, function (d) {
       if (!d || d.result !== "success" || !d.rates) return;
@@ -283,7 +356,7 @@
     } else {
       var lx = C.skin === "lx";
       box = el(lx ? "section" : "div", (lx ? "lx-sec" : "sec") + " hwf");
-      box.innerHTML = (lx ? '<span class="lx-eb">' + T.ey + "</span>" : '<p class="ey">' + T.ey + "</p>") + "<h2>" + esc(S.h || T.h) + "<small>" + (C.upd ? esc(T.upd + C.upd) + " · " : "") + esc(T.live) + "</small></h2>";
+      box.innerHTML = (lx ? '<span class="lx-eb">' + T.ey + "</span>" : '<p class="ey">' + T.ey + "</p>") + "<h2>" + esc(S.h || T.h) + "<small>" + (C.upd ? esc(T.upd + C.upd) + " · " : "") + esc(C.live || T.live) + "</small></h2>";
       var body = el("div", lx ? "lx-body" : ""); if (lx) body.style.display = "block";
       var hd = el("div", "hwf-hd"); hd.appendChild(el("span", "", "")); hd.appendChild(inBtn()); if (favOn) body.appendChild(hd);
       cards.forEach(function (c) { body.appendChild(c); });

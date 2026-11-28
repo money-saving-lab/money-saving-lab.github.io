@@ -282,9 +282,61 @@
     load();
     return card;
   }
+  /* 11/28 여러 나라 환율 칸의 「안전 판」(HWFAV.fx.safe 일 때만 · 한국 홈 「한국페이지_사진판」) — 칸을 바로 보이고 · 첫 출처가 안 되면 예비 출처(Frankfurter · 없는 돈은 그 줄만 빠짐) ·
+     지난번 값(그렇게 적음) · 그것도 없으면 못 불러옴 글 + 다시 단추 */
+  function fxSafe(F) {
+    var card = el("div", "hwf-c"), key = "hw_fx_" + F.base;
+    var head = '<div class="hwf-t">' + esc(T.fx) + "<small>" + esc(F.label) + "</small></div>";
+    var S1 = '<a href="https://www.exchangerate-api.com" target="_blank" rel="noopener nofollow">Rates By Exchange Rate API</a>';
+    var S2 = '<a href="https://frankfurter.dev" target="_blank" rel="noopener nofollow">Frankfurter (ECB)</a>';
+    function fetchJ(url, ok, bad) {
+      if (!window.fetch) return bad();
+      var ac = window.AbortController ? new AbortController() : null, done = 0, tm = setTimeout(function () { if (ac) ac.abort(); }, 8000);
+      fetch(url, ac ? { signal: ac.signal } : {}).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) { clearTimeout(tm); done = 1; ok(d); }).catch(function () { clearTimeout(tm); if (!done) bad(); });
+    }
+    function when(u) { try { var t = new Date(u * 1000); if (isNaN(t)) return ""; return t.getFullYear() + "." + ("0" + (t.getMonth() + 1)).slice(-2) + "." + ("0" + t.getDate()).slice(-2) + " " + ("0" + t.getHours()).slice(-2) + ":" + ("0" + t.getMinutes()).slice(-2); } catch (e) { return ""; } }
+    function draw(rates, at, src, old) {
+      var g = "", k = 0;
+      F.list.forEach(function (x) {
+        var r = rates[x[0]]; if (!r || !(r > 0)) return;
+        g += "<div" + (k++ >= 4 ? ' class="hwf-x" style="display:none"' : "") + "><em>" + esc(x[2] + " " + x[1]) + "</em><b>" + num(F.amt * r) + esc(x[5]) + "</b><i>" + num(x[4]) + esc(x[5]) + " = " + num(x[4] / r) + esc(F.unit) + "</i></div>";
+      });
+      if (!g) return false;
+      card.innerHTML = head + '<div class="hwf-fx">' + g + '</div><p class="hwf-n">' + esc(T.fxn) + (at ? " " + T.asof + esc(at) + " ·" : "") + " " + T.src + src + (old ? " · " + esc(T.old) : "") + "</p>";
+      if (k > 4) {
+        var mb = el("button", "hwf-lnk", T.morefx + " (" + (k - 4) + ")  +"); mb.type = "button";
+        mb.onclick = function () { [].forEach.call(card.querySelectorAll(".hwf-x"), function (x) { x.style.display = ""; }); mb.style.display = "none"; };
+        card.insertBefore(mb, card.querySelector(".hwf-n"));
+      }
+      return true;
+    }
+    var c = null;
+    try { c = JSON.parse(get(key) || "null"); } catch (e) {}
+    var has = c && c.d && c.d.rates;
+    if (has && c.t && Date.now() - c.t < 6 * 36e5 && draw(c.d.rates, when(c.d.time_last_update_unix), S1)) return card;
+    function fail() {
+      if (has && draw(c.d.rates, when(c.d.time_last_update_unix), S1, 1)) return;
+      card.innerHTML = head + '<p class="hwf-n">' + esc(T.fail) + "</p>";
+      var rb = el("button", "hwf-lnk", esc(T.retry)); rb.type = "button"; rb.onclick = load; card.appendChild(rb);
+    }
+    function second() {
+      fetchJ("https://api.frankfurter.dev/v1/latest?base=" + encodeURIComponent(F.base), function (d) {
+        if (!(d && d.rates && draw(d.rates, String(d.date || "").replace(/-/g, "."), S2))) fail();
+      }, fail);
+    }
+    function load() {
+      card.innerHTML = head + '<p class="hwf-n">' + esc(T.load) + "</p>";
+      fetchJ("https://open.er-api.com/v6/latest/" + encodeURIComponent(F.base), function (d) {
+        if (d && d.result === "success" && d.rates && draw(d.rates, when(d.time_last_update_unix), S1)) set(key, JSON.stringify({ t: Date.now(), d: d })); else second();
+      }, second);
+    }
+    load();
+    return card;
+  }
   function fxCard() {
     var F = C.fx; if (!F || !F.list || !F.list.length) return null;
     if (F.calc) return fxCalc(F);
+    if (F.safe) return fxSafe(F);
     var card = el("div", "hwf-c"); card.style.display = "none";
     getJSON("https://open.er-api.com/v6/latest/" + F.base, "hw_fx_" + F.base, 6 * 36e5, function (d) {
       if (!d || d.result !== "success" || !d.rates) return;

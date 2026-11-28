@@ -107,14 +107,132 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:v
 .gx-vid em{flex:none;font-style:normal;font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:20px;line-height:1.3;color:var(--gold2);min-width:26px}
 .gx-vid b{display:block;font-weight:500;font-size:14.5px;line-height:1.5;overflow-wrap:anywhere}
 .gx-vid small{display:block;color:var(--gold2);font-size:12.5px;margin-top:4px}
+
+.px-fan{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px;padding:0 4px}
+.px-fan img{display:block;width:100%;height:auto;aspect-ratio:10/11;object-fit:cover;border-radius:12px;box-shadow:0 10px 24px rgba(0,0,0,.22);background:#1b1a17}
+.px-fan img:nth-child(1){transform:rotate(-3deg) translateY(6px)}
+.px-fan img:nth-child(3){transform:rotate(3deg) translateY(6px)}
+.px-vids{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px 4px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.px-vids::-webkit-scrollbar{display:none}
+.px-vid{flex:none;width:158px;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:var(--txt);display:flex;flex-direction:column}
+.px-vid span.px-th{display:block;aspect-ratio:10/11;background:#1b1a17}
+.px-vid img{display:block;width:100%;height:100%;object-fit:cover}
+.px-vid b{display:block;font-weight:700;font-size:13.5px;line-height:1.45;padding:10px 12px 0;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.px-vid small{display:block;color:var(--gold2);font-size:12px;padding:6px 12px 12px;margin-top:auto}
+.px-sale{padding:14px 0;border-top:1px solid var(--line)}
+.px-sale:first-child{border-top:0;padding-top:0}
+.px-sh{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.px-sh b{font-weight:700;font-size:15px;line-height:1.45;min-width:0;overflow-wrap:anywhere}
+.px-d{flex:none;font-size:11.5px;font-weight:700;line-height:1;padding:6px 9px;border-radius:999px;border:1px solid var(--gold);color:var(--gold2);white-space:nowrap}
+.px-d:empty{display:none}
+.px-d.hot{background:linear-gradient(135deg,#f3d77a,#d4af37);color:#111;border-color:#d4af37}
+.px-sale small{display:block;color:var(--dim);font-size:12.5px;line-height:1.55;margin-top:4px}
+.px-src{display:inline-block;margin-top:6px;color:var(--gold2);font-size:12.5px}
+.px-sn{color:var(--dim);font-size:11.5px;line-height:1.6;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+body{padding-bottom:76px}
+.px-bh{padding-top:30px;padding-bottom:10px}
+.px-menu{margin-top:14px;top:37px}
+.px-still{position:static;border-bottom:0;padding:0 20px 2px}
+.px-go{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:50px;padding:8px 16px;border-radius:12px;background:var(--gold);color:var(--ink);text-decoration:none;font-size:14.5px;line-height:1.35;box-shadow:0 4px 14px rgba(120,90,30,.22)}
+.px-go b{font-weight:700;min-width:0;overflow-wrap:anywhere}
+.px-go i{font-style:normal;flex:none}
+.px-big1{margin-top:18px;min-height:54px;font-size:15.5px}
+.px-fanbg{margin:22px -20px 0;padding:6px 20px 26px;background-size:cover;background-position:center}
+.px-fanbg .px-fan{margin-top:16px}
+.px-sw{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;margin-left:-20px;margin-right:-20px;padding:0 20px 6px}
+.px-sw::-webkit-scrollbar{display:none}
+.px-shop>*{flex:none;width:78%;max-width:300px;scroll-snap-align:start;display:flex;flex-direction:column}
+.px-shop>* .lx-cta{margin-top:auto}
+.px-cn>*{flex:none;width:60%;max-width:230px;scroll-snap-align:start}
+.px-shop .lx-why{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:14px}
+.px-bn{aspect-ratio:5/2;border-radius:14px;overflow:hidden;background:var(--card2)}
+.px-bn img{display:block;width:100%;height:100%;object-fit:cover}
+.px-dock{position:fixed;left:12px;right:70px;bottom:14px;z-index:9997;display:flex;gap:1px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.18);box-shadow:0 6px 20px rgba(0,0,0,.3);transform:translateY(90px);transition:transform .25s ease}
+.px-dock.on{transform:none}
+.px-dock a{flex:1;display:flex;align-items:center;justify-content:center;min-height:48px;padding:0 8px;background:#16140f;color:#e3c88f;text-decoration:none;font-size:13px;font-weight:700;white-space:nowrap}
+.px-star{flex:none;width:48px;min-height:48px;border:0;background:linear-gradient(135deg,#f3d77a,#d4af37);color:#111;font-size:18px;line-height:1;cursor:pointer}
+.px-star[hidden]{display:none}
+.px-bhp{margin:0 -20px;padding:34px 20px 24px;background-size:cover;background-position:center}
+.px-bhp h1,.px-bhp .gx-stat b{color:#fff}
+.px-bhp .lx-eb{color:#f0dba8}
+.px-bhp .lx-lead,.px-bhp .gx-stat div{color:rgba(255,255,255,.86)}
+.px-pod{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:end}
+.px-pd{display:flex;flex-direction:column;gap:4px;min-width:0;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--k,var(--gold));border-radius:14px;padding:12px 10px;text-decoration:none;color:var(--txt)}
+.px-pd:nth-child(1){padding-top:26px;padding-bottom:20px;border-color:var(--gold);border-top-color:var(--k,var(--gold));box-shadow:0 8px 22px rgba(120,90,30,.16)}
+.px-pd em{font-style:normal;font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:34px;line-height:1;color:var(--gold2)}
+.px-pd:nth-child(1) em{font-size:46px}
+.px-pd span{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2);font-weight:500;line-height:1.3;overflow-wrap:anywhere}
+.px-pd b{font-size:12.5px;font-weight:700;line-height:1.4;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.px-pd small{font-size:10.5px;color:var(--k,var(--dim));line-height:1.3}
+.px-pd i{font-style:normal;margin-top:8px;display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:10px;background:var(--gold);color:var(--ink);font-size:11.5px;font-weight:700;text-align:center;line-height:1.2;white-space:nowrap;letter-spacing:-.01em}
+.px-pdn{color:var(--dim);font-size:11.5px;line-height:1.6;margin-top:10px}
+.px-mini>*{flex:none;width:56%;max-width:210px;scroll-snap-align:start}
+.px-mn{display:flex;flex-direction:column;gap:4px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--k,var(--gold));border-radius:12px;padding:12px;text-decoration:none;color:var(--txt);min-width:0}
+.px-mn span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2)}
+.px-mn b{font-size:13px;line-height:1.4;font-weight:700;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.px-mn small{font-size:11px;color:var(--dim);line-height:1.4}
+.px-mn i{font-style:normal;color:var(--gold2);font-size:12.5px;font-weight:700;margin-top:auto;padding-top:8px}
+@media (prefers-reduced-motion:reduce){.px-dock{transition:none}}
+@media print{.px-dock{display:none}}
+.px-kc{border-top:3px solid var(--k,var(--gold))}
+.px-kc .gx-ini{border-color:var(--k,var(--gold));color:var(--k,var(--gold2));background:color-mix(in srgb,var(--k,#a8843c) 12%,transparent)}
+.px-kc .gx-ini svg{width:22px;height:22px}
+.px-kc .gx-ty{display:inline-block;margin-top:3px;padding:2px 8px;border-radius:999px;font-size:11.5px;color:var(--k,var(--dim));border:1px solid var(--k,var(--line))}
 </style><link rel="manifest" href="/fav/en.webmanifest"><link rel="apple-touch-icon" href="/fav/en-180.png"><meta name="apple-mobile-web-app-title" content="K-Beauty Lab"></head><body>
 <div class="lx-pr" role="note"><b>#ad</b>Contains affiliate links</div>
 <div class="lx-wrap">
-<header class="lx-hero"><div class="lx-logo">K</div><span class="lx-eb">Korean beauty on Amazon</span><h1>K-Beauty<br>Savings Lab</h1><p class="lx-lead">Korean beauty, sorted by what is inside</p><div class="gx-stat"><div><b>25 products</b>Korean beauty</div><div><b>6 concerns</b>to choose from</div></div><a class="lx-cta" href="cosme/?from=en_home"><b>Shop all 25 products</b><i>→</i></a></header>
+<header class="lx-hero px-bh px-bhp" style="background-image:linear-gradient(180deg,rgba(24,14,18,.50),rgba(24,14,18,.74)),url(img/en_hero.webp)"><span class="lx-eb">Korean beauty on Amazon</span><h1>K-Beauty<br>Savings Lab</h1><p class="lx-lead">Korean beauty, sorted by what is inside</p><div class="gx-stat"><div><b>25 products</b>Korean beauty</div><div><b>6 concerns</b>to choose from</div></div><a class="px-go px-big1" href="https://www.amazon.com/dp/B09V7Z4TJG?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener"><b>See what's trending on Amazon</b><i>→</i></a><div class="px-fan" aria-hidden="true"><img src="img/b14.webp" alt="" width="360" height="396" decoding="async"><img src="img/b13.webp" alt="" width="360" height="396" decoding="async"><img src="img/b12.webp" alt="" width="360" height="396" decoding="async"></div></header>
+<nav class="gx-bar px-menu" id="px-menu"><a class="gx-chip" href="#sales">Sales</a><a class="gx-chip" href="#popular">Ranking</a><a class="gx-chip" href="#concerns">By concern</a><a class="gx-chip" href="#videos">Videos</a><a class="gx-chip" href="#guide">Free guide</a></nav>
 <p class="lx-law">This page contains affiliate links (#ad). As an Amazon Associate I earn from qualifying purchases.</p>
-<section class="lx-sec" id="concerns"><span class="lx-eb">Start here</span><h2>Pick your skin concern</h2><div class="lx-body"><div class="gx-two"><a class="gx-tile" href="cosme/?from=en_home#dry"><span>Products: 7</span><b>Dry</b><small>Ceramides, hyaluronic acid, collagen, PDRN</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#pores"><span>Products: 3</span><b>Pores &amp; oil</b><small>AHA, BHA, PHA, heartleaf</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#redness"><span>Products: 2</span><b>Redness</b><small>Azelaic acid, cica (centella), panthenol</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#dullness"><span>Products: 3</span><b>Dullness</b><small>Niacinamide, tranexamic acid, arbutin</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#lips-eyes"><span>Products: 9</span><b>Lips &amp; eyes</b><small>Shea butter, retinal, caffeine, peptides</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#sunscreen"><span>Products: 1</span><b>Sunscreen</b><small>SPF 50, UVA and UVB</small><i>Shop →</i></a></div></div></section><section class="lx-sec" id="popular"><span class="lx-eb">Popular now</span><h2>Popular right now<small>Positions on the Amazon.com Best Sellers list (Beauty &amp; Personal Care) when we looked on Nov 28, 2026. Rankings change.</small></h2><div class="lx-body"><article class="lx-card gx-item gx-big"><div class="gx-hd"><span class="gx-ini" aria-hidden="true">M</span><span class="lx-tx"><span class="gx-br">medicube</span><span class="gx-ty">Toner Pads</span></span></div><h3>medicube Zero Pore Pad 2.0</h3><p class="lx-why">Contains white willow bark (a natural BHA) and citric acid (an AHA), per the listing.</p><a class="lx-cta" href="https://www.amazon.com/dp/B09V7Z4TJG?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener"><b>View on Amazon</b><i>→</i></a><span class="gx-rank">Amazon Best Sellers, Beauty &amp; Personal Care: <b>#1</b> (checked Nov 28, 2026)</span></article><article class="lx-card gx-item gx-big"><div class="gx-hd"><span class="gx-ini" aria-hidden="true">B</span><span class="lx-tx"><span class="gx-br">BIODANCE</span><span class="gx-ty">Sheet Mask</span></span></div><h3>BIODANCE Bio-Collagen Real Deep Mask</h3><p class="lx-why">Formulated with low-molecular collagen and oligo-hyaluronic acid, per the listing.</p><a class="lx-cta" href="https://www.amazon.com/dp/B0B2RM68G2?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener"><b>View on Amazon</b><i>→</i></a><span class="gx-rank">Amazon Best Sellers, Beauty &amp; Personal Care: <b>#2</b> (checked Nov 28, 2026)</span></article><article class="lx-card gx-item gx-big"><div class="gx-hd"><span class="gx-ini" aria-hidden="true">I</span><span class="lx-tx"><span class="gx-br">ILLIYOON</span><span class="gx-ty">Moisturizer</span></span></div><h3>ILLIYOON Ceramide Ato Concentrate Cream</h3><p class="lx-why">The listing describes a multi-ceramide complex made with plant-sourced ceramides.</p><a class="lx-cta" href="https://www.amazon.com/dp/B077RTL1HJ?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener"><b>View on Amazon</b><i>→</i></a><span class="gx-rank">Amazon Best Sellers, Beauty &amp; Personal Care: <b>#3</b> (checked Nov 28, 2026)</span></article><a class="lx-ghost" href="cosme/?from=en_home"><b>See all 25 products</b><i>→</i></a></div></section><section class="lx-sec" id="guide"><div class="lx-band"><span class="lx-eb">Free guide</span><h2>K-Beauty by Skin Concern — Amazon best sellers, explained</h2><p class="lx-why" style="margin-top:14px">What each Amazon listing says is inside, product by product. A free guide.</p><a class="lx-cta" href="guide/kbeauty/?from=en_home"><b>Open the free guide</b><i>→</i></a></div></section>
+<section class="lx-sec" id="sales" data-px-sales data-tz="America/Los_Angeles" data-left="{n} days left" data-today="Ends today" data-soon="Starts in {n} days"><span class="lx-eb">Sale calendar</span><h2>Sales on now<small>Dates from the official announcement (checked Nov 28, 2026)</small></h2><div class="lx-body"><div class="px-bn"><img src="img/en_sale.webp" alt="" width="1040" height="416" loading="lazy" decoding="async"></div><div class="lx-card"><div class="px-sale" data-s="" data-e="2026-11-30"><div class="px-sh"><b>Amazon Black Friday Week &amp; Cyber Monday</b><span class="px-d" data-d></span></div><small>Now through November 30</small><a class="px-src" href="https://www.aboutamazon.com/news/retail/amazon-black-friday-cyber-monday-deals-2026" target="_blank" rel="noopener">Official announcement（About Amazon）→</a></div><p class="px-sn">Whether an item is on sale, and its price, is shown on each product page. Dates can change.</p><a class="px-go" style="margin-top:14px" href="#popular"><b>See the popular picks</b><i>↓</i></a></div></div></section><section class="lx-sec" id="concerns"><span class="lx-eb">Start here</span><h2>Pick your skin concern</h2><div class="lx-body"><div class="px-bn"><img src="img/en_concern.webp" alt="" width="1040" height="416" loading="lazy" decoding="async"></div><div class="px-sw px-cn"><a class="gx-tile" href="cosme/?from=en_home#dry"><span>Products: 7</span><b>Dry</b><small>Ceramides, hyaluronic acid, collagen, PDRN</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#pores"><span>Products: 3</span><b>Pores &amp; oil</b><small>AHA, BHA, PHA, heartleaf</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#redness"><span>Products: 2</span><b>Redness</b><small>Azelaic acid, cica (centella), panthenol</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#dullness"><span>Products: 3</span><b>Dullness</b><small>Niacinamide, tranexamic acid, arbutin</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#lips-eyes"><span>Products: 9</span><b>Lips &amp; eyes</b><small>Shea butter, retinal, caffeine, peptides</small><i>Shop →</i></a><a class="gx-tile" href="cosme/?from=en_home#sunscreen"><span>Products: 1</span><b>Sunscreen</b><small>SPF 50, UVA and UVB</small><i>Shop →</i></a></div></div></section><section class="lx-sec" id="popular"><span class="lx-eb">Popular now</span><h2>Popular right now<small>Positions on the Amazon.com Best Sellers list (Beauty &amp; Personal Care) when we looked on Nov 28, 2026. Rankings change.</small></h2><div class="lx-body"><div class="px-bn"><img src="img/en_rank.webp" alt="" width="1040" height="416" loading="lazy" decoding="async"></div><div class="px-pod"><a class="px-pd" href="https://www.amazon.com/dp/B09V7Z4TJG?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener" style="--k:#4f9aa0"><em>1</em><span>medicube</span><b>medicube Zero Pore Pad 2.0</b><small>Toner Pads · #1</small><i>On Amazon →</i></a><a class="px-pd" href="https://www.amazon.com/dp/B0B2RM68G2?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener" style="--k:#c0787a"><em>2</em><span>BIODANCE</span><b>BIODANCE Bio-Collagen Real Deep Mask</b><small>Sheet Mask · #2</small><i>On Amazon →</i></a><a class="px-pd" href="https://www.amazon.com/dp/B077RTL1HJ?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener" style="--k:#6f9a66"><em>3</em><span>ILLIYOON</span><b>ILLIYOON Ceramide Ato Concentrate Cream</b><small>Moisturizer · #3</small><i>On Amazon →</i></a></div><p class="px-pdn">Ordered by Amazon Best Sellers position (Beauty &amp; Personal Care) among the products on this page.</p><h3 style="margin-top:8px">More products on the Best Sellers list</h3><div class="px-sw px-mini"><a class="px-mn" href="https://www.amazon.com/dp/B0DGTMR754?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener" style="--k:#c0787a"><span>medicube</span><b>medicube Salmon DNA PDRN Pink Collagen Jelly Gel Mask</b><small>Gel Mask · #4</small><i>View on Amazon →</i></a><a class="px-mn" href="https://www.amazon.com/dp/B0DGPSZVW3?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener" style="--k:#6f9a66"><span>medicube</span><b>medicube Collagen Jelly Cream</b><small>Moisturizer · #6</small><i>View on Amazon →</i></a><a class="px-mn" href="https://www.amazon.com/dp/B0GHMZXX8Y?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener" style="--k:#6f9a66"><span>medicube</span><b>medicube PDRN Collagen Volume Multi Balm Stick</b><small>Balm Stick · #7</small><i>View on Amazon →</i></a><a class="px-mn" href="https://www.amazon.com/dp/B0DWFLY18Y?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener" style="--k:#6f9a66"><span>ANUA</span><b>ANUA PDRN Hyaluronic Acid 100 Moisturizing Cream</b><small>Moisturizer · #10</small><i>View on Amazon →</i></a><a class="px-mn" href="https://www.amazon.com/dp/B0DBF65JYY?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener" style="--k:#b0862f"><span>medicube</span><b>medicube PDRN Pink Peptide Serum</b><small>Serum · #12</small><i>View on Amazon →</i></a><a class="px-mn" href="https://www.amazon.com/dp/B0G38FGSKL?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener" style="--k:#6f95c4"><span>medicube</span><b>medicube Hydrogel Eye &amp; Face Patches with Kojic Acid Turmeric (60 Counts)</b><small>Eye Patches · #13</small><i>View on Amazon →</i></a></div><a class="lx-ghost" href="cosme/?from=en_home"><b>See all 25 products</b><i>→</i></a></div></section><section class="lx-sec" id="videos"><span class="lx-eb">Latest videos</span><h2>Latest videos<small>Reels from @kbeauty_savings_lab on Instagram</small></h2><div class="lx-body"><div class="px-vids"><a class="px-vid" href="https://www.instagram.com/reel/DflcsJeK5dl/" target="_blank" rel="noopener"><span class="px-th"><img src="img/b14.webp" alt="" width="360" height="396" loading="lazy" decoding="async"></span><b>Korean cleansing foam: count the 40mL mini per mL</b><small>Watch on Instagram →</small></a><a class="px-vid" href="https://www.instagram.com/reel/DfmkyKqNbt7/" target="_blank" rel="noopener"><span class="px-th"><img src="img/b13.webp" alt="" width="360" height="396" loading="lazy" decoding="async"></span><b>Korean lip sleeping mask: three checks on LANEIGE 20g</b><small>Watch on Instagram →</small></a><a class="px-vid" href="https://www.instagram.com/reel/DfixJVyNLtq/" target="_blank" rel="noopener"><span class="px-th"><img src="img/b12.webp" alt="" width="360" height="396" loading="lazy" decoding="async"></span><b>Korean sheet mask: 16 sheets vs 7-sheet set, per sheet</b><small>Watch on Instagram →</small></a><a class="px-vid" href="https://www.instagram.com/reel/Dfj-1_uhwEP/" target="_blank" rel="noopener"><span class="px-th"><img src="img/b11.webp" alt="" width="360" height="396" loading="lazy" decoding="async"></span><b>Korean toner pads: MEDIHEAL set went from #44 to #8</b><small>Watch on Instagram →</small></a><a class="px-vid" href="https://www.instagram.com/reel/DfgGntmD7YW/" target="_blank" rel="noopener"><span class="px-th"><img src="img/b10.webp" alt="" width="360" height="396" loading="lazy" decoding="async"></span><b>Korean body lotion: ILLIYOON Ato Lotion is two 600ml bottles</b><small>Watch on Instagram →</small></a><a class="px-vid" href="https://www.instagram.com/reel/DfhX9QgDT-f/" target="_blank" rel="noopener"><span class="px-th"><img src="img/b9.webp" alt="" width="360" height="396" loading="lazy" decoding="async"></span><b>Korean hair mask: UNOVE Double Pack is two 320ml tubes</b><small>Watch on Instagram →</small></a></div></div></section><section class="lx-sec" id="guide"><div class="lx-band"><span class="lx-eb">Free guide</span><h2>K-Beauty by Skin Concern — Amazon best sellers, explained</h2><p class="lx-why" style="margin-top:14px">What each Amazon listing says is inside, product by product. A free guide.</p><a class="lx-cta" href="guide/kbeauty/?from=en_home"><b>Open the free guide</b><i>→</i></a></div></section>
 <section class="lx-sec"><span class="lx-eb">Follow</span><div class="lx-chs"><a class="lx-ghost" href="https://www.instagram.com/kbeauty_savings_lab/" target="_blank" rel="noopener">Instagram</a><a class="lx-ghost" href="https://www.threads.net/@kbeauty_savings_lab" target="_blank" rel="noopener">Threads</a></div></section>
 <footer>Not a review and not a claim about results.<br>Please check names and details on each retailer's page.<br>K-Beauty Savings Lab</footer>
 </div>
+<div class="px-dock" role="navigation"><a href="https://www.amazon.com/dp/B09V7Z4TJG?tag=kbeautysaving-20" target="_blank" rel="sponsored nofollow noopener">Trending on Amazon</a><a href="#sales">Sale dates</a><button type="button" class="px-star" aria-label="Save this page" hidden>★</button></div>
+<script>
+(function(){
+  var box=document.querySelector("[data-px-sales]"); if(!box) return;
+  var today;
+  try{today=new Intl.DateTimeFormat("en-CA",{timeZone:box.getAttribute("data-tz"),year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());}catch(e){today="";}
+  if(!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(today)) today=new Date().toISOString().slice(0,10);
+  function days(a,b){return Math.round((Date.parse(b+"T00:00:00Z")-Date.parse(a+"T00:00:00Z"))/864e5);}
+  var live=0;
+  [].slice.call(box.querySelectorAll("[data-e]")).forEach(function(r){
+    var s=r.getAttribute("data-s"), e=r.getAttribute("data-e"), d=r.querySelector("[data-d]");
+    if(today>e){r.parentNode.removeChild(r);return;}
+    live++;
+    if(!d) return;
+    if(s&&today<s){d.textContent=box.getAttribute("data-soon").replace("{n}",days(today,s));}
+    else{var n=days(today,e); d.textContent=n===0?box.getAttribute("data-today"):box.getAttribute("data-left").replace("{n}",n); if(n<=3) d.className+=" hot";}
+  });
+  if(!live) box.style.display="none";
+})();
+</script>
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll("[data-px-tab]")), pans=[].slice.call(document.querySelectorAll("[data-px-pan]"));
+  function pick(k){
+    tabs.forEach(function(t){t.setAttribute("aria-selected", t.getAttribute("data-px-tab")===k?"true":"false");});
+    pans.forEach(function(p){p.hidden=p.getAttribute("data-px-pan")!==k;});
+  }
+  if(tabs.length){
+    tabs.forEach(function(t){t.onclick=function(){pick(t.getAttribute("data-px-tab"));};});
+    var h=(location.hash||"").replace("#city-",""), ok=tabs.some(function(t){return t.getAttribute("data-px-tab")===h;});
+    pick(ok?h:tabs[0].getAttribute("data-px-tab"));
+  }
+  var dock=document.querySelector(".px-dock");
+  if(dock){
+    var star=dock.querySelector(".px-star");
+    var f=function(){
+      var on=window.scrollY>360, pill=document.getElementById("hwfav");
+      dock.className="px-dock"+(on?" on":"");
+      if(pill) pill.style.visibility=on?"hidden":"";
+      if(star) star.hidden=!pill||pill.style.display==="none";
+    };
+    if(star) star.onclick=function(){var g=document.querySelector("#hwfav .go"); if(g) g.click();};
+    window.addEventListener("scroll",f,{passive:true}); f(); setTimeout(f,1200); setTimeout(f,4000);
+  }
+})();
+</script>
 <script src="/snd/bgm.js" defer></script>
-<script>window.HWFAV={"lang":"en","skin":"lx","name":"K-Beauty Savings Lab","btn":true,"upd":"2026.11.28","slots":[{"at":".lx-hero","items":[]}]};</script><script src="/snd/fav.js?v=29d4d0" defer></script></body></html>
+<script>window.HWFAV={"lang":"en","skin":"lx","name":"K-Beauty Savings Lab","btn":true,"upd":"2026.11.28","slots":[{"at":".lx-hero","items":[]}]};</script><script src="/snd/fav.js?v=330d5f" defer></script></body></html>

@@ -47,6 +47,18 @@
       ref: "Reference rate", load: "Loading rates…", fail: "Could not load rates.", retry: "Try again", old: "last saved rate" }
   };
   var T = TX[L] || TX.ko;
+  /* 📎 11/28 저녁 「작은 쪽」(정리 글·전자책 쪽 = HWFAV.home 이 있는 쪽 · 사장님 「모든 링크에 다 적용」) — 그 쪽이 아니라 ★그 말의 홈★을 즐겨찾기하게 안내
+     · 홈 화면 추가 = manifest start_url 이 홈 · 「홈 주소 복사」·「홈으로 가기」 · 말풍선은 12초 뒤 또는 400px 넘게 내리면 사라짐(글 읽는 데 안 걸리게) · 큰 칸(다시 올 이유)은 없음 */
+  var SUB = !!C.home, HOME = String(C.home || "/");
+  var TS = ({
+    ko: { sP: "홈(링크 모음)을 즐겨찾기 해 두면 할인 코드·환율·새 영상을 한 번에 볼 수 있어요.", pc: "<b>홈으로 가기</b>를 누른 다음 키보드에서", note: "홈 화면에 추가한 아이콘은 이 글이 아니라 <b>홈(링크 모음)</b>으로 열려요.",
+      url: "홈 주소 복사", go: "홈으로 가기", tip: "할인 코드·환율은 홈에서 매일 바뀌어요<br><b>홈을 즐겨찾기</b> 해 두세요" },
+    ja: { sP: "ホーム（リンクまとめ）をお気に入りに入れておくと、新しい情報を次からすぐ開けます。", pc: "<b>ホームへ</b>を押してから、キーボードの", note: "ホーム画面に追加したアイコンは、このページではなく<b>ホーム（リンクまとめ）</b>が開きます。",
+      url: "ホームのURLをコピー", go: "ホームへ", tip: "最新情報はホームにあります<br><b>ホームをお気に入り</b>に追加" },
+    en: { sP: "Save our home page and come back in one tap whenever the list is updated.", pc: "Tap <b>Go to home</b>, then press", note: "The Home Screen icon opens our <b>home page</b>, not this guide.",
+      url: "Copy home link", go: "Go to home", tip: "New picks are on our home page<br><b>Save the home page</b> for later" }
+  })[L];
+  if (SUB && !TS) SUB = false;
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   function el(tag, cls, html) { var x = D.createElement(tag); if (cls) x.className = cls; if (html != null) x.innerHTML = html; return x; }
@@ -112,7 +124,7 @@
     ".hwf-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-8px 0 14px;font-size:12.5px;color:var(--dim,#9c968a)}" +
     /* 떠 있는 단추 · 안내 판 = 늘 검정+금 (밝은 쪽에서도 눈에 띄게) */
     "#hwfav{position:fixed;right:14px;bottom:72px;z-index:9998;display:flex;align-items:center;font-family:inherit;border-radius:999px;background:linear-gradient(135deg,#f3d77a,#d4af37 55%,#b98f2a);color:#111;box-shadow:0 6px 22px rgba(0,0,0,.42),0 0 0 1px rgba(0,0,0,.25) inset;overflow:hidden}" +
-    "#hwfav button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}" +
+    "#hwfav button{font:inherit;color:inherit;background:none;border:0;margin:0;border-radius:0;box-shadow:none;cursor:pointer;-webkit-tap-highlight-color:transparent}" +
     "#hwfav .go{display:flex;align-items:center;gap:6px;min-height:46px;padding:0 6px 0 16px;font-size:14.5px;font-weight:700;letter-spacing:.01em;white-space:nowrap}" +
     "#hwfav .go s{text-decoration:none;font-size:17px;line-height:1}" +
     "#hwfav .xx{min-width:34px;min-height:46px;font-size:15px;line-height:1;opacity:.6;padding:0 10px 0 4px}" +
@@ -152,21 +164,24 @@
   var iOS = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1), AND = /Android/.test(ua);
   var inApp = /Instagram|FBAN|FBAV|FB_IAB|KAKAOTALK|NAVER\(inapp|Line\/|Barcelona|Threads|DaumApps|everytimeApp|; wv\)/i.test(ua);
   var favOn = !!C.btn && !standalone && get("hw_fav_done") !== "1";
+  if (SUB && /HeadlessChrome/.test(ua)) favOn = false;       /* 전자책 PDF·미리보기 캡처(헤드리스 크롬)에는 단추를 안 붙임 — bgm.js 와 같은 약속 */
   var SH = '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v14M9.5 7.5 14 3l4.5 4.5M8 12H6.5A1.5 1.5 0 0 0 5 13.5v9A1.5 1.5 0 0 0 6.5 24h15a1.5 1.5 0 0 0 1.5-1.5v-9a1.5 1.5 0 0 0-1.5-1.5H20"/></svg>';
   var PL = '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="19" height="19" rx="4.5"/><path d="M14 9.5v9M9.5 14h9"/></svg>';
   function hideAll() { if (pill) pill.style.display = "none"; inl.forEach(function (b) { b.style.display = "none"; }); }
   function sheet() {
     var old = D.getElementById("hwfsh"); if (old) old.parentNode.removeChild(old);
     var s = el("div"); s.id = "hwfsh"; s.setAttribute("role", "dialog"); s.setAttribute("aria-modal", "true"); s.setAttribute("aria-label", T.sT);
-    var h = '<div class="bx"><h4>★ ' + T.sT + '</h4><p>' + T.sP + '</p>';
+    var h = '<div class="bx"><h4>★ ' + T.sT + '</h4><p>' + (SUB ? TS.sP : T.sP) + '</p>';
     if (iOS || AND) {
       if (inApp) h += '<div class="app">' + T.app + '</div>';
       h += '<ol><li><i>1</i><span>' + (iOS ? T.i1 : T.a1) + '</span>' + (iOS ? SH : "") + '</li><li><i>2</i><span>' + (iOS ? T.i2 : T.a2) + '</span>' + PL + '</li><li><i>3</i><span>' + (iOS ? T.i3 : T.a3) + '</span></li></ol>';
+      if (SUB) h += '<div class="app">' + TS.note + '</div>';
     } else {
-      h += '<div class="pc">' + T.pc1 + ' <kbd>' + (/Mac/.test(navigator.platform || ua) ? "⌘ + D" : "Ctrl + D") + '</kbd> ' + T.pc2 + '</div>';
+      h += '<div class="pc">' + (SUB ? TS.pc : T.pc1) + ' <kbd>' + (/Mac/.test(navigator.platform || ua) ? "⌘ + D" : "Ctrl + D") + '</kbd> ' + T.pc2 + '</div>';
     }
     h += '<div class="bt">' + (bip ? '<button type="button" class="p" data-a="inst">' + (iOS || AND ? T.inst : T.pcApp) + '</button>' : "") +
-      '<button type="button" data-a="url">' + T.url + '</button><button type="button" data-a="done">' + T.done + '</button><button type="button" class="' + (bip ? "" : "p") + '" data-a="close"' + (bip ? ' style="grid-column:1/-1"' : "") + '>' + T.close + '</button></div></div>';
+      (SUB ? '<button type="button" class="p" data-a="home">' + TS.go + ' →</button>' : "") +
+      '<button type="button" data-a="url">' + (SUB ? TS.url : T.url) + '</button><button type="button" data-a="done">' + T.done + '</button><button type="button" class="' + (bip || SUB ? "" : "p") + '" data-a="close"' + (bip || SUB ? ' style="grid-column:1/-1"' : "") + '>' + T.close + '</button></div></div>';
     s.innerHTML = h;
     function shut() { if (s.parentNode) s.parentNode.removeChild(s); D.removeEventListener("keydown", key); }
     function key(e) { if (e.key === "Escape") shut(); }
@@ -176,7 +191,8 @@
       var a = b.getAttribute("data-a");
       if (a === "close") shut();
       else if (a === "done") { set("hw_fav_done", "1"); hideAll(); shut(); }
-      else if (a === "url") { var u = location.origin + location.pathname; copy(u, function () { b.textContent = T.copied; }); }
+      else if (a === "url") { var u = location.origin + (SUB ? HOME : location.pathname); copy(u, function () { b.textContent = T.copied; }); }
+      else if (a === "home") { location.href = HOME + "?from=fav"; }
       else if (a === "inst" && bip) { shut(); ask(); }
     });
     D.addEventListener("keydown", key);
@@ -198,7 +214,7 @@
     if (get("hw_fav_min") === "1") pill.className = "min";
     D.body.appendChild(pill);
     if (pill.className !== "min" && T.tip) {               // ★ 말풍선 + 아래로 통통 튀는 화살표(✕ 로 닫으면 그 방문 동안만 숨김)
-      tip = el("div", "", T.tip + '<span class="ar" aria-hidden="true"><svg viewBox="0 0 30 30"><path d="M11 2h8v12h7L15 28 4 14h7z" fill="currentColor" stroke="#141416" stroke-width="1.5" stroke-linejoin="round"/></svg></span>'); tip.id = "hwftip";
+      tip = el("div", "", (SUB ? TS.tip : T.tip) + '<span class="ar" aria-hidden="true"><svg viewBox="0 0 30 30"><path d="M11 2h8v12h7L15 28 4 14h7z" fill="currentColor" stroke="#141416" stroke-width="1.5" stroke-linejoin="round"/></svg></span>'); tip.id = "hwftip";
       var cl = el("button", "cl", "✕"); cl.type = "button"; cl.setAttribute("aria-label", T.close); cl.onclick = noTip; tip.appendChild(cl);
       tip.onclick = function (e) { if (e.target !== cl) favGo(); };
       tip.style.cursor = "pointer";
@@ -211,6 +227,10 @@
       var sync = function () { if (tip) tip.style.display = (pill.style.visibility === "hidden" || pill.style.display === "none" || pill.className === "min") ? "none" : ""; };
       window.addEventListener("scroll", function () { if (tip) setTimeout(sync, 0); }, { passive: true });
       setTimeout(sync, 1300); setTimeout(sync, 4100);
+      if (SUB) {                                           // 📎 작은 쪽 = 글 읽는 데 안 걸리게 말풍선은 12초 뒤 또는 400px 넘게 내리면 사라짐(단추는 남음)
+        setTimeout(noTip, 12000);
+        window.addEventListener("scroll", function () { if (tip && (window.pageYOffset || D.documentElement.scrollTop || 0) > 400) noTip(); }, { passive: true });
+      }
     }
     var _hide = hideAll; hideAll = function () { _hide(); noTip(); };
   }

@@ -16,7 +16,7 @@
       i1: "아래(또는 위) 가운데 <b>공유</b> 단추를 눌러요", i2: "목록을 내려 <b>홈 화면에 추가</b>를 눌러요", i3: "오른쪽 위 <b>추가</b>를 누르면 끝",
       a1: "오른쪽 위 <b>⋮</b> (삼성 인터넷은 아래 <b>≡</b>) 를 눌러요", a2: "<b>홈 화면에 추가</b>를 눌러요", a3: "<b>추가</b>를 누르면 끝",
       app: "지금은 앱 안 창이에요. 먼저 오른쪽 위 <b>⋯</b> 에서 <b>다른 브라우저로 열기</b>(Safari·Chrome)를 누른 뒤 따라 해 주세요.",
-      url: "주소 복사", done: "해 뒀어요", close: "닫기", x: "작게 접기",
+      url: "주소 복사", done: "해 뒀어요", close: "닫기", x: "작게 접기", tip: "할인 코드·환율 매일 바뀌어요<br><b>즐겨찾기</b> 해 두고 편히 예약하세요",
       w: ["맑음", "대체로 맑음", "구름 조금", "흐림", "안개", "이슬비", "비", "눈", "소나기", "뇌우"], cur: "원",
       ref: "참고 환율", load: "환율을 불러오는 중…", fail: "환율을 불러오지 못했어요.", retry: "다시 불러오기", old: "지난번에 받은 값" },
     ja: { ey: "TODAY", h: "今日の旅メモ", upd: "最終更新 ", live: "為替は開くたびに更新されます", fav: "お気に入り", favLong: "お気に入りに追加",
@@ -29,7 +29,7 @@
       i1: "下（または上）の<b>共有</b>ボタンをタップ", i2: "<b>ホーム画面に追加</b>をタップ", i3: "右上の<b>追加</b>で完了",
       a1: "右上の<b>⋮</b>をタップ", a2: "<b>ホーム画面に追加</b>をタップ", a3: "<b>追加</b>で完了",
       app: "アプリ内ブラウザで開いています。右上の<b>⋯</b>から<b>ブラウザで開く</b>（Safari・Chrome）を選んでからお試しください。",
-      url: "URLをコピー", done: "追加しました", close: "閉じる", x: "小さくする",
+      url: "URLをコピー", done: "追加しました", close: "閉じる", x: "小さくする", tip: "クーポン・為替は毎日更新<br><b>お気に入り</b>に入れておくと便利です",
       w: ["晴れ", "おおむね晴れ", "晴れ時々くもり", "くもり", "霧", "霧雨", "雨", "雪", "にわか雨", "雷雨"], cur: "ウォン",
       ref: "参考レート", load: "為替レートを読み込み中…", fail: "為替レートを読み込めませんでした。", retry: "もう一度読み込む", old: "前回取得したレート" },
     en: { ey: "TODAY", h: "Today at a glance", upd: "Last updated ", live: "Updated regularly", fav: "Save", favLong: "Save this page",
@@ -42,7 +42,7 @@
       i1: "Tap the <b>Share</b> button at the bottom (or top)", i2: "Scroll and tap <b>Add to Home Screen</b>", i3: "Tap <b>Add</b> at the top right",
       a1: "Tap <b>⋮</b> at the top right", a2: "Tap <b>Add to Home screen</b>", a3: "Tap <b>Add</b>",
       app: "You're in an in-app browser. Tap <b>⋯</b> at the top right and choose <b>Open in browser</b> (Safari or Chrome) first.",
-      url: "Copy link", done: "Done", close: "Close", x: "Minimize",
+      url: "Copy link", done: "Done", close: "Close", x: "Minimize", tip: "Deals change every day<br><b>Save this page</b> for one-tap access",
       w: ["Clear", "Mostly clear", "Partly cloudy", "Cloudy", "Fog", "Drizzle", "Rain", "Snow", "Showers", "Thunderstorm"], cur: "KRW",
       ref: "Reference rate", load: "Loading rates…", fail: "Could not load rates.", retry: "Try again", old: "last saved rate" }
   };
@@ -132,7 +132,18 @@
     "#hwfsh .pc{margin-top:18px;background:#1b1b1f;border-radius:12px;padding:16px 14px;font-size:14.5px;line-height:2}" +
     "#hwfsh .bt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}#hwfsh .bt button{font:inherit;font-size:14px;font-weight:700;min-height:48px;border-radius:10px;cursor:pointer;border:1px solid #c8a45c;background:none;color:#e3c88f}" +
     "#hwfsh .bt .p{grid-column:1/-1;background:linear-gradient(135deg,#f3d77a,#d4af37);color:#111;border-color:#d4af37}" +
-    "@media print{#hwfav,#hwfsh{display:none!important}}";
+    /* ★ 11/28 저녁 사장님 「즐겨찾기 단추를 화살표로 더 강조」 → 단추 위 말풍선 + 통통 튀는 금색 화살표 · 단추 빛 고리 */
+    /* 자리(아래에서) = 음악 단추 18~62 · 즐겨찾기 단추 72~118 · 화살표 122~152(6px 통통) · 말풍선 156~ — 화살표 가로 자리는 mkPill 이 단추 한가운데로 맞춘다 */
+    "#hwftip{position:fixed;right:14px;bottom:156px;z-index:9998;box-sizing:border-box;min-width:176px;max-width:min(264px,calc(100vw - 28px));background:#141416;color:#f3efe6;border:1.5px solid #d4af37;border-radius:14px;padding:10px 34px 10px 14px;font-size:13px;line-height:1.5;word-break:keep-all;overflow-wrap:anywhere;box-shadow:0 8px 24px rgba(0,0,0,.45);animation:hwftipin .5s ease-out both}" +
+    "#hwftip b{color:#f3d77a}#hwftip .cl{position:absolute;top:4px;right:4px;width:28px;height:28px;padding:0;border:0;background:none;color:#9c968a;font-size:14px;line-height:1;cursor:pointer}" +
+    "#hwftip .ar{position:absolute;right:56px;bottom:-33px;width:30px;height:30px;color:#f3d77a;filter:drop-shadow(0 2px 5px rgba(0,0,0,.65));animation:hwfbob 1s ease-in-out infinite;pointer-events:none}" +
+    "#hwftip .ar svg{display:block;width:30px;height:30px}" +
+    "@keyframes hwfbob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}" +
+    "@keyframes hwftipin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}" +
+    "#hwfav:not(.min){animation:hwfring 2s ease-out infinite}" +
+    "@keyframes hwfring{0%{box-shadow:0 6px 22px rgba(0,0,0,.42),0 0 0 0 rgba(243,215,122,.75)}70%{box-shadow:0 6px 22px rgba(0,0,0,.42),0 0 0 12px rgba(243,215,122,0)}100%{box-shadow:0 6px 22px rgba(0,0,0,.42),0 0 0 0 rgba(243,215,122,0)}}" +
+    "@media (prefers-reduced-motion:reduce){#hwftip .ar,#hwfav:not(.min){animation:none}}" +
+    "@media print{#hwfav,#hwfsh,#hwftip{display:none!important}}";
   var st = D.createElement("style"); st.textContent = css; D.head.appendChild(st);
 
   /* ───────── ★ 즐겨찾기 ───────── */
@@ -180,10 +191,28 @@
     pill = el("div"); pill.id = "hwfav";
     var go = el("button", "go", "<s>★</s><b>" + T.fav + "</b>"); go.type = "button"; go.setAttribute("aria-label", T.favLong); go.onclick = favGo;
     var xx = el("button", "xx", "✕"); xx.type = "button"; xx.setAttribute("aria-label", T.x);
-    xx.onclick = function () { pill.className = "min"; set("hw_fav_min", "1"); };
+    var tip = null;
+    function noTip() { if (tip && tip.parentNode) tip.parentNode.removeChild(tip); tip = null; }
+    xx.onclick = function () { pill.className = "min"; set("hw_fav_min", "1"); noTip(); };
     pill.appendChild(go); pill.appendChild(xx);
     if (get("hw_fav_min") === "1") pill.className = "min";
     D.body.appendChild(pill);
+    if (pill.className !== "min" && T.tip) {               // ★ 말풍선 + 아래로 통통 튀는 화살표(✕ 로 닫으면 그 방문 동안만 숨김)
+      tip = el("div", "", T.tip + '<span class="ar" aria-hidden="true"><svg viewBox="0 0 30 30"><path d="M11 2h8v12h7L15 28 4 14h7z" fill="currentColor" stroke="#141416" stroke-width="1.5" stroke-linejoin="round"/></svg></span>'); tip.id = "hwftip";
+      var cl = el("button", "cl", "✕"); cl.type = "button"; cl.setAttribute("aria-label", T.close); cl.onclick = noTip; tip.appendChild(cl);
+      tip.onclick = function (e) { if (e.target !== cl) favGo(); };
+      tip.style.cursor = "pointer";
+      D.body.appendChild(tip);
+      try {                                                // 화살표를 단추 한가운데 위로(말마다 단추 폭이 달라서 재서 맞춤 · 말풍선과 단추는 오른쪽 끝이 같다)
+        var ar = tip.querySelector(".ar"), pw = pill.offsetWidth, tw = tip.offsetWidth;
+        if (ar && pw > 0 && tw > 0) ar.style.right = Math.max(8, Math.min(tw - 42, Math.round(pw / 2 - 15 - 1.5))) + "px";
+      } catch (e) {}
+      /* 쪽 아래 메뉴 띠(.px-dock·.kx-dock)가 뜨면 쪽 스크립트가 단추를 visibility:hidden 으로 숨긴다 → 말풍선도 같이 숨김(화살표가 빈 자리를 가리키지 않게) */
+      var sync = function () { if (tip) tip.style.display = (pill.style.visibility === "hidden" || pill.style.display === "none" || pill.className === "min") ? "none" : ""; };
+      window.addEventListener("scroll", function () { if (tip) setTimeout(sync, 0); }, { passive: true });
+      setTimeout(sync, 1300); setTimeout(sync, 4100);
+    }
+    var _hide = hideAll; hideAll = function () { _hide(); noTip(); };
   }
   function inBtn() { var b = el("button", "hwf-in", "★ " + T.favLong); b.type = "button"; b.onclick = favGo; if (!favOn) b.style.display = "none"; inl.push(b); return b; }
   window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); bip = e; });
